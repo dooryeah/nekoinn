@@ -9,6 +9,7 @@
             font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #f4f8ff;
         }
+
         .navbar {
             display: flex;
             align-items: center;
@@ -22,25 +23,55 @@
             z-index: 9999;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        .navbar img { height: 48px; filter: drop-shadow(0 0 4px rgba(0,0,0,0.2)); }
-        .nav-links { display: flex; }
-        .nav-links a {
-            margin-left: 24px; text-decoration: none; color: #4a6fa5;
-            font-weight: 600; transition: 0.2s;
+
+            .navbar img {
+                height: 48px;
+                filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+            }
+
+        .nav-links {
+            display: flex;
         }
-        .nav-links a:hover { color: #1e4f91; }
-        .nav-auth { display: flex; align-items: center; gap: 12px; }
+
+            .nav-links a {
+                margin-left: 24px;
+                text-decoration: none;
+                color: #4a6fa5;
+                font-weight: 600;
+                transition: 0.2s;
+            }
+
+                .nav-links a:hover {
+                    color: #1e4f91;
+                }
+
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .logout-btn {
-            padding: 8px 14px; border-radius: 10px; border: 1px solid #6aa6ff;
-            background: #6aa6ff; color: #fff; cursor: pointer; transition: 0.2s;
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid #6aa6ff;
+            background: #6aa6ff;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .logout-btn:hover { background: #4f8df0; border-color: #4f8df0; }
+
+            .logout-btn:hover {
+                background: #4f8df0;
+                border-color: #4f8df0;
+            }
 
         .content {
             padding: 120px 40px 40px 40px;
             max-width: 1100px;
             margin: 0 auto;
         }
+
         .card {
             background: white;
             padding: 24px;
@@ -48,7 +79,12 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-bottom: 20px;
         }
-        h1, h2 { color: #4a6fa5; margin: 0 0 16px; text-align: center; }
+
+        h1, h2 {
+            color: #4a6fa5;
+            margin: 0 0 16px;
+            text-align: center;
+        }
 
         .gallery {
             display: grid;
@@ -56,6 +92,7 @@
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             margin-top: 16px;
         }
+
         .thumb {
             background: #fff;
             border-radius: 14px;
@@ -63,12 +100,34 @@
             overflow: hidden;
             border: 1px solid #e6ecff;
         }
-        .thumb img {
-            width: 100%;
-            display: block;
-            object-fit: cover;
-            height: 160px;
-            background: #f7f9ff;
+
+            .thumb img {
+                width: 100%;
+                display: block;
+                object-fit: cover;
+                height: 160px;
+                background: #f7f9ff;
+                cursor: zoom-in;
+            }
+
+        /* 放大预览遮罩 */
+        .viewer-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+
+        .viewer-image {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+            background: #111;
         }
     </style>
 </head>
@@ -98,7 +157,8 @@
         <div class="card">
             <h1>服务器展览</h1>
             <p style="text-align:center; color:#556;">
-                风风光光的喵~
+                作为前端，只需在脚本中的 <code>EXHIBITION_IMAGES</code> 数组添加图片 URL（可外链或相对路径）。
+                双击图片可放大预览，点击空白处或按 Esc 关闭。
             </p>
         </div>
 
@@ -111,15 +171,12 @@
     <script>
         // 维护图片列表：在此追加 URL 即可
         const EXHIBITION_IMAGES = [
-            "./images/server_1.png",
-            "./images/server_2.png",
-            "./images/server_3.png",
-            "./images/server_4.png",
-            "./images/server_5.png",
-            "./images/server_6.png",
-            "./images/server_7.png",
-            "./images/server_8.png",
-            "./images/server_9.png",
+            // 示例：外链
+            "https://picsum.photos/seed/cafe1/800/600",
+            "https://picsum.photos/seed/cafe2/800/600",
+            // 示例：站内相对路径（请将图片放到 images 目录）
+            // "./images/server_1.jpg",
+            // "./images/server_2.jpg",
         ];
 
         const welcomeText = document.getElementById("welcomeText");
@@ -129,6 +186,35 @@
         function logout() {
             localStorage.removeItem("loggedInUser");
             window.location.href = "./新建文件夹/login.html";
+        }
+
+        // 创建并显示放大预览
+        function showViewer(src) {
+            const backdrop = document.createElement("div");
+            backdrop.className = "viewer-backdrop";
+
+            const img = document.createElement("img");
+            img.className = "viewer-image";
+            img.src = src;
+            img.alt = "preview";
+
+            backdrop.appendChild(img);
+            document.body.appendChild(backdrop);
+
+            function closeViewer() {
+                document.removeEventListener("keydown", onKey);
+                backdrop.removeEventListener("click", onClick);
+                backdrop.remove();
+            }
+            function onClick(e) {
+                if (e.target === backdrop) closeViewer();
+            }
+            function onKey(e) {
+                if (e.key === "Escape") closeViewer();
+            }
+
+            backdrop.addEventListener("click", onClick);
+            document.addEventListener("keydown", onKey);
         }
 
         function render(arr) {
@@ -141,6 +227,7 @@
                 const img = document.createElement("img");
                 img.src = src;
                 img.alt = "server image";
+                img.ondblclick = () => showViewer(src); // 双击放大
                 div.appendChild(img);
                 gallery.appendChild(div);
             });
@@ -150,6 +237,3 @@
     </script>
 </body>
 </html>
-
-
-
