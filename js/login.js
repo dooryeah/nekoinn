@@ -15,7 +15,7 @@ function register() {
 
     localStorage.setItem("user_" + user, pass);
     alert("注册成功！");
-    window.location.href = "login.html";
+    window.location.href = "/meowcoffee.github.io/index.html";
 }
 
 // 登录
