@@ -1,24 +1,115 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>首页</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <title>喵宿咖啡厅 · Meow Inn Café</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #f4f8ff;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 40px;
+            background: #ffffffcc;
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .navbar img {
+            height: 48px;
+        }
+
+        .nav-links a {
+            margin-left: 24px;
+            text-decoration: none;
+            color: #4a6fa5;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #1e4f91;
+        }
+
+        /* 顶部大图 Banner */
+        .banner {
+            width: 100%;
+            height: 420px;
+            background-size: cover;
+            background-position: center;
+            margin-top: 70px;
+            border-bottom: 4px solid #dbe7ff;
+        }
+
+        /* 内容区 */
+        .content {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .join-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 28px;
+            background: #6aa6ff;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+
+        .join-btn:hover {
+            background: #4f8df0;
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <h1>欢迎</h1>
-  </header>
 
-  <main>
-    <section>
-      <p>这是一个基础的 HTML 模板。</p>
-    </section>
-  </main>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <img src="images/logo.png" alt="喵宿服务器 Logo">
+        <div class="nav-links">
+            <a href="#">主页</a>
+            <a href="#">加入服务器</a>
+            <a href="#">玩家社区</a>
+            <a href="#">关于喵宿</a>
+        </div>
+    </div>
 
-  <footer>
-    <small>© 2026</small>
-  </footer>
+    <!-- 首页大图（你可以替换成自己的图片） -->
+    <div class="banner" style="background-image: url('images/home_banner.jpg');"></div>
+
+    <!-- 内容区 -->
+    <div class="content">
+        <div class="card">
+            <h1>欢迎来到喵宿咖啡厅</h1>
+            <p>这是一个温馨、可爱、治愈的 Minecraft Java 服务器。</p>
+            <p>在这里，你可以建造、冒险、交友，享受属于你的喵宿时光。</p>
+
+            <a class="join-btn">点击复制服务器地址</a>
+        </div>
+    </div>
+
 </body>
 </html>
