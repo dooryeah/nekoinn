@@ -1,5 +1,5 @@
 // 统一密码登录模式
-const MASTER_PASSWORD = "miaosu2024";  // ← 修改成你自己的密码
+const MASTER_PASSWORD = "miaosu2026";  // ← 修改成你自己的密码
 
 // 登录
 function login() {
