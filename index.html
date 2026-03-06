@@ -3,15 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>喵宿咖啡厅 · Meow Inn Café</title>
+
     <style>
-        .nav-links {
-    display: none; /* 默认隐藏 */
-}
-.nav-links.show {
-    display: flex; /* 登录后显示 */
-}
-<script src="js/login.js"></script>
-<script>checkLogin();</script>
         body {
             margin: 0;
             font-family: "Segoe UI", sans-serif;
@@ -19,11 +12,6 @@
         }
 
         /* 顶部导航栏 */
-        .navbar {
-            position: relative;
-            z-index: 9999;
-        }    
-
         .navbar {
             display: flex;
             align-items: center;
@@ -34,12 +22,21 @@
             position: fixed;
             width: 100%;
             top: 0;
-            z-index: 10;
+            z-index: 9999; 
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .navbar img {
             height: 48px;
+            filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+        }
+
+        /* 登录后显示导航栏 */
+        .nav-links {
+            display: none;
+        }
+        .nav-links.show {
+            display: flex;
         }
 
         .nav-links a {
@@ -62,6 +59,7 @@
             background-position: center;
             margin-top: 70px;
             border-bottom: 4px solid #dbe7ff;
+            pointer-events: none; 
         }
 
         /* 内容区 */
@@ -100,23 +98,23 @@
 <body>
 
     <!-- 顶部导航栏 -->
-   <div class="navbar">
-    <img src="./images/logo.png" alt="喵宿服务器 Logo">
+    <div class="navbar">
+        <img src="./images/logo.png" alt="喵宿服务器 Logo">
 
-    <div class="nav-links" id="navLinks">
-        <a href="#">主页</a>
-        <a href="#">加入服务器</a>
-        <a href="#">玩家社区</a>
-        <a href="#">关于</a>
+        <div class="nav-links" id="navLinks">
+            <a href="#">主页</a>
+            <a href="#">加入服务器</a>
+            <a href="#">玩家社区</a>
+            <a href="#">关于</a>
+        </div>
+
+        <div class="nav-auth">
+            <a class="login-btn" onclick="login()">登录</a>
+            <a class="register-btn" onclick="register()">注册</a>
+        </div>
     </div>
 
-    <div class="nav-auth">
-        <a class="login-btn" onclick="login()">登录</a>
-        <a class="register-btn" onclick="register()">注册</a>
-    </div>
-</div>
-
-    <!-- 首页大图（你可以替换成自己的图片） -->
+    <!-- 首页大图 -->
     <div class="banner" style="background-image: url('images/home_banner.jpg');"></div>
 
     <!-- 内容区 -->
@@ -126,22 +124,27 @@
             <p>我们真心希望，想要来一次永不落幕的MC</p>
             <p>如果屏幕前的你也有这样的想法以及热情，请一定要加入我们！</p>
 
-           <a class="join-btn" onclick="copyQQ()">点击复制服务器 QQ 审核群号</a>
-
-<script>
-function copyQQ() {
-    const qq = "1082948381"; // ← 这里换成你的 QQ 群号
-    navigator.clipboard.writeText(qq).then(() => {
-        alert("已复制 QQ 审核群号：" + qq);
-    });
-}
-</script>
-
+            <a class="join-btn" onclick="copyQQ()">点击复制服务器 QQ 审核群号</a>
         </div>
     </div>
 
+    <!-- JS 放在 body 最后，避免阻塞页面 -->
+    <script src="js/login.js"></script>
+    <script>
+        checkLogin();
+
+        function copyQQ() {
+            const qq = "1082948381";
+            navigator.clipboard.writeText(qq).then(() => {
+                alert("已复制 QQ 审核群号：" + qq);
+            });
+        }
+    </script>
+
 </body>
 </html>
+
+
 
 
 
