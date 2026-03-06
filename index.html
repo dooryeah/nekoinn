@@ -5,101 +5,137 @@
     <title>玩家简介 - 喵宿咖啡厅</title>
 
     <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: #f4f8ff;
-        }
+          body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f4f8ff;
+  }
 
-        /* 顶部导航栏 */
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 40px;
-            background: #ffffffcc;
-            backdrop-filter: blur(10px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
+  /* 顶部导航栏 */
+  .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 40px;
+      background: #ffffffcc;
+      backdrop-filter: blur(10px);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 9999;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .navbar img {
+      height: 48px;
+      filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+  }
+  .nav-links {
+      display: flex;
+  }
+  .nav-links a {
+      margin-left: 24px;
+      text-decoration: none;
+      color: #4a6fa5;
+      font-weight: 600;
+      transition: 0.2s;
+  }
+  .nav-links a:hover {
+      color: #1e4f91;
+  }
+  .nav-auth {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+  }
+  .logout-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid #6aa6ff;
+      background: #6aa6ff;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+  }
+  .logout-btn:hover {
+      background: #4f8df0;
+      border-color: #4f8df0;
+  }
 
-            .navbar img {
-                height: 48px;
-                filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
-            }
+  /* 顶部大图 */
+  .banner {
+      width: 100%;
+      height: 420px;
+      background-size: cover;
+      background-position: center;
+      margin-top: 70px;
+      border-bottom: 4px solid #dbe7ff;
+  }
 
-        .nav-links {
-            display: flex;
-        }
+  /* 内容区 */
+  .content {
+      padding: 120px 40px 40px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+  }
 
-            .nav-links a {
-                margin-left: 24px;
-                text-decoration: none;
-                color: #4a6fa5;
-                font-weight: 600;
-                transition: 0.2s;
-            }
+  h1 {
+      text-align: center;
+      color: #4a6fa5;
+      margin-bottom: 30px;
+  }
 
-                .nav-links a:hover {
-                    color: #1e4f91;
-                }
+  /* 卡片 */
+  .card {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+  }
 
-        .nav-auth {
-            display: flex;
-            gap: 16px;
-        }
+  /* 玩家简介卡片（保留原样） */
+  .profile-card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-align: center;
+  }
+  .profile-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+  }
+  .profile-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #4a6fa5;
+      margin-bottom: 10px;
+  }
+  .profile-desc {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.6;
+      white-space: pre-line;
+  }
 
-            .nav-auth a {
-                text-decoration: none;
-                color: #4a6fa5;
-                font-weight: 600;
-            }
-
-        /* 内容区 */
-        .content {
-            padding: 120px 40px 40px 40px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: #4a6fa5;
-            margin-bottom: 30px;
-        }
-
-        /* 玩家简介卡片 */
-        .profile-card {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-
-            .profile-card img {
-                width: 120px;
-                height: 120px;
-                border-radius: 16px;
-                margin-bottom: 20px;
-            }
-
-        .profile-name {
-            font-size: 24px;
-            font-weight: bold;
-            color: #4a6fa5;
-            margin-bottom: 10px;
-        }
-
-        .profile-desc {
-            font-size: 16px;
-            color: #555;
-            line-height: 1.6;
-            white-space: pre-line;
-        }
+  /* 按钮 */
+  .join-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 12px 28px;
+      background: #6aa6ff;
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 16px;
+      transition: 0.2s;
+      cursor: pointer;
+  }
+  .join-btn:hover {
+      background: #4f8df0;
+  }
     </style>
 </head>
 <body>
@@ -487,6 +523,7 @@
 
 </body>
 </html>
+
 
 
 
