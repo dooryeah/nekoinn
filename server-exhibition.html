@@ -50,18 +50,6 @@
         }
         h1, h2 { color: #4a6fa5; margin: 0 0 16px; text-align: center; }
 
-        .form-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-        .form-row input[type="text"] {
-            flex: 1 1 260px; padding: 10px 12px; border: 1px solid #d0d9ff;
-            border-radius: 10px; font-size: 14px;
-        }
-        .form-row input[type="file"] { flex: 1 1 240px; }
-        .btn {
-            padding: 10px 16px; border: none; border-radius: 10px; cursor: pointer;
-            font-size: 14px; font-weight: 600; color: #fff; background: #6aa6ff;
-            transition: 0.2s;
-        }
-        .btn:hover { background: #4f8df0; }
         .gallery {
             display: grid;
             gap: 16px;
@@ -89,7 +77,7 @@
     <script>
         // 登录校验
         if (!localStorage.getItem("loggedInUser")) {
-            window.location.href = "login.html";
+            window.location.href = "./新建文件夹/login.html";
         }
     </script>
 
@@ -109,14 +97,9 @@
     <div class="content">
         <div class="card">
             <h1>服务器展览</h1>
-            <div class="form-row" style="margin-bottom: 12px;">
-                <input id="imgUrl" type="text" placeholder="粘贴图片 URL（https://...）">
-                <button class="btn" onclick="addFromUrl()">添加 URL 图片</button>
-            </div>
-            <div class="form-row">
-                <input id="imgFile" type="file" accept="image/*">
-                <button class="btn" onclick="addFromFile()">上传本地图片</button>
-            </div>
+            <p style="text-align:center; color:#556;">
+                作为前端，只需在脚本中的 <code>EXHIBITION_IMAGES</code> 数组添加图片 URL（可外链或相对路径）。
+            </p>
         </div>
 
         <div class="card">
@@ -126,7 +109,15 @@
     </div>
 
     <script>
-        const STORAGE_KEY = "exhibitionImages";
+        // 维护图片列表：在此追加 URL 即可
+        const EXHIBITION_IMAGES = [
+            // 示例：外链
+            "https://picsum.photos/seed/cafe1/800/600",
+            "https://picsum.photos/seed/cafe2/800/600",
+            // 示例：站内相对路径（请将图片放到 images 目录）
+            // "./images/server_1.jpg",
+            // "./images/server_2.jpg",
+        ];
 
         const welcomeText = document.getElementById("welcomeText");
         const user = localStorage.getItem("loggedInUser");
@@ -134,17 +125,7 @@
 
         function logout() {
             localStorage.removeItem("loggedInUser");
-            window.location.href = "login.html";
-        }
-
-        function loadImages() {
-            const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-            render(arr);
-        }
-
-        function saveImages(arr) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-            render(arr);
+            window.location.href = "./新建文件夹/login.html";
         }
 
         function render(arr) {
@@ -162,30 +143,7 @@
             });
         }
 
-        function addFromUrl() {
-            const url = document.getElementById("imgUrl")?.value.trim();
-            if (!url) return alert("请输入图片 URL");
-            const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-            arr.push(url);
-            saveImages(arr);
-            document.getElementById("imgUrl").value = "";
-        }
-
-        function addFromFile() {
-            const fileInput = document.getElementById("imgFile");
-            const file = fileInput?.files?.[0];
-            if (!file) return alert("请先选择本地图片");
-            const reader = new FileReader();
-            reader.onload = () => {
-                const arr = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-                arr.push(reader.result);
-                saveImages(arr);
-                fileInput.value = "";
-            };
-            reader.readAsDataURL(file);
-        }
-
-        loadImages();
+        render(EXHIBITION_IMAGES);
     </script>
 </body>
 </html>
