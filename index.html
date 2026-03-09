@@ -20,6 +20,44 @@
             pointer-events: none;
             z-index: -1;
         }
+
+        /* 左侧计时器 */
+        .timer-container {
+            position: fixed;
+            left: 18px;
+            top: 120px;
+            width: 160px;
+            padding: 14px 12px;
+            border-radius: 14px;
+            background: #ffffffdd;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            color: #1e4f91;
+            font-weight: 700;
+            line-height: 1.5;
+            z-index: 9999;
+        }
+        .timer-title {
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #4a6fa5;
+        }
+        .timer-value {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: baseline;
+            font-variant-numeric: tabular-nums;
+        }
+        .timer-chip {
+            padding: 6px 8px;
+            border-radius: 10px;
+            background: #e9f1ff;
+            min-width: 58px;
+            text-align: center;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+        
         /* 顶部导航栏 */
         .navbar {
             display: flex;
@@ -178,6 +216,16 @@
         <div class="nav-auth" id="navAuth">
             <span id="welcomeText" style="color:#2f5fa8; font-weight:600;"></span>
             <button class="logout-btn" id="logoutBtn" onclick="logout()">退出登录</button>
+        </div>
+    </div>
+    <!-- 左侧计时器 -->
+    <div class="timer-container" aria-label="运行时间计时器">
+        <div class="timer-title">服务器已运行</div>
+            <div class="timer-value" id="timerValue">
+            <div class="timer-chip">0天</div>
+            <div class="timer-chip">00时</div>
+            <div class="timer-chip">00分</div>
+            <div class="timer-chip">00秒</div>
         </div>
     </div>
 
@@ -543,21 +591,48 @@
         </div>
     </div>
 
-    <!-- JS -->
+        <!-- JS -->
     <script src="js/login.js"></script>
     <script>
         updateNav();
 
         function copyQQ() {
-        const qq = "1082948381";
-        navigator.clipboard.writeText(qq).then(() => {
-        alert("已复制 QQ 审核群号：" + qq);
-        });
+            const qq = "1082948381";
+            navigator.clipboard.writeText(qq).then(() => {
+                alert("已复制 QQ 审核群号：" + qq);
+            });
         }
-    </script>
 
+        // ===== 计时器开始 =====
+        // 自定义计时起点：修改为需要的时间
+        const startTime = new Date("2026-3-10T00:00:00"); // 示例
+
+        function updateTimer() {
+            const now = new Date();
+            let diff = Math.max(0, now - startTime); // 防止负数
+            const sec = Math.floor(diff / 1000);
+            const days = Math.floor(sec / 86400);
+            const hours = Math.floor((sec % 86400) / 3600);
+            const minutes = Math.floor((sec % 3600) / 60);
+            const seconds = sec % 60;
+
+            const pad2 = (n) => String(n).padStart(2, "0");
+
+            document.getElementById("timerValue").innerHTML = `
+                <div class="timer-chip">${days}天</div>
+                <div class="timer-chip">${pad2(hours)}时</div>
+                <div class="timer-chip">${pad2(minutes)}分</div>
+                <div class="timer-chip">${pad2(seconds)}秒</div>
+            `;
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+        // ===== 计时器结束 =====
+    </script>
 </body>
 </html>
+
 
 
 
