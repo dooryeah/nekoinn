@@ -2,71 +2,96 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>服务器展览 - 喵宿咖啡厅</title>
+    <title>������չ�� - ���޿�����</title>
     <style>
         body {
             margin: 0;
             font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #f4f8ff;
+            /* 页面加载淡入 */
+            opacity: 0;
+            animation: page-fade-in 0.6s ease forwards;
         }
 
-        /* 统一的导航栏样式 */
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 40px;
-    background: #ffffffcc;
-    backdrop-filter: blur(10px);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 9999;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+        @keyframes page-fade-in {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes page-fade-out {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(-6px); }
+        }
+        .page-fade-out {
+            animation: page-fade-out 0.35s ease forwards;
+            pointer-events: none;
+        }
 
-.navbar img {
-    height: 48px;
-    filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
-}
+        /* 元素淡入上移 */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-.nav-links {
-    display: flex;
-}
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 40px;
+            background: #ffffffcc;
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
 
-.nav-links a {
-    margin-left: 24px;
-    text-decoration: none;
-    color: #4a6fa5;
-    font-weight: 600;
-    transition: 0.2s;
-}
+            .navbar img {
+                height: 48px;
+                filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+            }
 
-.nav-links a:hover {
-    color: #1e4f91;
-}
+        .nav-links {
+            display: flex;
+        }
 
-.nav-auth {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-right: 20px; /* 右侧留白，防止贴边 */
-}
+            .nav-links a {
+                margin-left: 24px;
+                text-decoration: none;
+                color: #4a6fa5;
+                font-weight: 600;
+                transition: 0.2s;
+            }
 
-.logout-btn {
-    padding: 8px 14px;
-    border-radius: 10px;
-    border: 1px solid #6aa6ff;
-    background: #6aa6ff;
-    color: #fff;
-    cursor: pointer;
-    transition: 0.2s;
-}
+                .nav-links a:hover {
+                    color: #1e4f91;
+                }
 
-.logout-btn:hover {
-    background: #4f8df0;
-    border-color: #4f8df0;
-}
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logout-btn {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1px solid #6aa6ff;
+            background: #6aa6ff;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+            .logout-btn:hover {
+                background: #4f8df0;
+                border-color: #4f8df0;
+            }
 
         .content {
             padding: 120px 40px 40px 40px;
@@ -109,124 +134,63 @@
                 object-fit: cover;
                 height: 160px;
                 background: #f7f9ff;
-                cursor: zoom-in;
             }
-
-        /* 放大预览遮罩 */
-        .viewer-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 20px;
-        }
-
-        .viewer-image {
-            max-width: 90vw;
-            max-height: 90vh;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-            background: #111;
-        }
     </style>
 </head>
 <body>
 
     <script>
-        // 登录校验
+        // ��¼У��
         if (!localStorage.getItem("loggedInUser")) {
-            window.location.href = "./新建文件夹/login.html";
+            window.location.href = "./�½��ļ���/login.html";
         }
     </script>
 
     <div class="navbar">
         <img src="./images/logo.png" alt="Logo">
         <div class="nav-links">
-            <a href="index.html">主页</a>
-            <a href="server-exhibition.html">服务器展览</a>
-            <a href="about.html">关于</a>
+            <a href="index.html">��ҳ</a>
+            <a href="server-exhibition.html">������չ��</a>
+            <a href="#">����</a>
         </div>
         <div class="nav-auth" id="navAuth">
             <span id="welcomeText" style="color:#2f5fa8; font-weight:600;"></span>
-            <button class="logout-btn" onclick="logout()">退出登录</button>
+            <button class="logout-btn" onclick="logout()">�˳���¼</button>
         </div>
     </div>
 
     <div class="content">
-        <div class="card">
-            <h1>服务器展览</h1>
+        <div class="card fade-up">
+            <h1>������չ��</h1>
             <p style="text-align:center; color:#556;">
-                风风光光的喵~
+                ��Ϊǰ�ˣ�ֻ���ڽű��е� <code>EXHIBITION_IMAGES</code> �������ͼƬ URL�������������·������
             </p>
         </div>
 
-        <div class="card">
-            <h2>图片列表</h2>
+        <div class="card fade-up">
+            <h2>ͼƬ�б�</h2>
             <div id="gallery" class="gallery"></div>
         </div>
     </div>
 
     <script>
-        // 维护图片列表：在此追加 URL 即可
+        // ά��ͼƬ�б���ڴ�׷�� URL ����
         const EXHIBITION_IMAGES = [
-            "./images/server_1.png",
-            "./images/server_2.png",
-            "./images/server_3.png",
-            "./images/server_4.png",
-            "./images/server_5.png",
-            "./images/server_6.png",
-            "./images/server_7.png",
-            "./images/server_8.png",
-            "./images/server_9.png",
-            "./images/server_10.png",
-            "./images/server_11.png",
-            "./images/server_12.png",
-            "./images/server_13.png",
-            "./images/server_14.png",
-            "./images/server_15.png",
-            "./images/server_16.png",
-            "./images/server_17.png",
+            // ʾ��������
+            "https://picsum.photos/seed/cafe1/800/600",
+            "https://picsum.photos/seed/cafe2/800/600",
+            // ʾ����վ�����·�����뽫ͼƬ�ŵ� images Ŀ¼��
+            // "./images/server_1.jpg",
+            // "./images/server_2.jpg",
         ];
 
         const welcomeText = document.getElementById("welcomeText");
         const user = localStorage.getItem("loggedInUser");
-        if (user && welcomeText) welcomeText.textContent = `欢迎，${user}`;
+        if (user && welcomeText) welcomeText.textContent = `��ӭ��${user}`;
 
         function logout() {
             localStorage.removeItem("loggedInUser");
-            window.location.href = "./新建文件夹/login.html";
-        }
-
-        // 创建并显示放大预览
-        function showViewer(src) {
-            const backdrop = document.createElement("div");
-            backdrop.className = "viewer-backdrop";
-
-            const img = document.createElement("img");
-            img.className = "viewer-image";
-            img.src = src;
-            img.alt = "preview";
-
-            backdrop.appendChild(img);
-            document.body.appendChild(backdrop);
-
-            function closeViewer() {
-                document.removeEventListener("keydown", onKey);
-                backdrop.removeEventListener("click", onClick);
-                backdrop.remove();
-            }
-            function onClick(e) {
-                if (e.target === backdrop) closeViewer();
-            }
-            function onKey(e) {
-                if (e.key === "Escape") closeViewer();
-            }
-
-            backdrop.addEventListener("click", onClick);
-            document.addEventListener("keydown", onKey);
+            window.location.href = "./�½��ļ���/login.html";
         }
 
         function render(arr) {
@@ -235,22 +199,40 @@
             gallery.innerHTML = "";
             arr.forEach((src) => {
                 const div = document.createElement("div");
-                div.className = "thumb";
+                div.className = "thumb fade-up";
                 const img = document.createElement("img");
                 img.src = src;
                 img.alt = "server image";
-                img.ondblclick = () => showViewer(src); // 双击放大
                 div.appendChild(img);
                 gallery.appendChild(div);
             });
         }
 
         render(EXHIBITION_IMAGES);
+
+        // 进入视口淡入
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+        // 页面跳转淡出
+        document.querySelectorAll('a[href]').forEach(a => {
+            a.addEventListener('click', (e) => {
+                const url = a.getAttribute('href');
+                // 忽略空、锚点、js、下载、新标签
+                if (!url || url.startsWith('#') || url.startsWith('javascript:') || a.target === '_blank') return;
+                e.preventDefault();
+                document.body.classList.add('page-fade-out');
+                setTimeout(() => window.location.href = url, 320);
+            });
+        });
     </script>
 </body>
 </html>
-
-
-
-
-
