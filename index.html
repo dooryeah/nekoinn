@@ -5,11 +5,15 @@
     <title>玩家简介 - 喵宿咖啡厅</title>
 
     <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: #f4f8ff;
-        }
+       :root {
+    --anim-duration: 0.6s;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #f4f8ff;
+}
 
         body::before {
             content: "";
@@ -116,15 +120,31 @@
     border-color: #4f8df0;
 }
 
-        /* 顶部大图 */
-        .banner {
-            width: 100%;
-            height: 420px;
-            background-size: cover;
-            background-position: center;
-            margin-top: 70px;
-            border-bottom: 4px solid #dbe7ff;
-        }
+        /* 新增：淡入上移动画基类 */
+.fade-up {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity var(--anim-duration) ease, transform var(--anim-duration) ease;
+}
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 顶部大图：轻微背景平移动画 */
+.banner {
+    width: 100%;
+    height: 420px;
+    background-size: cover;
+    background-position: center;
+    margin-top: 70px;
+    border-bottom: 4px solid #dbe7ff;
+    animation: banner-pan 18s ease-in-out infinite alternate;
+}
+@keyframes banner-pan {
+    from { background-position: center; }
+    to   { background-position: center 20px; }
+}
 
         /* 内容区 */
         .content {
@@ -139,14 +159,19 @@
             margin-bottom: 30px;
         }
 
-        /* 卡片 */
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
-        }
+         /* 卡片：悬浮小提升 */
+ .card {
+     background: white;
+     padding: 30px;
+     border-radius: 16px;
+     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+     margin-bottom: 24px;
+     transition: transform 0.2s ease, box-shadow 0.2s ease;
+ }
+ .card:hover {
+     transform: translateY(-4px);
+     box-shadow: 0 8px 26px rgba(0,0,0,0.12);
+ }
 
         /* 玩家简介卡片（保留原样） */
         .profile-card {
@@ -179,22 +204,25 @@
         }
 
         /* 按钮 */
-        .join-btn {
-            display: inline-block;
-            margin-top: 16px;
-            padding: 12px 28px;
-            background: #6aa6ff;
-            color: white;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 16px;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-            .join-btn:hover {
-                background: #4f8df0;
-            }
+        /* 按钮：轻微缩放与投影 */
+.join-btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 12px 28px;
+    background: #6aa6ff;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(106,166,255,0.35);
+}
+.join-btn:hover {
+    background: #4f8df0;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 18px rgba(79,141,240,0.38);
+}
     </style>
 </head>
 <body>
@@ -235,7 +263,7 @@
     <!-- 内容区 -->
     <div class="content">
         <!-- 手动玩家头像展示 -->
-        <div class="card">
+        <div class="card fade-up">
             <h2>玩家展示</h2>
 
             <div style="
@@ -582,7 +610,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card fade-up">
             <h1>欢迎来到喵宿咖啡厅</h1>
             <p>我们真心希望，想要来一次永不落幕的MC</p>
             <p>如果屏幕前的你也有这样的想法以及热情，请一定要加入我们！</p>
@@ -623,9 +651,22 @@
         updateTimer();
         setInterval(updateTimer, 1000);
         // ===== 计时器结束 =====
+            // 淡入动画：进入视口时添加 visible
+const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+ 
     </script>
 </body>
 </html>
+
 
 
 
