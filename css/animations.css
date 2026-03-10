@@ -1,3 +1,4 @@
+/* ===== 页面淡入淡出 ===== */
 body {
     opacity: 0;
     animation: pageIn 0.5s ease forwards;
@@ -78,4 +79,3 @@ body.page-fade-out {
 .join-btn:active {
     transform: scale(0.96);
 }
-
