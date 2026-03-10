@@ -4,16 +4,12 @@
     <meta charset="UTF-8">
     <title>关于 - 喵宿咖啡厅</title>
     <style>
-        :root { --fade-duration: 0.6s; }
-
-        html, body { height: 100%; }
-
         body {
             margin: 0;
             font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #f4f8ff;
         }
-        /* 背景全屏铺满 */
+
         body::before {
             content: "";
             position: fixed;
@@ -23,42 +19,12 @@
             pointer-events: none;
             z-index: -1;
         }
-
-        /* 页面容器淡入，不影响背景 */
-        .page {
-            min-height: 100%;
-            opacity: 0;
-            animation: page-fade-in var(--fade-duration) ease forwards;
-        }
-        @keyframes page-fade-in {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes page-fade-out {
-            from { opacity: 1; transform: translateY(0); }
-            to   { opacity: 0; transform: translateY(-6px); }
-        }
-        .page-fade-out {
-            animation: page-fade-out 0.35s ease forwards;
-            pointer-events: none;
-        }
-
-        /* 元素淡入上移 */
-        .fade-up {
-            opacity: 0;
-            transform: translateY(14px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .fade-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
         /* 统一的导航栏样式 */
         .navbar {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 32px;
             padding: 12px 40px;
             background: #ffffffcc;
             backdrop-filter: blur(10px);
@@ -68,37 +34,26 @@
             z-index: 9999;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
+
         .navbar img {
             height: 48px;
             filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
         }
-        .nav-links { display: flex; }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
         .nav-links a {
-            margin-left: 24px;
             text-decoration: none;
             color: #4a6fa5;
             font-weight: 600;
             transition: 0.2s;
         }
-        .nav-links a:hover { color: #1e4f91; }
-        .nav-auth {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-right: 20px; /* 右侧留白，防止贴边 */
-        }
-        .logout-btn {
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: 1px solid #6aa6ff;
-            background: #6aa6ff;
-            color: #fff;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .logout-btn:hover {
-            background: #4f8df0;
-            border-color: #4f8df0;
+
+        .nav-links a:hover {
+            color: #1e4f91;
         }
 
         .content {
@@ -113,11 +68,6 @@
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-bottom: 20px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 26px rgba(0,0,0,0.12);
         }
 
         h1, h2 {
@@ -136,15 +86,23 @@
             margin-top: 12px;
             padding-left: 18px;
         }
-        .link-list li { margin: 6px 0; }
+
+        .link-list li {
+            margin: 6px 0;
+        }
+
         .link-list a {
             color: #2f5fa8;
             text-decoration: none;
         }
-        .link-list a:hover { text-decoration: underline; }
+
+        .link-list a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+
     <script>
         // 登录校验（路径按实际登录页位置调整）
         if (!localStorage.getItem("loggedInUser")) {
@@ -152,30 +110,24 @@
         }
     </script>
 
-    <div class="page">
-        <div class="navbar">
-            <img src="./images/logo.png" alt="Logo">
-            <div class="nav-links">
-                <a href="index.html">主页</a>
-                <a href="server-exhibition.html">服务器展览</a>
-                <a href="about.html">关于</a>
-            </div>
-            <div class="nav-auth" id="navAuth">
-                <span id="welcomeText" style="color:#2f5fa8; font-weight:600;"></span>
-                <button class="logout-btn" onclick="logout()">退出登录</button>
-            </div>
+    <div class="navbar">
+        <img src="./images/logo.png" alt="Logo">
+        <div class="nav-links">
+            <a href="index.html">主页</a>
+            <a href="server-exhibition.html">服务器展览</a>
+            <a href="about.html">关于</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card">
+            <h1>关于喵宿</h1>
+            <div id="aboutContent" class="about-text"></div>
         </div>
 
-        <div class="content">
-            <div class="card fade-up">
-                <h1>关于喵宿</h1>
-                <div id="aboutContent" class="about-text"></div>
-            </div>
-
-            <div class="card fade-up">
-                <h2>其他平台链接</h2>
-                <ul id="linkList" class="link-list"></ul>
-            </div>
+        <div class="card">
+            <h2>其他平台链接</h2>
+            <ul id="linkList" class="link-list"></ul>
         </div>
     </div>
 
@@ -193,15 +145,6 @@
             { name: "mengnai123B站直播间", url: "https://live.bilibili.com/1883379698" },
             { name: "YuriRinaB站直播间", url: "https://live.bilibili.com/9159035" },
         ];
-
-        const welcomeText = document.getElementById("welcomeText");
-        const user = localStorage.getItem("loggedInUser");
-        if (user && welcomeText) welcomeText.textContent = `欢迎，${user}`;
-
-        function logout() {
-            localStorage.removeItem("loggedInUser");
-            window.location.href = "./新建文件夹/login.html";
-        }
 
         function renderAbout() {
             const aboutEl = document.getElementById("aboutContent");
@@ -226,7 +169,6 @@
 
         renderAbout();
         renderLinks();
-
         // 进入视口淡入
         const io = new IntersectionObserver((entries) => {
             entries.forEach(e => {
@@ -236,27 +178,20 @@
                 }
             });
         }, { threshold: 0.15 });
+
         document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
 
         // 页面跳转淡出
         document.querySelectorAll('a[href]').forEach(a => {
             a.addEventListener('click', (e) => {
                 const url = a.getAttribute('href');
+                // 忽略空、锚点、js、下载、新标签
                 if (!url || url.startsWith('#') || url.startsWith('javascript:') || a.target === '_blank') return;
                 e.preventDefault();
-                document.querySelector('.page').classList.add('page-fade-out');
+                document.body.classList.add('page-fade-out');
                 setTimeout(() => window.location.href = url, 320);
             });
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
