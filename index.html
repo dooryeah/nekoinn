@@ -16,15 +16,16 @@
             position: fixed;
             inset: 0;
             background: url('images/bg_overlay.jpg') center/cover no-repeat;
-            opacity: 0.15; /* 调整透明度，0~1，值越低越透明 */
+            opacity: 0.15;
             pointer-events: none;
             z-index: -1;
         }
-        /* 顶部导航栏 */
+
+        /* 顶部导航栏：Logo 左侧，链接居中 */
         .navbar {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr;
             align-items: center;
-            justify-content: space-between;
             padding: 12px 40px;
             background: #ffffffcc;
             backdrop-filter: blur(10px);
@@ -33,50 +34,30 @@
             top: 0;
             z-index: 9999;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
         }
 
-            .navbar img {
-                height: 48px;
-                filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
-            }
+        .navbar img {
+            height: 48px;
+            filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+        }
 
         .nav-links {
             display: flex;
+            justify-content: center;
+            gap: 24px;
         }
 
-            .nav-links a {
-                margin-left: 24px;
-                text-decoration: none;
-                color: #4a6fa5;
-                font-weight: 600;
-                transition: 0.2s;
-            }
-
-                .nav-links a:hover {
-                    color: #1e4f91;
-                }
-
-               .nav-auth {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-right: 20px; /* 新增，右侧留白 */
-        }
-
-        .logout-btn {
-            padding: 8px 14px;
-            border-radius: 10px;
-            border: 1px solid #6aa6ff;
-            background: #6aa6ff;
-            color: #fff;
-            cursor: pointer;
+        .nav-links a {
+            text-decoration: none;
+            color: #4a6fa5;
+            font-weight: 600;
             transition: 0.2s;
         }
 
-            .logout-btn:hover {
-                background: #4f8df0;
-                border-color: #4f8df0;
-            }
+        .nav-links a:hover {
+            color: #1e4f91;
+        }
 
         /* 顶部大图 */
         .banner {
@@ -110,7 +91,7 @@
             margin-bottom: 24px;
         }
 
-        /* 玩家简介卡片（保留原样） */
+        /* 玩家简介卡片 */
         .profile-card {
             background: white;
             padding: 30px;
@@ -119,12 +100,12 @@
             text-align: center;
         }
 
-            .profile-card img {
-                width: 120px;
-                height: 120px;
-                border-radius: 16px;
-                margin-bottom: 20px;
-            }
+        .profile-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
 
         .profile-name {
             font-size: 24px;
@@ -154,9 +135,9 @@
             cursor: pointer;
         }
 
-            .join-btn:hover {
-                background: #4f8df0;
-            }
+        .join-btn:hover {
+            background: #4f8df0;
+        }
     </style>
 </head>
 <body>
@@ -174,10 +155,6 @@
             <a href="index.html">主页</a>
             <a href="server-exhibition.html">服务器展览</a>
             <a href="about.html">关于</a>
-        </div>
-        <div class="nav-auth" id="navAuth">
-            <span id="welcomeText" style="color:#2f5fa8; font-weight:600;"></span>
-            <button class="logout-btn" id="logoutBtn" onclick="logout()">退出登录</button>
         </div>
     </div>
 
@@ -543,18 +520,14 @@
         </div>
     </div>
 
-    <!-- JS -->
-    <script src="js/login.js"></script>
     <script>
-        updateNav();
-
         function copyQQ() {
-        const qq = "1082948381";
-        navigator.clipboard.writeText(qq).then(() => {
-        alert("已复制 QQ 审核群号：" + qq);
-        });
+            const qq = "1082948381";
+            navigator.clipboard.writeText(qq).then(() => {
+                alert("已复制 QQ 审核群号：" + qq);
+            });
         }
-    <!--</script>-->
+    </script>
 
 </body>
 </html>
