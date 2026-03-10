@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>玩家简介 - 喵宿咖啡厅</title>
+    <link rel="stylesheet" href="css/animations.css">
 
     <style>
         body {
@@ -138,61 +139,11 @@
         .join-btn:hover {
             background: #4f8df0;
         }
-
-        /* 服务器运行时间计时器 */
-        .uptime-widget {
-            position: fixed;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 9998;
-            background: #ffffffdd;
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 16px 14px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            text-align: center;
-            min-width: 100px;
-        }
-
-        .uptime-widget .uptime-title {
-            font-size: 12px;
-            color: #4a6fa5;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-        }
-
-        .uptime-widget .uptime-blocks {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .uptime-widget .uptime-block {
-            background: #eef4ff;
-            border-radius: 10px;
-            padding: 8px 6px;
-        }
-
-        .uptime-widget .uptime-num {
-            font-size: 22px;
-            font-weight: 800;
-            color: #2f5fa8;
-            line-height: 1;
-        }
-
-        .uptime-widget .uptime-label {
-            font-size: 11px;
-            color: #7a9cc6;
-            margin-top: 2px;
-        }
     </style>
 </head>
 <body>
 
     <script>
-        // 未登录自动跳转到登录页（放在最前面，避免闪烁）
         if (!localStorage.getItem("loggedInUser")) {
             window.location.href = "login.html";
         }
@@ -207,36 +158,12 @@
         </div>
     </div>
 
-    <!-- 服务器运行时间计时器 -->
-    <div class="uptime-widget">
-        <div class="uptime-title">服务器已运行</div>
-        <div class="uptime-blocks">
-            <div class="uptime-block">
-                <div class="uptime-num" id="uptimeDays">0</div>
-                <div class="uptime-label">天</div>
-            </div>
-            <div class="uptime-block">
-                <div class="uptime-num" id="uptimeHours">0</div>
-                <div class="uptime-label">时</div>
-            </div>
-            <div class="uptime-block">
-                <div class="uptime-num" id="uptimeMinutes">0</div>
-                <div class="uptime-label">分</div>
-            </div>
-            <div class="uptime-block">
-                <div class="uptime-num" id="uptimeSeconds">0</div>
-                <div class="uptime-label">秒</div>
-            </div>
-        </div>
-    </div>
-
     <!-- 首页大图 -->
-    <div class="banner" style="background-image: url('images/home_banner.jpg');"></div>
+    <div class="banner fade-up" style="background-image: url('images/home_banner.jpg');"></div>
 
     <!-- 内容区 -->
     <div class="content">
-        <!-- 手动玩家头像展示 -->
-        <div class="card">
+        <div class="card fade-up">
             <h2>玩家展示</h2>
 
             <div style="
@@ -583,7 +510,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card fade-up">
             <h1>欢迎来到喵宿咖啡厅</h1>
             <p>我们真心希望，想要来一次永不落幕的MC</p>
             <p>如果屏幕前的你也有这样的想法以及热情，请一定要加入我们！</p>
@@ -599,30 +526,8 @@
                 alert("已复制 QQ 审核群号：" + qq);
             });
         }
-
-        // ===== 服务器运行时间计时器 =====
-        // 修改此日期为服务器实际开服时间
-        const SERVER_START = new Date("2026-02-14T00:00:00");
-
-        function updateUptime() {
-            const now = new Date();
-            let diff = Math.floor((now - SERVER_START) / 1000);
-            if (diff < 0) diff = 0;
-
-            const days    = Math.floor(diff / 86400);
-            const hours   = Math.floor((diff % 86400) / 3600);
-            const minutes = Math.floor((diff % 3600) / 60);
-            const seconds = diff % 60;
-
-            document.getElementById("uptimeDays").textContent    = days;
-            document.getElementById("uptimeHours").textContent   = String(hours).padStart(2, "0");
-            document.getElementById("uptimeMinutes").textContent = String(minutes).padStart(2, "0");
-            document.getElementById("uptimeSeconds").textContent = String(seconds).padStart(2, "0");
-        }
-
-        updateUptime();
-        setInterval(updateUptime, 1000);
     </script>
+    <script src="js/animations.js"></script>
 
 </body>
 </html>
