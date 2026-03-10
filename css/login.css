@@ -1,81 +1,55 @@
-/* ===== 页面淡入淡出 ===== */
 body {
-    opacity: 0;
-    animation: pageIn 0.5s ease forwards;
+    margin: 0;
+    background: #f4f8ff;
+    font-family: "Segoe UI", sans-serif;
 }
 
-body.page-fade-out {
-    animation: pageOut 0.32s ease forwards;
+.container {
+    width: 320px;
+    margin: 120px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    text-align: center;
 }
 
-@keyframes pageIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
+h2 {
+    margin-bottom: 20px;
+    color: #4a6fa5;
 }
 
-@keyframes pageOut {
-    from { opacity: 1; transform: translateY(0); }
-    to   { opacity: 0; transform: translateY(-10px); }
-}
-
-/* ===== 滚动淡入上浮 ===== */
-.fade-up {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.fade-up.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ===== 卡片悬停微抬 ===== */
-.card {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 28px rgba(0,0,0,0.12);
-}
-
-/* ===== 导航链接下划线动效 ===== */
-.nav-links a {
-    position: relative;
-}
-
-.nav-links a::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -4px;
-    width: 0;
-    height: 2px;
-    background: #4a6fa5;
-    border-radius: 1px;
-    transition: width 0.25s ease, left 0.25s ease;
-}
-
-.nav-links a:hover::after {
+input {
     width: 100%;
-    left: 0;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 10px;
+    border: 1px solid #d0d9ff;
+    outline: none;
 }
 
-/* ===== 图片缩略图悬停缩放 ===== */
-.thumb img {
-    transition: transform 0.3s ease;
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background: #6aa6ff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-.thumb:hover img {
-    transform: scale(1.05);
+button:hover {
+    background: #4f8df0;
 }
 
-/* ===== 按钮按压动效 ===== */
-.join-btn {
-    transition: background 0.2s, transform 0.15s;
+.switch {
+    margin-top: 16px;
+    font-size: 14px;
 }
 
-.join-btn:active {
-    transform: scale(0.96);
+.switch a {
+    color: #4a6fa5;
+    text-decoration: none;
 }
