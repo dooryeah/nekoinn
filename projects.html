@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>工程项目 - 喵宿咖啡厅</title>
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #f4f8ff;
+        }
+
+        /* 统一导航栏 */
+        .navbar {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            padding: 12px 40px;
+            background: #ffffffcc;
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .navbar img {
+            height: 48px;
+            filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a6fa5;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #1e4f91;
+        }
+
+        .content {
+            padding: 120px 40px 40px 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            color: #4a6fa5;
+            margin: 0 0 16px;
+            text-align: center;
+        }
+
+        /* ===== 筛选标签 ===== */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            background: #eef4ff;
+            border-radius: 12px;
+            padding: 6px 12px;
+        }
+
+        .filter-group-label {
+            font-size: 13px;
+            color: #7a9cc6;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .filter-tag {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1.5px solid #c4d8f5;
+            background: white;
+            color: #4a6fa5;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .filter-tag:hover {
+            background: #dbe9ff;
+        }
+
+        .filter-tag.active {
+            background: #4a6fa5;
+            color: white;
+            border-color: #4a6fa5;
+        }
+
+        /* ===== 项目网格 ===== */
+        .project-grid {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            margin-top: 16px;
+        }
+
+        .project-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e6ecff;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            display: block;
+            background: #f7f9ff;
+        }
+
+        .project-card .project-info {
+            padding: 12px 14px;
+        }
+
+        .project-card .project-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2f5fa8;
+            margin: 0 0 6px;
+        }
+
+        .project-card .project-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .project-card .ptag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 8px;
+            background: #eef4ff;
+            color: #5a8abf;
+            font-weight: 600;
+        }
+
+        /* ===== 项目详情弹窗 ===== */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 18px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-content img {
+            width: 100%;
+            display: block;
+            border-radius: 18px 18px 0 0;
+            max-height: 320px;
+            object-fit: cover;
+        }
+
+        .modal-body {
+            padding: 20px 24px 24px;
+        }
+
+        .modal-body h2 {
+            text-align: left;
+            margin: 0 0 8px;
+            color: #2f5fa8;
+            font-size: 22px;
+        }
+
+        .modal-body .modal-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .modal-body .ptag {
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 8px;
+            background: #eef4ff;
+            color: #5a8abf;
+            font-weight: 600;
+        }
+
+        .modal-body .modal-desc {
+            color: #444;
+            line-height: 1.7;
+            font-size: 15px;
+            white-space: pre-line;
+        }
+
+        .modal-body .modal-meta {
+            margin-top: 14px;
+            font-size: 13px;
+            color: #8aa;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.85);
+            color: #555;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: white;
+        }
+
+        /* 无结果提示 */
+        .no-result {
+            text-align: center;
+            color: #99b;
+            font-size: 15px;
+            padding: 40px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        if (!localStorage.getItem("loggedInUser")) {
+            window.location.href = "./新建文件夹/login.html";
+        }
+    </script>
+
+    <div class="navbar">
+        <img src="./images/logo.png" alt="Logo">
+        <div class="nav-links">
+            <a href="index.html">主页</a>
+            <a href="server-exhibition.html">服务器展览</a>
+            <a href="projects.html">工程项目</a>
+            <a href="about.html">关于</a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="card fade-up">
+            <h1>工程项目</h1>
+            <p style="text-align:center; color:#556;">服务器中各位玩家的工程与建筑作品展示 🏗️</p>
+        </div>
+
+        <div class="card fade-up">
+            <!-- 筛选栏 -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <span class="filter-group-label">维度</span>
+                    <span class="filter-tag active" data-group="dimension" data-value="all">全部</span>
+                    <span class="filter-tag" data-group="dimension" data-value="主世界">主世界</span>
+                    <span class="filter-tag" data-group="dimension" data-value="地狱">地狱</span>
+                    <span class="filter-tag" data-group="dimension" data-value="末地">末地</span>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-group-label">类型</span>
+                    <span class="filter-tag active" data-group="type" data-value="all">全部</span>
+                    <span class="filter-tag" data-group="type" data-value="机器">机器</span>
+                    <span class="filter-tag" data-group="type" data-value="建筑">建筑</span>
+                </div>
+            </div>
+
+            <!-- 项目列表 -->
+            <div id="projectGrid" class="project-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        // =============================================
+        // 在此数组中增减项目即可，每个对象为一个项目
+        // 图片放在 images/projects/ 目录下
+        // =============================================
+        const PROJECTS = [
+            {
+                name: "全自动刷铁机",
+                image: "./images/projects/iron_farm.png",
+                dimension: "主世界",   // 主世界 | 地狱 | 末地
+                type: "机器",          // 机器 | 建筑
+                author: "mengnai123",
+                description: "基于村民机制的全自动刷铁机，每小时产出约 400 铁锭，设计紧凑占地小。",
+            },
+            {
+                name: "猪灵交易所",
+                image: "./images/projects/piglin_trader.png",
+                dimension: "地狱",
+                type: "机器",
+                author: "Akari_desu",
+                description: "高效猪灵以物易物装置，可批量获取末影珍珠、哭泣的黑曜石等资源。",
+            },
+            {
+                name: "末地主城大厅",
+                image: "./images/projects/end_hall.png",
+                dimension: "末地",
+                type: "建筑",
+                author: "YuriRina",
+                description: "末地主城入口大厅，采用紫珀块与末地石砖构建，宏伟壮观。",
+            },
+            {
+                name: "出生点城堡",
+                image: "./images/projects/spawn_castle.png",
+                dimension: "主世界",
+                type: "建筑",
+                author: "Dooryeah730",
+                description: "服务器出生点标志性城堡建筑，包含新手指引与物资补给区域。",
+            },
+            // ——— 在此处继续添加更多项目 ———
+            // {
+            //     name: "项目名称",
+            //     image: "./images/projects/文件名.png",
+            //     dimension: "主世界",
+            //     type: "机器",
+            //     author: "建造者ID",
+            //     description: "项目描述文字...",
+            // },
+        ];
+
+        // ===== 筛选状态 =====
+        const filters = { dimension: "all", type: "all" };
+
+        // ===== 渲染项目 =====
+        function renderProjects() {
+            const grid = document.getElementById("projectGrid");
+            if (!grid) return;
+            grid.innerHTML = "";
+
+            const filtered = PROJECTS.filter(p => {
+                const dimOk  = filters.dimension === "all" || p.dimension === filters.dimension;
+                const typeOk = filters.type === "all"      || p.type === filters.type;
+                return dimOk && typeOk;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="no-result">暂无匹配的项目 🐱</div>';
+                return;
+            }
+
+            filtered.forEach(project => {
+                const card = document.createElement("div");
+                card.className = "project-card";
+                card.onclick = () => showProjectModal(project);
+
+                card.innerHTML = `
+                    <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
+                    <div class="project-info">
+                        <div class="project-name">${project.name}</div>
+                        <div class="project-tags">
+                            <span class="ptag">${project.dimension}</span>
+                            <span class="ptag">${project.type}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ===== 筛选标签点击 =====
+        document.querySelectorAll(".filter-tag").forEach(tag => {
+            tag.addEventListener("click", () => {
+                const group = tag.dataset.group;
+                const value = tag.dataset.value;
+
+                // 同组内切换 active
+                document.querySelectorAll(`.filter-tag[data-group="${group}"]`).forEach(t => t.classList.remove("active"));
+                tag.classList.add("active");
+
+                filters[group] = value;
+                renderProjects();
+            });
+        });
+
+        // ===== 项目详情弹窗 =====
+        function showProjectModal(project) {
+            const backdrop = document.createElement("div");
+            backdrop.className = "modal-backdrop";
+
+            backdrop.innerHTML = `
+                <div class="modal-content" style="position:relative;">
+                    <button class="modal-close" title="关闭">✕</button>
+                    <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
+                    <div class="modal-body">
+                        <h2>${project.name}</h2>
+                        <div class="modal-tags">
+                            <span class="ptag">${project.dimension}</span>
+                            <span class="ptag">${project.type}</span>
+                        </div>
+                        <div class="modal-desc">${project.description}</div>
+                        <div class="modal-meta">建造者：${project.author}</div>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(backdrop);
+
+            function close() {
+                document.removeEventListener("keydown", onKey);
+                backdrop.remove();
+            }
+            function onKey(e) {
+                if (e.key === "Escape") close();
+            }
+
+            backdrop.querySelector(".modal-close").addEventListener("click", close);
+            backdrop.addEventListener("click", (e) => {
+                if (e.target === backdrop) close();
+            });
+            document.addEventListener("keydown", onKey);
+        }
+
+        // 初始渲染
+        renderProjects();
+    </script>
+    <script src="js/animations.js"></script>
+</body>
+</html>
