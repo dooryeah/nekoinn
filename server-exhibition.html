@@ -10,12 +10,11 @@
             background: #f4f8ff;
         }
 
-        /* 统一的导航栏样式，与主页保持一致居中 */
+        /* 统一导航栏：Logo 左侧，链接居中 */
         .navbar {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr;
             align-items: center;
-            justify-content: center;
-            gap: 32px;
             padding: 12px 40px;
             background: #ffffffcc;
             backdrop-filter: blur(10px);
@@ -24,6 +23,7 @@
             top: 0;
             z-index: 9999;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-sizing: border-box;
         }
 
         .navbar img {
@@ -33,6 +33,7 @@
 
         .nav-links {
             display: flex;
+            justify-content: center;
             gap: 24px;
         }
 
