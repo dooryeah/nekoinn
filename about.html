@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>关于 - 喵宿咖啡厅</title>
+    <link rel="stylesheet" href="css/animations.css">
     <style>
         body {
             margin: 0;
@@ -17,13 +18,16 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: url('images/about_bg.jpg') center center / cover no-repeat;
+            background-image: url('images/about_bg.jpg');
+            background-position: center center;
+            background-size: cover;
+            background-repeat: no-repeat;
             opacity: 0.50;
             pointer-events: none;
             z-index: -1;
         }
 
-        /* 统一导航栏：Logo 左侧，链接居中 */
+        /* 统一导航栏 */
         .navbar {
             display: grid;
             grid-template-columns: auto 1fr;
@@ -94,22 +98,39 @@
 
         .link-list li {
             margin: 6px 0;
+            opacity: 0;
+            transform: translateX(-16px);
+            animation: linkSlideIn 0.4s ease forwards;
+        }
+
+        .link-list li:nth-child(1) { animation-delay: 0.3s; }
+        .link-list li:nth-child(2) { animation-delay: 0.45s; }
+        .link-list li:nth-child(3) { animation-delay: 0.6s; }
+        .link-list li:nth-child(4) { animation-delay: 0.75s; }
+
+        @keyframes linkSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .link-list a {
             color: #2f5fa8;
             text-decoration: none;
+            transition: color 0.2s, padding-left 0.2s;
         }
 
         .link-list a:hover {
             text-decoration: underline;
+            color: #1e4f91;
+            padding-left: 4px;
         }
     </style>
 </head>
 <body>
 
     <script>
-        // 登录校验（路径按实际登录页位置调整）
         if (!localStorage.getItem("loggedInUser")) {
             window.location.href = "./新建文件夹/login.html";
         }
