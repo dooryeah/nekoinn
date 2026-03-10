@@ -195,9 +195,9 @@
         .modal-content {
             background: white;
             border-radius: 18px;
-            max-width: 560px;
+            max-width: 1100px;
             width: 100%;
-            max-height: 85vh;
+            max-height: 92vh;
             overflow-y: auto;
             box-shadow: 0 16px 48px rgba(0,0,0,0.25);
             animation: modalSlideIn 0.3s ease;
@@ -212,32 +212,32 @@
             width: 100%;
             display: block;
             border-radius: 18px 18px 0 0;
-            max-height: 320px;
+            max-height: 640px;
             object-fit: cover;
         }
 
         .modal-body {
-            padding: 20px 24px 24px;
+            padding: 28px 36px 32px;
         }
 
         .modal-body h2 {
             text-align: left;
-            margin: 0 0 8px;
+            margin: 0 0 10px;
             color: #2f5fa8;
-            font-size: 22px;
+            font-size: 28px;
         }
 
         .modal-body .modal-tags {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 14px;
+            margin-bottom: 18px;
         }
 
         .modal-body .ptag {
-            font-size: 12px;
-            padding: 3px 10px;
-            border-radius: 8px;
+            font-size: 14px;
+            padding: 4px 14px;
+            border-radius: 10px;
             background: #eef4ff;
             color: #5a8abf;
             font-weight: 600;
@@ -245,28 +245,28 @@
 
         .modal-body .modal-desc {
             color: #444;
-            line-height: 1.7;
-            font-size: 15px;
+            line-height: 1.8;
+            font-size: 17px;
             white-space: pre-line;
         }
 
         .modal-body .modal-meta {
-            margin-top: 14px;
-            font-size: 13px;
+            margin-top: 18px;
+            font-size: 15px;
             color: #8aa;
         }
 
         .modal-close {
             position: absolute;
-            top: 12px;
-            right: 16px;
-            width: 32px;
-            height: 32px;
+            top: 14px;
+            right: 18px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             border: none;
             background: rgba(255,255,255,0.85);
             color: #555;
-            font-size: 18px;
+            font-size: 22px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -335,16 +335,12 @@
     </div>
 
     <script>
-        // =============================================
-        // 在此数组中增减项目即可，每个对象为一个项目
-        // 图片放在 images/projects/ 目录下
-        // =============================================
         const PROJECTS = [
             {
                 name: "16核心刷铁机",
                 image: "./images/projects/iron_farm.png",
-                dimension: "主世界",   // 主世界 | 地狱 | 末地
-                type: "机器",          // 机器 | 建筑
+                dimension: "主世界",
+                type: "机器",
                 author: "孟乃&九日&un_vagrant&everynum",
                 description: "挂个假人即可",
             },
@@ -372,21 +368,10 @@
                 author: "孟乃和一堆收集填充物的孩子们",
                 description: "盒装物品扔进箱子中，散装物品扔入潜影盒中，物品填充完毕单机音符盒<br>孩子们，再也不用手动分类了，还有，填充分类物品真的有福了",
             },
-            // ——— 在此处继续添加更多项目 ———
-            // {
-            //     name: "项目名称",
-            //     image: "./images/projects/文件名.png",
-            //     dimension: "主世界",
-            //     type: "机器",
-            //     author: "建造者ID",
-            //     description: "项目描述文字...",
-            // },
         ];
 
-        // ===== 筛选状态 =====
         const filters = { dimension: "all", type: "all" };
 
-        // ===== 渲染项目 =====
         function renderProjects() {
             const grid = document.getElementById("projectGrid");
             if (!grid) return;
@@ -422,13 +407,11 @@
             });
         }
 
-        // ===== 筛选标签点击 =====
         document.querySelectorAll(".filter-tag").forEach(tag => {
             tag.addEventListener("click", () => {
                 const group = tag.dataset.group;
                 const value = tag.dataset.value;
 
-                // 同组内切换 active
                 document.querySelectorAll(`.filter-tag[data-group="${group}"]`).forEach(t => t.classList.remove("active"));
                 tag.classList.add("active");
 
@@ -437,7 +420,6 @@
             });
         });
 
-        // ===== 项目详情弹窗 =====
         function showProjectModal(project) {
             const backdrop = document.createElement("div");
             backdrop.className = "modal-backdrop";
@@ -475,11 +457,8 @@
             document.addEventListener("keydown", onKey);
         }
 
-        // 初始渲染
         renderProjects();
     </script>
     <script src="js/animations.js"></script>
 </body>
-
 </html>
-
