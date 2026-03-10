@@ -5,15 +5,11 @@
     <title>玩家简介 - 喵宿咖啡厅</title>
 
     <style>
-       :root {
-    --anim-duration: 0.6s;
-}
-
-body {
-    margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background: #f4f8ff;
-}
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: #f4f8ff;
+        }
 
         body::before {
             content: "";
@@ -24,127 +20,52 @@ body {
             pointer-events: none;
             z-index: -1;
         }
-
-        /* 左侧计时器 */
-        .timer-container {
-            position: fixed;
-            left: 18px;
-            top: 120px;
-            width: 160px;
-            padding: 14px 12px;
-            border-radius: 14px;
-            background: #ffffffdd;
-            backdrop-filter: blur(6px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-            color: #1e4f91;
-            font-weight: 700;
-            line-height: 1.5;
-            z-index: 9999;
-        }
-        .timer-title {
-            font-size: 14px;
-            margin-bottom: 6px;
-            color: #4a6fa5;
-        }
-        .timer-value {
+        /* 顶部导航栏 */
+        .navbar {
             display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            align-items: baseline;
-            font-variant-numeric: tabular-nums;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            padding: 12px 40px;
+            background: #ffffffcc;
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        .timer-chip {
-            padding: 6px 8px;
-            border-radius: 10px;
-            background: #e9f1ff;
-            min-width: 58px;
-            text-align: center;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+
+        .navbar img {
+            height: 48px;
+            filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
         }
-        
-        /* 统一的导航栏样式 */
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 40px;
-    background: #ffffffcc;
-    backdrop-filter: blur(10px);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 9999;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
 
-.navbar img {
-    height: 48px;
-    filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
-}
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
 
-.nav-links {
-    display: flex;
-}
+        .nav-links a {
+            text-decoration: none;
+            color: #4a6fa5;
+            font-weight: 600;
+            transition: 0.2s;
+        }
 
-.nav-links a {
-    margin-left: 24px;
-    text-decoration: none;
-    color: #4a6fa5;
-    font-weight: 600;
-    transition: 0.2s;
-}
+        .nav-links a:hover {
+            color: #1e4f91;
+        }
 
-.nav-links a:hover {
-    color: #1e4f91;
-}
-
-.nav-auth {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-right: 20px; /* 右侧留白，防止贴边 */
-}
-
-.logout-btn {
-    padding: 8px 14px;
-    border-radius: 10px;
-    border: 1px solid #6aa6ff;
-    background: #6aa6ff;
-    color: #fff;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.logout-btn:hover {
-    background: #4f8df0;
-    border-color: #4f8df0;
-}
-
-        /* 新增：淡入上移动画基类 */
-.fade-up {
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity var(--anim-duration) ease, transform var(--anim-duration) ease;
-}
-.fade-up.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* 顶部大图：轻微背景平移动画 */
-.banner {
-    width: 100%;
-    height: 420px;
-    background-size: cover;
-    background-position: center;
-    margin-top: 70px;
-    border-bottom: 4px solid #dbe7ff;
-    animation: banner-pan 18s ease-in-out infinite alternate;
-}
-@keyframes banner-pan {
-    from { background-position: center; }
-    to   { background-position: center 20px; }
-}
+        /* 顶部大图 */
+        .banner {
+            width: 100%;
+            height: 420px;
+            background-size: cover;
+            background-position: center;
+            margin-top: 70px;
+            border-bottom: 4px solid #dbe7ff;
+        }
 
         /* 内容区 */
         .content {
@@ -159,19 +80,14 @@ body {
             margin-bottom: 30px;
         }
 
-         /* 卡片：悬浮小提升 */
- .card {
-     background: white;
-     padding: 30px;
-     border-radius: 16px;
-     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-     margin-bottom: 24px;
-     transition: transform 0.2s ease, box-shadow 0.2s ease;
- }
- .card:hover {
-     transform: translateY(-4px);
-     box-shadow: 0 8px 26px rgba(0,0,0,0.12);
- }
+        /* 卡片 */
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
 
         /* 玩家简介卡片（保留原样） */
         .profile-card {
@@ -182,12 +98,12 @@ body {
             text-align: center;
         }
 
-            .profile-card img {
-                width: 120px;
-                height: 120px;
-                border-radius: 16px;
-                margin-bottom: 20px;
-            }
+        .profile-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
 
         .profile-name {
             font-size: 24px;
@@ -204,25 +120,22 @@ body {
         }
 
         /* 按钮 */
-        /* 按钮：轻微缩放与投影 */
-.join-btn {
-    display: inline-block;
-    margin-top: 16px;
-    padding: 12px 28px;
-    background: #6aa6ff;
-    color: white;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 16px;
-    transition: 0.2s ease;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(106,166,255,0.35);
-}
-.join-btn:hover {
-    background: #4f8df0;
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 18px rgba(79,141,240,0.38);
-}
+        .join-btn {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 12px 28px;
+            background: #6aa6ff;
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .join-btn:hover {
+            background: #4f8df0;
+        }
     </style>
 </head>
 <body>
@@ -241,20 +154,6 @@ body {
             <a href="server-exhibition.html">服务器展览</a>
             <a href="about.html">关于</a>
         </div>
-        <div class="nav-auth" id="navAuth">
-            <span id="welcomeText" style="color:#2f5fa8; font-weight:600;"></span>
-            <button class="logout-btn" id="logoutBtn" onclick="logout()">退出登录</button>
-        </div>
-    </div>
-    <!-- 左侧计时器 -->
-    <div class="timer-container" aria-label="运行时间计时器">
-        <div class="timer-title">服务器已运行</div>
-            <div class="timer-value" id="timerValue">
-            <div class="timer-chip">0天</div>
-            <div class="timer-chip">00时</div>
-            <div class="timer-chip">00分</div>
-            <div class="timer-chip">00秒</div>
-        </div>
     </div>
 
     <!-- 首页大图 -->
@@ -263,7 +162,7 @@ body {
     <!-- 内容区 -->
     <div class="content">
         <!-- 手动玩家头像展示 -->
-        <div class="card fade-up">
+        <div class="card">
             <h2>玩家展示</h2>
 
             <div style="
@@ -610,7 +509,7 @@ body {
             </div>
         </div>
 
-        <div class="card fade-up">
+        <div class="card">
             <h1>欢迎来到喵宿咖啡厅</h1>
             <p>我们真心希望，想要来一次永不落幕的MC</p>
             <p>如果屏幕前的你也有这样的想法以及热情，请一定要加入我们！</p>
@@ -619,59 +518,14 @@ body {
         </div>
     </div>
 
-        <!-- JS -->
-    <script src="js/login.js"></script>
-        <script>
-        // ===== 计时器开始 =====
-        // 推荐写法（带时区，避免 NaN）
-        const startTime = new Date("2026-02-14T00:00:00+08:00");
-        // 兼容写法：
-        // const startTime = new Date(Date.UTC(2026, 2, 10, 0, 0, 0)); // 注意月份从0开始
-
-        function updateTimer() {
-            if (isNaN(startTime.getTime())) {
-                console.error("startTime 无法解析，请检查格式");
-                return;
-            }
-            const now = new Date();
-            const diffMs = Math.max(0, now - startTime);
-            const sec = Math.floor(diffMs / 1000);
-            const days = Math.floor(sec / 86400);
-            const hours = Math.floor((sec % 86400) / 3600);
-            const minutes = Math.floor((sec % 3600) / 60);
-            const seconds = sec % 60;
-            const pad2 = (n) => String(n).padStart(2, "0");
-            document.getElementById("timerValue").innerHTML = `
-                <div class="timer-chip">${days}天</div>
-                <div class="timer-chip">${pad2(hours)}时</div>
-                <div class="timer-chip">${pad2(minutes)}分</div>
-                <div class="timer-chip">${pad2(seconds)}秒</div>
-            `;
+    <script>
+        function copyQQ() {
+            const qq = "1082948381";
+            navigator.clipboard.writeText(qq).then(() => {
+                alert("已复制 QQ 审核群号：" + qq);
+            });
         }
-        updateTimer();
-        setInterval(updateTimer, 1000);
-        // ===== 计时器结束 =====
-            // 淡入动画：进入视口时添加 visible
-const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        if (e.isIntersecting) {
-            e.target.classList.add('visible');
-            io.unobserve(e.target);
-        }
-    });
-}, { threshold: 0.15 });
-
-document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
- 
     </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
