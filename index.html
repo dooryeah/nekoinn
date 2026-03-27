@@ -5,22 +5,11 @@
     <title>主页 - 欢迎来到喵宿~</title>
     <link rel="stylesheet" href="css/animations.css">
 
-    <meta charset="UTF-8">
-    <title>Sakana Widget CDN 示例</title>
-    <!-- 1. 引入样式 -->
+    <!-- Sakana Widget 样式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css">
-    <style>
-        /* 可选：设置挂载容器的样式，方便查看 */
-        #sakana-widget {
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
-            border: 1px solid #ccc;
-            position: relative;  /* 如果开启 autoFit，这一行很重要 */
-        }
-    </style>
 
     <style>
+        /* 全局重置 */
         body {
             margin: 0;
             font-family: "Segoe UI", sans-serif;
@@ -203,27 +192,32 @@
         .join-btn:hover {
             background: #4f8df0;
         }
+
+        /* Sakana Widget 固定容器 */
+        .sakana-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+        }
+
+        #sakana-widget {
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 2. 挂载点 -->
-    <div id="sakana-widget"></div>
+    <!-- Sakana Widget 挂载点 -->
+    <div class="sakana-container">
+        <div id="sakana-widget"></div>
+    </div>
 
-    <!-- 3. 初始化脚本 -->
-    <script>
-        function initSakanaWidget() {
-            // 默认配置
-            new SakanaWidget().mount('#sakana-widget');
-        }
-    </script>
-    <!-- 4. 异步加载 JS，加载完成后调用初始化函数 -->
-    <script 
-        async 
-        onload="initSakanaWidget()" 
-        src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js">
-    </script>
-
+    <!-- 导航栏 -->
     <div class="navbar">
         <img src="./images/logo.png" alt="Logo">
         <div class="nav-links">
@@ -237,7 +231,7 @@
     <!-- 首页大图 -->
     <div class="banner" style="background-image: url('images/home_banner.jpg');"></div>
 
-    <!-- 服务器运行时间计时器 - 横向 -->
+    <!-- 服务器运行时间计时器 -->
     <div class="uptime-bar fade-up">
         <div class="uptime-title">🕒 服务器已运行</div>
         <div class="uptime-blocks">
@@ -265,149 +259,116 @@
         <div class="card fade-up">
             <h2>主页</h2>
 
-            <div style="
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 20px;
-    ">
-                <!-- 玩家 1 -->
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
+                <!-- 玩家头像列表，保留原样 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/Akari_desu" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Akari_desu</p>
                 </div>
-                <!-- 玩家 2 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/mengnai123" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>mengnai123</p>
                 </div>
-                <!-- 玩家 3 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/Dooryeah730" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Dooryeah730</p>
                 </div>
-                <!-- 玩家 4 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/YuriRina" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>YuriRina</p>
                 </div>
-                <!-- 玩家 5 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/huazai111" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>huazai111</p>
                 </div>
-                <!-- 玩家 6 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/ninesuncwc" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>ninesuncwc</p>
                 </div>
-                <!-- 玩家 7 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/everynum" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>everynum</p>
                 </div>
-                <!-- 玩家 8 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/TheQuietStarry" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>TheQuietStarry</p>
                 </div>
-                <!-- 玩家 9 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/Serein2K" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Serein2K</p>
                 </div>
-                <!-- 玩家 10 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/CYHsama" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>CYHsama</p>
                 </div>
-                <!-- 玩家 11 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/un_vagrant" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>un_vagrant</p>
                 </div>
-                <!-- 玩家 12 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/JIANFFN" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>JIANFFN</p>
                 </div>
-                <!-- 玩家 13 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/Tling777" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Tling777</p>
                 </div>
-                <!-- 玩家 14 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/Tek1t_" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Tek1t_</p>
                 </div>
-                <!-- 玩家 15 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/YGDAY" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>YGDAY</p>
                 </div>
-                <!-- 玩家 16 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/yangyang_xl" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>yangyang_xl</p>
                 </div>
-                <!-- 玩家 17 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/xiaoluoawa" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>xiaoluoawa</p>
                 </div>
-                <!-- 玩家 18 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/Harutoki" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Harutoki</p>
                 </div>
-                <!-- 玩家 19 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/WYT_1314" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>WYT_1314</p>
                 </div>
-                <!-- 玩家 20 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/bro_Yummy" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>bro_Yummy</p>
                 </div>
-                <!-- 玩家 21 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/lindilinlin" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>lindilinlin</p>
                 </div>
-                <!-- 玩家 22 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/mcxmy" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>mcxmy</p>
                 </div>
-                <!-- 玩家 23 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/Meukr" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Meukr</p>
                 </div>
-                <!-- 玩家 24 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/NFnifeng" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>NFnifeng</p>
                 </div>
-                <!-- 玩家 25 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/erzhanggui520" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>erzhanggui520</p>
                 </div>
-                <!-- 玩家 26 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/LKAS" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>LKAS</p>
                 </div>
-                <!-- 玩家 27 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/workdaybasezz" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>workdaybasezz</p>
                 </div>
-                <!-- 玩家 28 -->
                 <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <img src="https://mc-heads.net/avatar/chuan_gu" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>chuan_gu</p>
@@ -424,8 +385,7 @@
         </div>
     </div>
 
-   
-
+    <!-- 脚本 -->
     <script>
         function copyQQ() {
             const qq = "1082948381";
@@ -434,7 +394,7 @@
             });
         }
 
-        // ===== 服务器运行时间计时器 =====
+        // 服务器运行时间计时器
         const SERVER_START = new Date("2026-02-14T00:00:00");
 
         function updateUptime() {
@@ -442,28 +402,37 @@
             let diff = Math.floor((now - SERVER_START) / 1000);
             if (diff < 0) diff = 0;
 
-            const days    = Math.floor(diff / 86400);
-            const hours   = Math.floor((diff % 86400) / 3600);
+            const days = Math.floor(diff / 86400);
+            const hours = Math.floor((diff % 86400) / 3600);
             const minutes = Math.floor((diff % 3600) / 60);
             const seconds = diff % 60;
 
-            document.getElementById("uptimeDays").textContent    = days;
-            document.getElementById("uptimeHours").textContent   = String(hours).padStart(2, "0");
+            document.getElementById("uptimeDays").textContent = days;
+            document.getElementById("uptimeHours").textContent = String(hours).padStart(2, "0");
             document.getElementById("uptimeMinutes").textContent = String(minutes).padStart(2, "0");
             document.getElementById("uptimeSeconds").textContent = String(seconds).padStart(2, "0");
         }
 
         updateUptime();
         setInterval(updateUptime, 1000);
+
+        // Sakana Widget 初始化
+        function initSakanaWidget() {
+            new SakanaWidget({
+                size: 150,          // 与容器大小匹配
+                controls: false,    // 隐藏控制栏更简洁
+                draggable: true,
+                character: 'chisato', // 可选 'chisato' 或 'takina'
+                autoFit: false
+            }).mount('#sakana-widget');
+        }
+    </script>
+    <script 
+        async 
+        onload="initSakanaWidget()" 
+        src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js">
     </script>
     <script src="js/animations.js"></script>
 
 </body>
 </html>
-
-
-
-
-
-
-
