@@ -392,6 +392,27 @@
         </div>
     </div>
 
+    <!-- 引入 CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css"
+/>
+
+<!-- 挂载点 -->
+<div id="sakana-widget"></div>
+
+<!-- 引入 JS 并初始化 -->
+<script>
+  function initSakanaWidget() {
+    new SakanaWidget().mount('#sakana-widget');
+  }
+</script>
+<script
+  async
+  onload="initSakanaWidget()"
+  src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js"
+></script>
+
     <script>
         function copyQQ() {
             const qq = "1082948381";
