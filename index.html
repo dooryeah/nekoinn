@@ -5,6 +5,21 @@
     <title>主页 - 欢迎来到喵宿~</title>
     <link rel="stylesheet" href="css/animations.css">
 
+    <meta charset="UTF-8">
+    <title>Sakana Widget CDN 示例</title>
+    <!-- 1. 引入样式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css">
+    <style>
+        /* 可选：设置挂载容器的样式，方便查看 */
+        #sakana-widget {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            position: relative;  /* 如果开启 autoFit，这一行很重要 */
+        }
+    </style>
+
     <style>
         body {
             margin: 0;
@@ -191,6 +206,23 @@
     </style>
 </head>
 <body>
+
+    <!-- 2. 挂载点 -->
+    <div id="sakana-widget"></div>
+
+    <!-- 3. 初始化脚本 -->
+    <script>
+        function initSakanaWidget() {
+            // 默认配置
+            new SakanaWidget().mount('#sakana-widget');
+        }
+    </script>
+    <!-- 4. 异步加载 JS，加载完成后调用初始化函数 -->
+    <script 
+        async 
+        onload="initSakanaWidget()" 
+        src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js">
+    </script>
 
     <div class="navbar">
         <img src="./images/logo.png" alt="Logo">
@@ -392,26 +424,7 @@
         </div>
     </div>
 
-    <!-- 引入 CSS -->
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css"
-/>
-
-<!-- 挂载点 -->
-<div id="sakana-widget"></div>
-
-<!-- 引入 JS 并初始化 -->
-<script>
-  function initSakanaWidget() {
-    new SakanaWidget().mount('#sakana-widget');
-  }
-</script>
-<script
-  async
-  onload="initSakanaWidget()"
-  src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js"
-></script>
+   
 
     <script>
         function copyQQ() {
