@@ -416,16 +416,19 @@
         updateUptime();
         setInterval(updateUptime, 1000);
 
-        // Sakana Widget 初始化
+        
         function initSakanaWidget() {
-            new SakanaWidget({
-                size: 150,          // 与容器大小匹配
-                controls: false,    // 隐藏控制栏更简洁
-                draggable: true,
-                character: 'chisato', // 可选 'chisato' 或 'takina'
-                autoFit: false
-            }).mount('#sakana-widget');
-        }
+    const myChar = SakanaWidget.getCharacter('chisato');
+    myChar.image = './images/Akari.jpg';  
+    SakanaWidget.registerCharacter('Akari', myChar);
+    
+    new SakanaWidget({
+        character: 'Akari',
+        size: 150,
+        controls: false,
+        draggable: true
+    }).mount('#sakana-widget');
+}
     </script>
     <script 
         async 
