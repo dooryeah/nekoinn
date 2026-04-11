@@ -796,147 +796,147 @@
         }
         ];
 
-        const filters = { dimension: "all", type: "all" };
+            const filters = { dimension: "all", type: "all" };
 
-        function renderProjects() {
-        const grid = document.getElementById("projectGrid");
-        if (!grid) return;
-        grid.innerHTML = "";
+    function renderProjects() {
+    const grid = document.getElementById("projectGrid");
+    if (!grid) return;
+    grid.innerHTML = "";
 
-        const filtered = PROJECTS.filter(p => {
-        const dimOk = filters.dimension === "all" || p.dimension === filters.dimension;
-        const typeOk = filters.type === "all" || p.type === filters.type;
-        return dimOk && typeOk;
-        });
+    const filtered = PROJECTS.filter(p => {
+    const dimOk = filters.dimension === "all" || p.dimension === filters.dimension;
+    const typeOk = filters.type === "all" || p.type === filters.type;
+    return dimOk && typeOk;
+    });
 
-        if (filtered.length === 0) {
-        grid.innerHTML = '<div class="no-result">暂无匹配的项目 🐱</div>';
-        return;
-        }
+    if (filtered.length === 0) {
+    grid.innerHTML = '<div class="no-result">暂无匹配的项目 🐱</div>';
+    return;
+    }
 
-        filtered.forEach(project => {
-        const card = document.createElement("div");
-        card.className = "project-card";
-        card.onclick = () => showProjectModal(project);
+    filtered.forEach(project => {
+    const card = document.createElement("div");
+    card.className = "project-card";
+    card.onclick = () => showProjectModal(project);
 
-        card.innerHTML = `
-        <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
-        <div class="project-info">
-        <div class="project-name">${project.name}</div>
-        <div class="project-tags">
-        <span class="ptag">${project.dimension}</span>
-        <span class="ptag">${project.type}</span>
-        </div>
-        </div>
-        `;
-        grid.appendChild(card);
-        });
-        }
+    card.innerHTML = `
+    <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
+    <div class="project-info">
+    <div class="project-name">${project.name}</div>
+    <div class="project-tags">
+    <span class="ptag">${project.dimension}</span>
+    <span class="ptag">${project.type}</span>
+    </div>
+    </div>
+    `;
+    grid.appendChild(card);
+    });
+    }
 
-        document.querySelectorAll(".filter-tag").forEach(tag => {
-        tag.addEventListener("click", () => {
-        const group = tag.dataset.group;
-        const value = tag.dataset.value;
+    document.querySelectorAll(".filter-tag").forEach(tag => {
+    tag.addEventListener("click", () => {
+    const group = tag.dataset.group;
+    const value = tag.dataset.value;
 
-        document.querySelectorAll(`.filter-tag[data-group="${group}"]`).forEach(t => t.classList.remove("active"));
-        tag.classList.add("active");
+    document.querySelectorAll(`.filter-tag[data-group="${group}"]`).forEach(t => t.classList.remove("active"));
+    tag.classList.add("active");
 
-        filters[group] = value;
-        renderProjects();
-        });
-        });
+    filters[group] = value;
+    renderProjects();
+    });
+    });
 
-        function showProjectModal(project) {
-        const backdrop = document.createElement("div");
-        backdrop.className = "modal-backdrop";
+    function showProjectModal(project) {
+    const backdrop = document.createElement("div");
+    backdrop.className = "modal-backdrop";
 
-        const modal = document.createElement("div");
-        modal.className = "modal-content";
-        modal.innerHTML = `
-        <button class="modal-close" title="关闭">✕</button>
-        <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
-        <div class="modal-body">
-        <h2>${project.name}</h2>
-        <div class="modal-tags">
-        <span class="ptag">${project.dimension}</span>
-        <span class="ptag">${project.type}</span>
-        </div>
-        <div class="modal-desc">${project.description}</div>
-        <div class="modal-meta">建造者：${project.author}</div>
-        </div>
-        `;
+    const modal = document.createElement("div");
+    modal.className = "modal-content";
+    modal.innerHTML = `
+    <button class="modal-close" title="关闭">✕</button>
+    <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
+    <div class="modal-body">
+    <h2>${project.name}</h2>
+    <div class="modal-tags">
+    <span class="ptag">${project.dimension}</span>
+    <span class="ptag">${project.type}</span>
+    </div>
+    <div class="modal-desc">${project.description}</div>
+    <div class="modal-meta">建造者：${project.author}</div>
+    </div>
+    `;
 
-        document.body.appendChild(backdrop);
-        document.body.appendChild(modal);
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
 
-        function close() {
-        document.removeEventListener("keydown", onKey);
-        backdrop.remove();
-        modal.remove();
-        }
+    function close() {
+    document.removeEventListener("keydown", onKey);
+    backdrop.remove();
+    modal.remove();
+    }
 
-        function onKey(e) {
-        if (e.key === "Escape") close();
-        }
+    function onKey(e) {
+    if (e.key === "Escape") close();
+    }
 
-        modal.querySelector(".modal-close").addEventListener("click", close);
-        backdrop.addEventListener("click", close);
-        document.addEventListener("keydown", onKey);
-        }
+    modal.querySelector(".modal-close").addEventListener("click", close);
+    backdrop.addEventListener("click", close);
+    document.addEventListener("keydown", onKey);
+    }
 
-        function startDownload(url, fileName) {
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = fileName || "";
-        a.style.display = "none";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        }
+    function startDownload(url, fileName) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName || "";
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    }
 
-        function renderProjectionFiles() {
-        const list = document.getElementById("projectionList");
-        if (!list) return;
+    function renderProjectionFiles() {
+    const list = document.getElementById("projectionList");
+    if (!list) return;
 
-        if (!PROJECTION_FILES.length) {
-        list.innerHTML = '<div class="projection-empty">暂无可下载投影文件</div>';
-        return;
-        }
+    if (!PROJECTION_FILES.length) {
+    list.innerHTML = '<div class="projection-empty">暂无可下载投影文件</div>';
+    return;
+    }
 
-        list.innerHTML = PROJECTION_FILES.map(file => `
-        <a class="projection-item"
-        href="${file.url}"
-        data-url="${file.url}"
-        data-name="${file.name}"
-        download="${file.name}">
-        <div class="name">${file.name}</div>
-        <div class="meta">${file.note || "点击下载"}</div>
-        </a>
-        `).join("");
+    list.innerHTML = PROJECTION_FILES.map(file => `
+    <a class="projection-item"
+    href="javascript:void(0)"
+    data-url="${file.url}"
+    data-name="${file.name}">
+    <div class="name">${file.name}</div>
+    <div class="meta">${file.note || "点击下载"}</div>
+    </a>
+    `).join("");
 
-        list.querySelectorAll(".projection-item").forEach(link => {
-        link.addEventListener("click", (e) => {
-        e.preventDefault();
-        startDownload(link.dataset.url, link.dataset.name);
-        });
-        });
-        }
+    list.querySelectorAll(".projection-item").forEach(link => {
+    link.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    startDownload(link.dataset.url, link.dataset.name);
+    });
+    });
+    }
 
-        function initProjectionPanel() {
-        const panel = document.getElementById("projectionPanel");
-        const toggle = document.getElementById("projectionToggle");
-        if (!panel || !toggle) return;
+    function initProjectionPanel() {
+    const panel = document.getElementById("projectionPanel");
+    const toggle = document.getElementById("projectionToggle");
+    if (!panel || !toggle) return;
 
-        toggle.addEventListener("click", () => {
-        panel.classList.toggle("collapsed");
-        });
+    toggle.addEventListener("click", () => {
+    panel.classList.toggle("collapsed");
+    });
 
-        renderProjectionFiles();
-        }
+    renderProjectionFiles();
+    }
 
-        renderProjects();
-        initProjectionPanel();
-    </script>
+    renderProjects();
+    initProjectionPanel();
+</script>
     <script src="js/animations.js"></script>
 </body>
 </html>
