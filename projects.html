@@ -74,14 +74,6 @@
             justify-content: center;
             gap: 10px;
             margin-bottom: 20px;
-            
-            position: sticky;
-            top: 76px; 
-            z-index: 950;
-            background: #ffffffd9;
-            backdrop-filter: blur(6px);
-            padding: 10px 8px;
-            border-radius: 12px;
         }
 
         .filter-group {
@@ -892,6 +884,16 @@
         document.addEventListener("keydown", onKey);
         }
 
+        function startDownload(url, fileName) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName || "";
+        a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        }
+
         function renderProjectionFiles() {
         const list = document.getElementById("projectionList");
         if (!list) return;
@@ -902,11 +904,22 @@
         }
 
         list.innerHTML = PROJECTION_FILES.map(file => `
-        <a class="projection-item" href="${file.url}" download>
+        <a class="projection-item"
+        href="${file.url}"
+        data-url="${file.url}"
+        data-name="${file.name}"
+        download="${file.name}">
         <div class="name">${file.name}</div>
         <div class="meta">${file.note || "点击下载"}</div>
         </a>
         `).join("");
+
+        list.querySelectorAll(".projection-item").forEach(link => {
+        link.addEventListener("click", (e) => {
+        e.preventDefault();
+        startDownload(link.dataset.url, link.dataset.name);
+        });
+        });
         }
 
         function initProjectionPanel() {
