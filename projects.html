@@ -26,10 +26,10 @@
             box-sizing: border-box;
         }
 
-        .navbar img {
-            height: 48px;
-            filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
-        }
+            .navbar img {
+                height: 48px;
+                filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
+            }
 
         .nav-links {
             display: flex;
@@ -37,16 +37,16 @@
             gap: 24px;
         }
 
-        .nav-links a {
-            text-decoration: none;
-            color: #4a6fa5;
-            font-weight: 600;
-            transition: 0.2s;
-        }
+            .nav-links a {
+                text-decoration: none;
+                color: #4a6fa5;
+                font-weight: 600;
+                transition: 0.2s;
+            }
 
-        .nav-links a:hover {
-            color: #1e4f91;
-        }
+                .nav-links a:hover {
+                    color: #1e4f91;
+                }
 
         .content {
             padding: 120px 40px 40px 40px;
@@ -105,15 +105,15 @@
             user-select: none;
         }
 
-        .filter-tag:hover {
-            background: #dbe9ff;
-        }
+            .filter-tag:hover {
+                background: #dbe9ff;
+            }
 
-        .filter-tag.active {
-            background: #4a6fa5;
-            color: white;
-            border-color: #4a6fa5;
-        }
+            .filter-tag.active {
+                background: #4a6fa5;
+                color: white;
+                border-color: #4a6fa5;
+            }
 
         .project-grid {
             display: grid;
@@ -132,44 +132,44 @@
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 28px rgba(0,0,0,0.12);
-        }
+            .project-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+            }
 
-        .project-card img {
-            width: 100%;
-            height: 170px;
-            object-fit: cover;
-            display: block;
-            background: #f7f9ff;
-        }
+            .project-card img {
+                width: 100%;
+                height: 170px;
+                object-fit: cover;
+                display: block;
+                background: #f7f9ff;
+            }
 
-        .project-card .project-info {
-            padding: 12px 14px;
-        }
+            .project-card .project-info {
+                padding: 12px 14px;
+            }
 
-        .project-card .project-name {
-            font-size: 16px;
-            font-weight: 700;
-            color: #2f5fa8;
-            margin: 0 0 6px;
-        }
+            .project-card .project-name {
+                font-size: 16px;
+                font-weight: 700;
+                color: #2f5fa8;
+                margin: 0 0 6px;
+            }
 
-        .project-card .project-tags {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
+            .project-card .project-tags {
+                display: flex;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
 
-        .project-card .ptag {
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 8px;
-            background: #eef4ff;
-            color: #5a8abf;
-            font-weight: 600;
-        }
+            .project-card .ptag {
+                font-size: 11px;
+                padding: 2px 8px;
+                border-radius: 8px;
+                background: #eef4ff;
+                color: #5a8abf;
+                font-weight: 600;
+            }
 
         /* ===== 弹窗遮罩：纯覆盖，不参与布局 ===== */
         .modal-backdrop {
@@ -181,8 +181,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to   { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* ===== 弹窗本体：绝对定位居中 ===== */
@@ -203,8 +208,15 @@
         }
 
         @keyframes modalSlideIn {
-            from { opacity: 0; transform: translate(-50%, -45%); }
-            to   { opacity: 1; transform: translate(-50%, -50%); }
+            from {
+                opacity: 0;
+                transform: translate(-50%, -45%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
         }
 
         .modal-content img {
@@ -219,41 +231,41 @@
             padding: 24px 30px 28px;
         }
 
-        .modal-body h2 {
-            text-align: left;
-            margin: 0 0 10px;
-            color: #2f5fa8;
-            font-size: 26px;
-        }
+            .modal-body h2 {
+                text-align: left;
+                margin: 0 0 10px;
+                color: #2f5fa8;
+                font-size: 26px;
+            }
 
-        .modal-body .modal-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
+            .modal-body .modal-tags {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin-bottom: 16px;
+            }
 
-        .modal-body .ptag {
-            font-size: 13px;
-            padding: 4px 12px;
-            border-radius: 8px;
-            background: #eef4ff;
-            color: #5a8abf;
-            font-weight: 600;
-        }
+            .modal-body .ptag {
+                font-size: 13px;
+                padding: 4px 12px;
+                border-radius: 8px;
+                background: #eef4ff;
+                color: #5a8abf;
+                font-weight: 600;
+            }
 
-        .modal-body .modal-desc {
-            color: #444;
-            line-height: 1.7;
-            font-size: 16px;
-            white-space: pre-line;
-        }
+            .modal-body .modal-desc {
+                color: #444;
+                line-height: 1.7;
+                font-size: 16px;
+                white-space: pre-line;
+            }
 
-        .modal-body .modal-meta {
-            margin-top: 16px;
-            font-size: 14px;
-            color: #8aa;
-        }
+            .modal-body .modal-meta {
+                margin-top: 16px;
+                font-size: 14px;
+                color: #8aa;
+            }
 
         .modal-close {
             position: absolute;
@@ -274,9 +286,9 @@
             z-index: 1;
         }
 
-        .modal-close:hover {
-            background: white;
-        }
+            .modal-close:hover {
+                background: white;
+            }
 
         .no-result {
             text-align: center;
@@ -284,15 +296,114 @@
             font-size: 15px;
             padding: 40px 0;
         }
+
+        /* ===== 右侧投影栏 ===== */
+        .projection-panel {
+            position: fixed;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 280px;
+            background: #ffffffee;
+            backdrop-filter: blur(8px);
+            border: 1px solid #dfeaff;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 9990;
+            overflow: hidden;
+        }
+
+        .projection-header {
+            width: 100%;
+            border: none;
+            background: #eef4ff;
+            color: #2f5fa8;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 12px 14px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .projection-header:hover {
+                background: #e4eeff;
+            }
+
+        .projection-arrow {
+            transition: transform 0.2s ease;
+            font-size: 13px;
+            color: #5a8abf;
+        }
+
+        .projection-body {
+            max-height: 320px;
+            overflow-y: auto;
+            transition: max-height 0.25s ease, padding 0.25s ease;
+            padding: 10px 12px 12px;
+        }
+
+        .projection-panel.collapsed .projection-body {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .projection-panel.collapsed .projection-arrow {
+            transform: rotate(-90deg);
+        }
+
+        .projection-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .projection-item {
+            display: block;
+            text-decoration: none;
+            border: 1px solid #d8e6ff;
+            border-radius: 10px;
+            background: #f8fbff;
+            padding: 10px;
+            transition: 0.2s;
+        }
+
+            .projection-item:hover {
+                background: #edf5ff;
+                border-color: #bcd5ff;
+            }
+
+            .projection-item .name {
+                color: #2f5fa8;
+                font-size: 14px;
+                font-weight: 700;
+                margin-bottom: 4px;
+            }
+
+            .projection-item .meta {
+                color: #7c96b7;
+                font-size: 12px;
+            }
+
+        .projection-empty {
+            color: #8aa0bd;
+            font-size: 13px;
+            text-align: center;
+            padding: 14px 0;
+        }
+
+        @media (max-width: 1200px) {
+            .projection-panel {
+                right: 10px;
+                width: 240px;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <script>
-        if (!localStorage.getItem("loggedInUser")) {
-            window.location.href = "./新建文件夹/login.html";
-        }
-    </script>
 
     <div class="navbar">
         <img src="./images/logo.png" alt="Logo">
@@ -326,438 +437,485 @@
                     <span class="filter-tag" data-group="type" data-value="建筑">建筑</span>
                 </div>
             </div>
-
             <div id="projectGrid" class="project-grid"></div>
+        </div>
+    </div>
+
+    <div id="projectionPanel" class="projection-panel collapsed">
+        <button id="projectionToggle" class="projection-header" type="button">
+            <span>投影</span>
+            <span class="projection-arrow">▼</span>
+        </button>
+        <div class="projection-body">
+            <div id="projectionList" class="projection-list"></div>
         </div>
     </div>
 
     <script>
         const PROJECTS = [
-            {
-                name: "16核心刷铁机",
-                image: "./images/projects/iron_farm.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "孟乃&九日&un_vagrant&everynum",
-                description: "挂个假人即可",
-            },
-            {
-                name: "大型村民交易所",
-                image: "./images/projects/大型村民交易所.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "孟乃&un_vagrant&伊凛&很多很多人",
-                description: "打折机有点慢，多等一会就好了<br>孩子们，绿宝石自由了喵",
-            },
-            {
-                name: "小型自动酿造机",
-                image: "./images/projects/小型自动酿造机.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "孟乃&伊凛",
-                description: "可以自动酿造虚弱药水，如果要改药水配方 请联系孟<br>村民拯救器",
-            },
-            {
-                name: "丐版全物品",
-                image: "./images/projects/丐版全物品.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "孟乃和一堆收集填充物的孩子们",
-                description: "盒装物品扔进箱子中，散装物品扔入潜影盒中，物品填充完毕单机音符盒<br>孩子们，再也不用手动分类了，还有，填充分类物品真的有福了",
-            },
-            {
-                name: "小型刷石机 7w",
-                image: "./images/projects/小型刷石机 7w.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "安星&伊凛&2K",
-                description: "暂无描述喵",
-            },
-            {
-                name: "仙人掌农场",
-                image: "./images/projects/仙人掌农场.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "安星&伊凛&2K",
-                description: "暂无描述喵",
-            },
-            {
-                name: "劫掠塔",
-                image: "./images/projects/劫掠塔.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "安星",
-                description: "暂无描述喵",
-            },
-            {
-                name: "720k祭坛刷沙机",
-                image: "./images/projects/720k祭坛刷沙机.png",
-                dimension: "末地",
-                type: "机器",
-                author: "九日",
-                description: "换色防熊，但最好别乱点，不要动机器内部任何的东西，本机器对时刻的要求卡的非常严，如果你不明白不要乱动就行，如果觉得不小心碰到了立刻群里叫九日，并且插告示牌告诉不要开机<br>并不是极限效率喵，如果真有需要还可以迭代哦",
-            },
-            {
-                name: "全树种树场",
-                image: "./images/projects/全树种树场.png",
-                dimension: "末地",
-                type: "机器",
-                author: "2K&伊凛&Akari",
-                description: "不许种植橡树，使用杜鹃代替。最好放假人来使用，骨粉消耗很快，建议携带盒装骨块来",
-            },
-            {
-                name: "全白名单320位熔炉组",
-                image: "./images/projects/全白名单320位熔炉组.png",
-                dimension: "末地",
-                type: "机器",
-                author: "孟乃",
-                description: "整盒输入一次性最多不能超过5盒<br>这不是老虎机，它真的是正常的，不会收税，如果收税，一定是你没有挂假人",
-            },
-            {
-                name: "下界疣农场",
-                image: "./images/projects/下界疣农场.png",
-                dimension: "末地",
-                type: "机器",
-                author: "2K",
-                description: "暂无描述喵",
-            },
-            {
-                name: "凋零玫瑰农场",
-                image: "./images/projects/凋零玫瑰农场.png",
-                dimension: "末地",
-                type: "机器",
-                author: "九日&伊凛",
-                description: "别去铁傀儡那边",
-            },
-            {
-                name: "贝场",
-                image: "./images/projects/贝场.png",
-                dimension: "末地",
-                type: "机器",
-                author: "Akari&孟乃&2K",
-                description: "<br>运贝有福了",
-            },
-            {
-                name: "小黑塔",
-                image: "./images/projects/小黑塔.png",
-                dimension: "末地",
-                type: "机器",
-                author: "九日&伊凛&逆风",
-                description: "<br>末影珍珠才是副产物！",
-            },
-            {
-                name: "沼泽刷怪塔",
-                image: "./images/projects/沼泽刷怪塔.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "孟乃&伊凛&2K&Akari",
-                description: "<br>牢",
-            },
-            {
-                name: "甘蔗机",
-                image: "./images/projects/甘蔗机.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "2K&Akari",
-                description: "<br>跟沼泽刷怪塔在一起",
-            },
-            {
-                name: "720k祭坛刷沙机配套固化",
-                image: "./images/projects/720k祭坛刷沙机配套固化.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "制造:九日&安星&TKT 技术指导:腐竹&孟乃",
-                description: "刷普通沙子的时候一定不要开固化模式",
-            },
-            {
-                name: "蛙明灯农场",
-                image: "./images/projects/蛙明灯农场.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "孟乃",
-                description: "双维度都要假人，通过地狱交通时请注意白色玻璃的箭头指向<br>15000每小时，副产物岩浆膏5000每小时",
-            },
-            {
-                name: "凋零骷髅农场",
-                image: "./images/projects/凋零骷髅农场.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "九日&伊凛&2K&Akari",
-                description: "不要进地狱门",
-            },
-            {
-                name: "黑曜石农场",
-                image: "./images/projects/黑曜石农场.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "九日",
-                description: "别去接近凋零，别去主世界端周围跑图<br>这个凋零我困了两次才困住，所以有两只凋零被我放飞了，不知道飞哪去了，总之别往周围飞",
-            },
-            {
-                name: "恶魂塔",
-                image: "./images/projects/恶魂塔.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "九日",
-                description: "开机一次再也用不上",
-            },
-            {
-                name: "68w猪人塔",
-                image: "./images/projects/68w猪人塔.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "孟乃&JIANFFN&everynum",
-                description: "只需要挂主世界假人，地狱端请点命令方块",
-            },
-            {
-                name: "猪灵交易所",
-                image: "./images/projects/猪灵交易所.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "孟乃&九日&安星&伊凛",
-                description: "和猪人塔在一起<br>有时候 你可能发现箱子里什么都没有，这是正常的，因为效率极低",
-            },
-            {
-                name: "72k刷冰机",
-                image: "./images/projects/72k刷冰机.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "九日&孟乃&伊凛&安星以及其他多多少少帮忙的人",
-                description: "开机需要预热，关机请等飞行器归位后再离开，配套经验农场需要在3034 154 2841处挂假人砍猪人并启动飞行器<br>报警的时候记得填充盒装原木和壳子",
-            },
-            {
-                name: "鱼塔",
-                image: "./images/projects/鱼塔.png",
-                dimension: "地狱",
-                type: "机器",
-                author: "JIANFFN",
-                description: "上面的门去挂机点，下面的门别走",
-            },
-            {
-                name: "粘液农场",
-                image: "./images/projects/粘液农场.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "安星&孟乃&2K&九日",
-                description: "暂无描述喵",
-            },
-            {
-                name: "苔藓骨粉机",
-                image: "./images/projects/苔藓骨粉机.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "un_vagrant",
-                description: "效率不高，一直开着就行，不抗卸载，有教皇加载<br>主要作用是美观",
-            },
-            {
-                name: "伪和平",
-                image: "./images/projects/伪和平.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "Akari",
-                description: "主世界xz5000坐标128格范围内禁止加载，禁止进门，禁止传送传送点，仅需在地狱端开关<br>挂1400多只坚守者有福了，服务器也有福了",
-            },
-            {
-                name: "原木去皮机",
-                image: "./images/projects/原木去皮机.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "JIANFFN",
-                description: "暂无描述喵",
-            },
-            {
-                name: "刷花机",
-                image: "./images/projects/刷花机.png",
-                dimension: "主世界",
-                type: "机器",
-                author: "JIANFFN",
-                description: "暂无描述喵",
-            },
-            {
-                name: "月宫",
-                image: "./images/projects/月宫.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "YuriRina",
-                description: "暂无描述喵",
-            },
-            {
-                name: "温泉小屋",
-                image: "./images/projects/温泉小屋.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "YuriRina",
-                description: "暂无描述喵",
-            },
-            {
-                name: "樱花树屋",
-                image: "./images/projects/樱花树屋.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "YuriRina",
-                description: "暂无描述喵",
-            },
-            {
-                name: "小爱心",
-                image: "./images/projects/小爱心.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "Tling777",
-                description: "暂无描述喵",
-            },
-            {
-                name: "中世纪地主の别墅",
-                image: "./images/projects/中世纪地主の别墅.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "CYHsama",
-                description: "暂无描述喵",
-            },
-            {
-                name: "地狱门（伏魔版）",
-                image: "./images/projects/地狱门（伏魔版）.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "华仔huazai",
-                description: "暂无描述喵",
-            },
-            {
-                name: "石英祭坛",
-                image: "./images/projects/石英祭坛.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "YuriRina",
-                description: "暂无描述喵",
-            },
-            {
-                name: "断桥聚落",
-                image: "./images/projects/断桥聚落.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "Dooryeah",
-                description: "暂无描述喵",
-            },
-             {
-                name: "风车麦田以及谷仓",
-                image: "./images/projects/风车麦田以及谷仓.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "CYHsama",
-                description: "暂无描述喵",
-            },
-            {
-                name: "徽派小院",
-                image: "./images/projects/徽派小院.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "Everynum",
-                description: "暂无描述喵",
-            },
-            {
-                name: "度假山庄",
-                image: "./images/projects/度假山庄.png",
-                dimension: "主世界",
-                type: "建筑",
-                author: "CYHsama",
-                description: "暂无描述喵",
-            },
+        {
+        name: "16核心刷铁机",
+        image: "./images/projects/iron_farm.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "孟乃&九日&un_vagrant&everynum",
+        description: "挂个假人即可",
+        },
+        {
+        name: "大型村民交易所",
+        image: "./images/projects/大型村民交易所.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "孟乃&un_vagrant&伊凛&很多很多人",
+        description: "打折机有点慢，多等一会就好了<br>孩子们，绿宝石自由了喵",
+        },
+        {
+        name: "小型自动酿造机",
+        image: "./images/projects/小型自动酿造机.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "孟乃&伊凛",
+        description: "可以自动酿造虚弱药水，如果要改药水配方 请联系孟<br>村民拯救器",
+        },
+        {
+        name: "丐版全物品",
+        image: "./images/projects/丐版全物品.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "孟乃和一堆收集填充物的孩子们",
+        description: "盒装物品扔进箱子中，散装物品扔入潜影盒中，物品填充完毕单机音符盒<br>孩子们，再也不用手动分类了，还有，填充分类物品真的有福了",
+        },
+        {
+        name: "小型刷石机 7w",
+        image: "./images/projects/小型刷石机 7w.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "安星&伊凛&2K",
+        description: "暂无描述喵",
+        },
+        {
+        name: "仙人掌农场",
+        image: "./images/projects/仙人掌农场.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "安星&伊凛&2K",
+        description: "暂无描述喵",
+        },
+        {
+        name: "劫掠塔",
+        image: "./images/projects/劫掠塔.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "安星",
+        description: "暂无描述喵",
+        },
+        {
+        name: "720k祭坛刷沙机",
+        image: "./images/projects/720k祭坛刷沙机.png",
+        dimension: "末地",
+        type: "机器",
+        author: "九日",
+        description: "换色防熊，但最好别乱点，不要动机器内部任何的东西，本机器对时刻的要求卡的非常严，如果你不明白不要乱动就行，如果觉得不小心碰到了立刻群里叫九日，并且插告示牌告诉不要开机<br>并不是极限效率喵，如果真有需要还可以迭代哦",
+        },
+        {
+        name: "全树种树场",
+        image: "./images/projects/全树种树场.png",
+        dimension: "末地",
+        type: "机器",
+        author: "2K&伊凛&Akari",
+        description: "不许种植橡树，使用杜鹃代替。最好放假人来使用，骨粉消耗很快，建议携带盒装骨块来",
+        },
+        {
+        name: "全白名单320位熔炉组",
+        image: "./images/projects/全白名单320位熔炉组.png",
+        dimension: "末地",
+        type: "机器",
+        author: "孟乃",
+        description: "整盒输入一次性最多不能超过5盒<br>这不是老虎机，它真的是正常的，不会收税，如果收税，一定是你没有挂假人",
+        },
+        {
+        name: "下界疣农场",
+        image: "./images/projects/下界疣农场.png",
+        dimension: "末地",
+        type: "机器",
+        author: "2K",
+        description: "暂无描述喵",
+        },
+        {
+        name: "凋零玫瑰农场",
+        image: "./images/projects/凋零玫瑰农场.png",
+        dimension: "末地",
+        type: "机器",
+        author: "九日&伊凛",
+        description: "别去铁傀儡那边",
+        },
+        {
+        name: "贝场",
+        image: "./images/projects/贝场.png",
+        dimension: "末地",
+        type: "机器",
+        author: "Akari&孟乃&2K",
+        description: "<br>运贝有福了",
+        },
+        {
+        name: "小黑塔",
+        image: "./images/projects/小黑塔.png",
+        dimension: "末地",
+        type: "机器",
+        author: "九日&伊凛&逆风",
+        description: "<br>末影珍珠才是副产物！",
+        },
+        {
+        name: "沼泽刷怪塔",
+        image: "./images/projects/沼泽刷怪塔.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "孟乃&伊凛&2K&Akari",
+        description: "<br>牢",
+        },
+        {
+        name: "甘蔗机",
+        image: "./images/projects/甘蔗机.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "2K&Akari",
+        description: "<br>跟沼泽刷怪塔在一起",
+        },
+        {
+        name: "720k祭坛刷沙机配套固化",
+        image: "./images/projects/720k祭坛刷沙机配套固化.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "制造:九日&安星&TKT 技术指导:腐竹&孟乃",
+        description: "刷普通沙子的时候一定不要开固化模式",
+        },
+        {
+        name: "蛙明灯农场",
+        image: "./images/projects/蛙明灯农场.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "孟乃",
+        description: "双维度都要假人，通过地狱交通时请注意白色玻璃的箭头指向<br>15000每小时，副产物岩浆膏5000每小时",
+        },
+        {
+        name: "凋零骷髅农场",
+        image: "./images/projects/凋零骷髅农场.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "九日&伊凛&2K&Akari",
+        description: "不要进地狱门",
+        },
+        {
+        name: "黑曜石农场",
+        image: "./images/projects/黑曜石农场.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "九日",
+        description: "别去接近凋零，别去主世界端周围跑图<br>这个凋零我困了两次才困住，所以有两只凋零被我放飞了，不知道飞哪去了，总之别往周围飞",
+        },
+        {
+        name: "恶魂塔",
+        image: "./images/projects/恶魂塔.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "九日",
+        description: "开机一次再也用不上",
+        },
+        {
+        name: "68w猪人塔",
+        image: "./images/projects/68w猪人塔.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "孟乃&JIANFFN&everynum",
+        description: "只需要挂主世界假人，地狱端请点命令方块",
+        },
+        {
+        name: "猪灵交易所",
+        image: "./images/projects/猪灵交易所.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "孟乃&九日&安星&伊凛",
+        description: "和猪人塔在一起<br>有时候 你可能发现箱子里什么都没有，这是正常的，因为效率极低",
+        },
+        {
+        name: "72k刷冰机",
+        image: "./images/projects/72k刷冰机.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "九日&孟乃&伊凛&安星以及其他多多少少帮忙的人",
+        description: "开机需要预热，关机请等飞行器归位后再离开，配套经验农场需要在3034 154 2841处挂假人砍猪人并启动飞行器<br>报警的时候记得填充盒装原木和壳子",
+        },
+        {
+        name: "鱼塔",
+        image: "./images/projects/鱼塔.png",
+        dimension: "地狱",
+        type: "机器",
+        author: "JIANFFN",
+        description: "上面的门去挂机点，下面的门别走",
+        },
+        {
+        name: "粘液农场",
+        image: "./images/projects/粘液农场.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "安星&孟乃&2K&九日",
+        description: "暂无描述喵",
+        },
+        {
+        name: "苔藓骨粉机",
+        image: "./images/projects/苔藓骨粉机.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "un_vagrant",
+        description: "效率不高，一直开着就行，不抗卸载，有教皇加载<br>主要作用是美观",
+        },
+        {
+        name: "伪和平",
+        image: "./images/projects/伪和平.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "Akari",
+        description: "主世界xz5000坐标128格范围内禁止加载，禁止进门，禁止传送传送点，仅需在地狱端开关<br>挂1400多只坚守者有福了，服务器也有福了",
+        },
+        {
+        name: "原木去皮机",
+        image: "./images/projects/原木去皮机.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "JIANFFN",
+        description: "暂无描述喵",
+        },
+        {
+        name: "刷花机",
+        image: "./images/projects/刷花机.png",
+        dimension: "主世界",
+        type: "机器",
+        author: "JIANFFN",
+        description: "暂无描述喵",
+        },
+        {
+        name: "月宫",
+        image: "./images/projects/月宫.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "YuriRina",
+        description: "暂无描述喵",
+        },
+        {
+        name: "温泉小屋",
+        image: "./images/projects/温泉小屋.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "YuriRina",
+        description: "暂无描述喵",
+        },
+        {
+        name: "樱花树屋",
+        image: "./images/projects/樱花树屋.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "YuriRina",
+        description: "暂无描述喵",
+        },
+        {
+        name: "小爱心",
+        image: "./images/projects/小爱心.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "Tling777",
+        description: "暂无描述喵",
+        },
+        {
+        name: "中世纪地主の别墅",
+        image: "./images/projects/中世纪地主の别墅.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "CYHsama",
+        description: "暂无描述喵",
+        },
+        {
+        name: "地狱门（伏魔版）",
+        image: "./images/projects/地狱门（伏魔版）.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "华仔huazai",
+        description: "暂无描述喵",
+        },
+        {
+        name: "石英祭坛",
+        image: "./images/projects/石英祭坛.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "YuriRina",
+        description: "暂无描述喵",
+        },
+        {
+        name: "断桥聚落",
+        image: "./images/projects/断桥聚落.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "Dooryeah",
+        description: "暂无描述喵",
+        },
+        {
+        name: "风车麦田以及谷仓",
+        image: "./images/projects/风车麦田以及谷仓.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "CYHsama",
+        description: "暂无描述喵",
+        },
+        {
+        name: "徽派小院",
+        image: "./images/projects/徽派小院.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "Everynum",
+        description: "暂无描述喵",
+        },
+        {
+        name: "度假山庄",
+        image: "./images/projects/度假山庄.png",
+        dimension: "主世界",
+        type: "建筑",
+        author: "CYHsama",
+        description: "暂无描述喵",
+        }
+        ];
+
+        const PROJECTION_FILES = [
+        {
+        name: "16核心刷铁机.litematic",
+        url: "./projections/16核心刷铁机.litematic",
+        note: "对应项目：16核心刷铁机"
+        },
+        {
+        name: "大型村民交易所.litematic",
+        url: "./projections/大型村民交易所.litematic",
+        note: "对应项目：大型村民交易所"
+        }
         ];
 
         const filters = { dimension: "all", type: "all" };
 
         function renderProjects() {
-            const grid = document.getElementById("projectGrid");
-            if (!grid) return;
-            grid.innerHTML = "";
+        const grid = document.getElementById("projectGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
 
-            const filtered = PROJECTS.filter(p => {
-                const dimOk  = filters.dimension === "all" || p.dimension === filters.dimension;
-                const typeOk = filters.type === "all"      || p.type === filters.type;
-                return dimOk && typeOk;
-            });
+        const filtered = PROJECTS.filter(p => {
+        const dimOk = filters.dimension === "all" || p.dimension === filters.dimension;
+        const typeOk = filters.type === "all" || p.type === filters.type;
+        return dimOk && typeOk;
+        });
 
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="no-result">暂无匹配的项目 🐱</div>';
-                return;
-            }
+        if (filtered.length === 0) {
+        grid.innerHTML = '<div class="no-result">暂无匹配的项目 🐱</div>';
+        return;
+        }
 
-            filtered.forEach(project => {
-                const card = document.createElement("div");
-                card.className = "project-card";
-                card.onclick = () => showProjectModal(project);
+        filtered.forEach(project => {
+        const card = document.createElement("div");
+        card.className = "project-card";
+        card.onclick = () => showProjectModal(project);
 
-                card.innerHTML = `
-                    <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
-                    <div class="project-info">
-                        <div class="project-name">${project.name}</div>
-                        <div class="project-tags">
-                            <span class="ptag">${project.dimension}</span>
-                            <span class="ptag">${project.type}</span>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+        card.innerHTML = `
+        <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
+        <div class="project-info">
+        <div class="project-name">${project.name}</div>
+        <div class="project-tags">
+        <span class="ptag">${project.dimension}</span>
+        <span class="ptag">${project.type}</span>
+        </div>
+        </div>
+        `;
+        grid.appendChild(card);
+        });
         }
 
         document.querySelectorAll(".filter-tag").forEach(tag => {
-            tag.addEventListener("click", () => {
-                const group = tag.dataset.group;
-                const value = tag.dataset.value;
+        tag.addEventListener("click", () => {
+        const group = tag.dataset.group;
+        const value = tag.dataset.value;
 
-                document.querySelectorAll(`.filter-tag[data-group="${group}"]`).forEach(t => t.classList.remove("active"));
-                tag.classList.add("active");
+        document.querySelectorAll(`.filter-tag[data-group="${group}"]`).forEach(t => t.classList.remove("active"));
+        tag.classList.add("active");
 
-                filters[group] = value;
-                renderProjects();
-            });
+        filters[group] = value;
+        renderProjects();
+        });
         });
 
         function showProjectModal(project) {
-            // 遮罩层：纯黑色背景，不包含弹窗
-            const backdrop = document.createElement("div");
-            backdrop.className = "modal-backdrop";
+        const backdrop = document.createElement("div");
+        backdrop.className = "modal-backdrop";
 
-            // 弹窗：独立 fixed 元素，不嵌套在遮罩内
-            const modal = document.createElement("div");
-            modal.className = "modal-content";
-            modal.innerHTML = `
-                <button class="modal-close" title="关闭">✕</button>
-                <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
-                <div class="modal-body">
-                    <h2>${project.name}</h2>
-                    <div class="modal-tags">
-                        <span class="ptag">${project.dimension}</span>
-                        <span class="ptag">${project.type}</span>
-                    </div>
-                    <div class="modal-desc">${project.description}</div>
-                    <div class="modal-meta">建造者：${project.author}</div>
-                </div>
-            `;
+        const modal = document.createElement("div");
+        modal.className = "modal-content";
+        modal.innerHTML = `
+        <button class="modal-close" title="关闭">✕</button>
+        <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
+        <div class="modal-body">
+        <h2>${project.name}</h2>
+        <div class="modal-tags">
+        <span class="ptag">${project.dimension}</span>
+        <span class="ptag">${project.type}</span>
+        </div>
+        <div class="modal-desc">${project.description}</div>
+        <div class="modal-meta">建造者：${project.author}</div>
+        </div>
+        `;
 
-            document.body.appendChild(backdrop);
-            document.body.appendChild(modal);
+        document.body.appendChild(backdrop);
+        document.body.appendChild(modal);
 
-            function close() {
-                document.removeEventListener("keydown", onKey);
-                backdrop.remove();
-                modal.remove();
-            }
-            function onKey(e) {
-                if (e.key === "Escape") close();
-            }
+        function close() {
+        document.removeEventListener("keydown", onKey);
+        backdrop.remove();
+        modal.remove();
+        }
 
-            modal.querySelector(".modal-close").addEventListener("click", close);
-            backdrop.addEventListener("click", close);
-            document.addEventListener("keydown", onKey);
+        function onKey(e) {
+        if (e.key === "Escape") close();
+        }
+
+        modal.querySelector(".modal-close").addEventListener("click", close);
+        backdrop.addEventListener("click", close);
+        document.addEventListener("keydown", onKey);
+        }
+
+        function renderProjectionFiles() {
+        const list = document.getElementById("projectionList");
+        if (!list) return;
+
+        if (!PROJECTION_FILES.length) {
+        list.innerHTML = '<div class="projection-empty">暂无可下载投影文件</div>';
+        return;
+        }
+
+        list.innerHTML = PROJECTION_FILES.map(file => `
+        <a class="projection-item" href="${file.url}" download>
+        <div class="name">${file.name}</div>
+        <div class="meta">${file.note || "点击下载"}</div>
+        </a>
+        `).join("");
+        }
+
+        function initProjectionPanel() {
+        const panel = document.getElementById("projectionPanel");
+        const toggle = document.getElementById("projectionToggle");
+        if (!panel || !toggle) return;
+
+        toggle.addEventListener("click", () => {
+        panel.classList.toggle("collapsed");
+        });
+
+        renderProjectionFiles();
         }
 
         renderProjects();
+        initProjectionPanel();
     </script>
     <script src="js/animations.js"></script>
 </body>
 </html>
-
-
-
-
