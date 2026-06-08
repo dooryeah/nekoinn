@@ -21,7 +21,9 @@
             position: fixed;
             inset: 0;
             background: url('images/bg_overlay.jpg') center/cover no-repeat;
-            opacity: 0.15;
+            opacity: 0.25; /* 略微提高透明度让底图更清晰 */
+            filter: blur(2px);
+            transform: scale(1.01); /* 防止边缘漏底色 */
             pointer-events: none;
             z-index: -1;
         }
@@ -34,9 +36,8 @@
             padding: 12px 40px;
             background: #ffffffcc;
             backdrop-filter: blur(10px);
-            position: fixed;
+            /* 将 fixed 改为绝对定位或在文档流内 */
             width: 100%;
-            top: 0;
             z-index: 9999;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             box-sizing: border-box;
@@ -70,7 +71,7 @@
             height: 420px;
             background-size: cover;
             background-position: center;
-            margin-top: 70px;
+            /* 移除原有的 margin-top: 70px; */
             border-bottom: 4px solid #dbe7ff;
         }
 
@@ -83,8 +84,9 @@
             padding: 20px 40px;
             max-width: 1100px;
             margin: 24px auto;
-            background: #ffffffdd;
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
@@ -103,7 +105,7 @@
         }
 
         .uptime-bar .uptime-block {
-            background: #eef4ff;
+            background: rgba(255, 255, 255, 0.4);
             border-radius: 12px;
             padding: 10px 18px;
             text-align: center;
@@ -138,16 +140,39 @@
 
         /* 卡片 */
         .card {
-            background: white;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             margin-bottom: 24px;
         }
 
+        /* 玩家头像小卡片（带 3D 悬浮效果） */
+        .player-avatar-card {
+            width: 120px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 15px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.15s ease-out, box-shadow 0.25s ease;
+            will-change: transform;
+            transform-style: preserve-3d;
+        }
+
+        .player-avatar-card:hover {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+
         /* 玩家简介卡片 */
         .profile-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             padding: 30px;
             border-radius: 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -261,139 +286,139 @@
 
             <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
                 <!-- 玩家头像列表，保留原样 -->
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Akari_desu" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Akari_desu</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/mengnai123" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>mengnai123</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Dooryeah730" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Dooryeah730</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/YuriRina" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>YuriRina</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/huazai111" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>huazai111</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/ninesuncwc" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>ninesuncwc</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/everynum" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>everynum</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/TheQuietStarry" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>TheQuietStarry</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Serein2K" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Serein2K</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/CYHsama" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>CYHsama</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/un_vagrant" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>un_vagrant</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/JIANFFN" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>JIANFFN</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Tling777" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Tling777</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Tek1t_" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Tek1t_</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/YGDAY" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>YGDAY</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/yangyang_xl" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>yangyang_xl</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/xiaoluoawa" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>xiaoluoawa</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Harutoki" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Harutoki</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/WYT_1314" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>WYT_1314</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/bro_Yummy" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>bro_Yummy</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/lindilinlin" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>lindilinlin</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/mcxmy" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>mcxmy</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Meukr" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Meukr</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/NFnifeng" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>NFnifeng</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/erzhanggui520" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>erzhanggui520</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/LKAS" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>LKAS</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/workdaybasezz" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>workdaybasezz</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/chuan_gu" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>chuan_gu</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Jim_chim" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Jim_chim</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Rion" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Rion</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/SBrecord" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>SBrecord</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Geopelia_39" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>Geopelia_39</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/BaiYi_" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>BaiYi_</p>
                 </div>
-                <div style="width: 120px; background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/msmht" style="width: 80px; height: 80px; border-radius: 10px;">
                     <p>msmht</p>
                 </div>
@@ -461,5 +486,30 @@
     </script>
     <script src="js/animations.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.player-avatar-card');
+            console.log('Found cards:', cards.length);
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left; 
+                    const y = e.clientY - rect.top;  
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -15; 
+                    const rotateY = ((x - centerX) / centerX) * 15;
+                    card.style.transform = 'perspective(800px) translateY(-10px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(800px) translateY(0px) rotateX(0deg) rotateY(0deg)';
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+
+
+
+

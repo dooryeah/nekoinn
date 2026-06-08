@@ -10,11 +10,11 @@ body.page-fade-out {
 
 @keyframes pageIn {
     from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: none; }
 }
 
 @keyframes pageOut {
-    from { opacity: 1; transform: translateY(0); }
+    from { opacity: 1; transform: none; }
     to   { opacity: 0; transform: translateY(-10px); }
 }
 
@@ -27,16 +27,16 @@ body.page-fade-out {
 
 .fade-up.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
 }
 
-/* ===== 卡片悬停微抬 ===== */
+/* ===== 卡片悬停微抬（取消，改为头像独立动效） ===== */
 .card {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: box-shadow 0.25s ease;
 }
 
 .card:hover {
-    transform: translateY(-4px);
+    /* 移除 translateY(-4px) 取消浮起效果 */
     box-shadow: 0 8px 28px rgba(0,0,0,0.12);
 }
 

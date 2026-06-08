@@ -172,30 +172,30 @@
             }
 
         /* ===== 弹窗遮罩：纯覆盖，不参与布局 ===== */
-        .modal-backdrop {
+        .modal-wrapper {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.55);
             z-index: 10000;
-            animation: fadeIn 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            animation: fadeIn 0.2s ease forwards;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* ===== 弹窗本体：绝对定位居中 ===== */
+        /* ===== 弹窗本体：基于 flex 居中 ===== */
         .modal-content {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
             z-index: 10001;
             background: white;
             border-radius: 18px;
@@ -204,18 +204,19 @@
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 16px 48px rgba(0,0,0,0.25);
-            animation: modalSlideIn 0.3s ease;
+            animation: modalSlideIn 0.3s ease forwards;
+            /* 移除 transform: translate，改用 flex 居中 */
         }
 
         @keyframes modalSlideIn {
             from {
                 opacity: 0;
-                transform: translate(-50%, -45%);
+                transform: translateY(20px);
             }
 
             to {
                 opacity: 1;
-                transform: translate(-50%, -50%);
+                transform: translateY(0);
             }
         }
 
@@ -847,6 +848,9 @@
     });
 
     function showProjectModal(project) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "modal-wrapper";
+
     const backdrop = document.createElement("div");
     backdrop.className = "modal-backdrop";
 
@@ -866,13 +870,13 @@
     </div>
     `;
 
-    document.body.appendChild(backdrop);
-    document.body.appendChild(modal);
+    wrapper.appendChild(backdrop);
+    wrapper.appendChild(modal);
+    document.body.appendChild(wrapper);
 
     function close() {
     document.removeEventListener("keydown", onKey);
-    backdrop.remove();
-    modal.remove();
+    wrapper.remove();
     }
 
     function onKey(e) {
