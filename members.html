@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>成员区 - 喵宿咖啡厅</title>
+    <title>个人 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/main.css">
 </head>
@@ -14,16 +14,16 @@
             <a href="index.html">主页</a>
             <a href="server-exhibition.html">服务器展览</a>
             <a href="projects.html">工程项目</a>
-            <a href="members.html" aria-current="page">成员区</a>
+            <a href="members.html" aria-current="page">个人</a>
             <a href="about.html">关于</a>
         </div>
     </div>
 
-    <main class="content members-shell">
+    <main class="content personal-shell">
         <section class="card fade-up">
-            <p class="section-kicker">Members</p>
-            <h1>喵宿成员区</h1>
-            <p class="section-note">这里会根据 Supabase 白名单展示成员内容。</p>
+            <p class="section-kicker">Profile</p>
+            <h1>个人</h1>
+            <p class="section-note">查看基础信息，完成今日签到。</p>
         </section>
 
         <section id="memberLoading" class="card fade-up member-state">
@@ -52,22 +52,47 @@
         </section>
 
         <section id="memberContent" class="members-content" hidden>
-            <div class="card fade-up member-profile">
-                <img id="profileAvatar" class="member-avatar" src="./images/logo.png" alt="成员头像">
-                <div>
-                    <p class="section-kicker">Profile</p>
-                    <h2 id="profileName">成员</h2>
-                    <p id="profileEmail" class="member-muted"></p>
-                    <p class="member-role">身份：<span id="profileRole"></span></p>
-                </div>
-                <button class="ghost-btn member-signout" type="button" data-sign-out>退出登录</button>
-            </div>
+            <div class="personal-grid">
+                <section class="card fade-up personal-card">
+                    <div class="member-profile personal-profile">
+                        <img id="profileAvatar" class="member-avatar" src="./images/logo.png" alt="成员头像">
+                        <div>
+                            <p class="section-kicker">Profile</p>
+                            <h2 id="profileName">成员</h2>
+                            <p id="profileEmail" class="member-muted"></p>
+                        </div>
+                    </div>
 
-            <div class="card fade-up">
-                <p class="section-kicker">Resources</p>
-                <h2>内部资料</h2>
-                <p id="resourceEmpty" class="section-note">暂无内部资料。</p>
-                <div id="memberResources" class="member-resource-grid"></div>
+                    <div class="profile-facts">
+                        <div class="profile-fact">
+                            <span>MC ID</span>
+                            <strong id="profileMinecraft">未填写</strong>
+                        </div>
+                        <div class="profile-fact">
+                            <span>身份</span>
+                            <strong id="profileRole">member</strong>
+                        </div>
+                        <div class="profile-fact">
+                            <span>邮箱</span>
+                            <strong id="profileEmailFact">-</strong>
+                        </div>
+                    </div>
+
+                    <div class="checkin-box">
+                        <button id="checkinButton" class="join-btn" type="button">今日签到</button>
+                        <p id="checkinStatus" class="member-muted">正在读取签到状态...</p>
+                        <p id="checkinTotal" class="checkin-total">累计签到 0 天</p>
+                    </div>
+
+                    <button class="ghost-btn member-signout" type="button" data-sign-out>退出登录</button>
+                </section>
+
+                <aside class="card fade-up ranking-card">
+                    <p class="section-kicker">Ranking</p>
+                    <h2>签到排行榜</h2>
+                    <p id="rankingEmpty" class="section-note">还没有签到记录。</p>
+                    <div id="rankingList" class="ranking-list"></div>
+                </aside>
             </div>
         </section>
     </main>
@@ -75,7 +100,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/members.js"></script>
+    <script src="js/members.js?v=20260615-personal-checkin"></script>
     <script src="js/animations.js"></script>
 </body>
 </html>

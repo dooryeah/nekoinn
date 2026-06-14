@@ -147,7 +147,7 @@
         }
 
         sessionStorage.removeItem(loginEmailKey);
-        setStatus("登录成功，正在进入成员区...", "success");
+        setStatus("登录成功，正在进入个人...", "success");
         window.location.href = "members.html";
     }
 
@@ -164,7 +164,7 @@
         if (sessionBox) sessionBox.hidden = false;
         if (sessionText) {
             sessionText.textContent = profile
-                ? "已登录：" + session.user.email + "，可以进入成员区。"
+                ? "已登录：" + session.user.email + "，可以进入个人页面。"
                 : "已登录：" + session.user.email + "，但这个邮箱不在成员白名单里。";
         }
     }

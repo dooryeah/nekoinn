@@ -1149,6 +1149,10 @@ h2 {
     gap: 22px;
 }
 
+.personal-shell {
+    width: min(1180px, calc(100% - 40px));
+}
+
 .member-state {
     display: grid;
     justify-items: center;
@@ -1161,11 +1165,27 @@ h2 {
     gap: 22px;
 }
 
+.personal-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.personal-card,
+.ranking-card {
+    margin-bottom: 0;
+}
+
 .member-profile {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 18px;
     align-items: center;
+}
+
+.personal-profile {
+    grid-template-columns: auto minmax(0, 1fr);
 }
 
 .member-avatar {
@@ -1189,39 +1209,120 @@ h2 {
 }
 
 .member-signout {
-    align-self: center;
+    width: 100%;
+    margin-top: 14px;
 }
 
-.member-resource-grid {
+.profile-facts {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
     margin-top: 18px;
 }
 
-.member-resource-card {
-    padding: 16px;
+.profile-fact {
+    min-width: 0;
+    padding: 12px;
     border-radius: var(--radius);
     border: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.66);
-    box-shadow: var(--shadow-soft);
+    background: rgba(255, 255, 255, 0.58);
 }
 
-.member-resource-card h3 {
-    margin: 0 0 8px;
-    color: var(--brand);
-    font-size: 18px;
-}
-
-.member-resource-card p {
-    margin: 0 0 12px;
-    color: var(--text);
-}
-
-.member-resource-meta {
-    color: var(--mint) !important;
+.profile-fact span {
+    display: block;
+    color: var(--muted);
     font-size: 12px;
     font-weight: 800;
+}
+
+.profile-fact strong {
+    display: block;
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+    color: var(--text);
+    font-size: 15px;
+}
+
+.checkin-box {
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    margin-top: 22px;
+    padding: 18px;
+    border: 1px solid rgba(58, 155, 117, 0.18);
+    border-radius: var(--radius);
+    background: rgba(58, 155, 117, 0.1);
+}
+
+.checkin-total {
+    margin: 0;
+    color: var(--brand);
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.ranking-card h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.ranking-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.ranking-item {
+    display: grid;
+    grid-template-columns: 44px 42px minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.58);
+}
+
+.ranking-position {
+    color: var(--brand);
+    font-size: 16px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.ranking-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius);
+    object-fit: cover;
+    background: #ffffff;
+    image-rendering: pixelated;
+}
+
+.ranking-main {
+    min-width: 0;
+}
+
+.ranking-name {
+    overflow-wrap: anywhere;
+    color: var(--text);
+    font-weight: 900;
+    line-height: 1.25;
+}
+
+.ranking-meta {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.ranking-chip {
+    padding: 3px 8px;
+    border-radius: var(--radius);
+    color: #1f6d52;
+    background: rgba(58, 155, 117, 0.14);
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
 }
 
 .link-list {
@@ -1414,7 +1515,8 @@ h2 {
     }
 
     .auth-layout,
-    .member-profile {
+    .member-profile,
+    .personal-grid {
         grid-template-columns: 1fr;
     }
 
@@ -1429,6 +1531,10 @@ h2 {
 
     .member-signout {
         width: 100%;
+    }
+
+    .profile-facts {
+        grid-template-columns: 1fr;
     }
 
     .project-count {
@@ -1543,6 +1649,15 @@ h2 {
     }
 
     .filter-group {
+        width: max-content;
+    }
+
+    .ranking-item {
+        grid-template-columns: 36px 38px minmax(0, 1fr);
+    }
+
+    .ranking-chip {
+        grid-column: 3;
         width: max-content;
     }
 
