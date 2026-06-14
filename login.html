@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成员登录 - 喵宿咖啡厅</title>
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="auth-page">
+    <div class="navbar">
+        <img src="./images/logo.png" alt="Logo">
+        <div class="nav-links">
+            <a href="index.html">主页</a>
+            <a href="server-exhibition.html">服务器展览</a>
+            <a href="projects.html">工程项目</a>
+            <a href="members.html">成员区</a>
+            <a href="about.html">关于</a>
+        </div>
+    </div>
+
+    <div class="content auth-layout">
+        <section class="card fade-up auth-card">
+            <p class="section-kicker">Member Login</p>
+            <h1>成员登录</h1>
+            <p class="section-note">使用白名单邮箱登录后，可以进入喵宿成员区。</p>
+
+            <form id="loginForm" class="auth-form">
+                <label for="loginEmail">邮箱</label>
+                <input id="loginEmail" type="email" name="email" autocomplete="email" placeholder="name@example.com" required>
+                <button id="loginSubmit" class="join-btn" type="submit">发送登录邮件</button>
+            </form>
+
+            <div id="loginStatus" class="auth-status" role="status" aria-live="polite"></div>
+        </section>
+
+        <aside id="sessionBox" class="card fade-up auth-side" hidden>
+            <h2>当前账号</h2>
+            <p id="sessionText"></p>
+            <div class="auth-actions">
+                <a class="join-btn" href="members.html">进入成员区</a>
+                <button id="loginSignOut" class="ghost-btn" type="button">退出登录</button>
+            </div>
+        </aside>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/animations.js"></script>
+</body>
+</html>

@@ -2,183 +2,20 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>关于 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
-    <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: #f4f8ff;
-        }
-
-            body::before {
-                content: "";
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                background-image: url('images/about_bg.jpg');
-                background-position: center center;
-                background-size: cover;
-                background-repeat: no-repeat;
-                opacity: 0.50;
-                pointer-events: none;
-                z-index: -1;
-            }
-
-        /* 统一导航栏 */
-        .navbar {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            align-items: center;
-            padding: 12px 40px;
-            background: #ffffffcc;
-            backdrop-filter: blur(10px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-        }
-
-            .navbar img {
-                height: 48px;
-                filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
-            }
-
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-        }
-
-            .nav-links a {
-                text-decoration: none;
-                color: #4a6fa5;
-                font-weight: 600;
-                transition: 0.2s;
-            }
-
-                .nav-links a:hover {
-                    color: #1e4f91;
-                }
-
-        .content {
-            padding: 120px 40px 40px 40px;
-            max-width: 960px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-        }
-
-        h1, h2 {
-            color: #4a6fa5;
-            margin: 0 0 16px;
-            text-align: center;
-        }
-
-        .about-text {
-            color: #333;
-            line-height: 1.6;
-            white-space: pre-line;
-        }
-
-        .link-list {
-            margin-top: 12px;
-            padding-left: 18px;
-        }
-
-            .link-list li {
-                margin: 6px 0;
-                opacity: 0;
-                transform: translateX(-16px);
-                animation: linkSlideIn 0.4s ease forwards;
-            }
-
-                .link-list li:nth-child(1) {
-                    animation-delay: 0.3s;
-                }
-
-                .link-list li:nth-child(2) {
-                    animation-delay: 0.45s;
-                }
-
-                .link-list li:nth-child(3) {
-                    animation-delay: 0.6s;
-                }
-
-                .link-list li:nth-child(4) {
-                    animation-delay: 0.75s;
-                }
-
-        @keyframes linkSlideIn {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .link-list a {
-            color: #2f5fa8;
-            text-decoration: none;
-            transition: color 0.2s, padding-left 0.2s;
-        }
-
-            .link-list a:hover {
-                text-decoration: underline;
-                color: #1e4f91;
-                padding-left: 4px;
-            }
-
-        /* 右下角隐蔽小按钮 */
-        .help-btn {
-            position: fixed;
-            right: 5px;
-            bottom: 5px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: rgba(180, 180, 180, 0.2);
-            color: rgba(150, 150, 150, 0.3);
-            font-size: 9px;
-            font-weight: normal;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            z-index: 10000;
-            opacity: 0.25;
-            transition: all 0.3s;
-            cursor: default;
-        }
-
-            .help-btn:hover {
-                width: 24px;
-                height: 24px;
-                background: #4a6fa5;
-                color: #fff;
-                font-size: 14px;
-                opacity: 1;
-                cursor: pointer;
-            }
-    </style>
+    <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
+<body class="about-page">
     <div class="navbar">
         <img src="./images/logo.png" alt="Logo">
         <div class="nav-links">
             <a href="index.html">主页</a>
             <a href="server-exhibition.html">服务器展览</a>
             <a href="projects.html">工程项目</a>
-            <a href="about.html">关于</a>
+            <a href="members.html">成员区</a>
+            <a href="about.html" aria-current="page">关于</a>
         </div>
     </div>
 
@@ -240,4 +77,3 @@
     <script src="js/animations.js"></script>
 </body>
 </html>
-

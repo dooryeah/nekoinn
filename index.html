@@ -2,240 +2,15 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主页 - 欢迎来到喵宿~</title>
     <link rel="stylesheet" href="css/animations.css">
 
     <!-- Sakana Widget 样式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css">
-
-    <style>
-        /* 全局重置 */
-        body {
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: #f4f8ff;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: url('images/bg_overlay.jpg') center/cover no-repeat;
-            opacity: 0.25; /* 略微提高透明度让底图更清晰 */
-            filter: blur(2px);
-            transform: scale(1.01); /* 防止边缘漏底色 */
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* 顶部导航栏：Logo 左侧，链接居中 */
-        .navbar {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            align-items: center;
-            padding: 12px 40px;
-            background: #ffffffcc;
-            backdrop-filter: blur(10px);
-            /* 将 fixed 改为绝对定位或在文档流内 */
-            width: 100%;
-            z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-        }
-
-        .navbar img {
-            height: 48px;
-            filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
-        }
-
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #4a6fa5;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: #1e4f91;
-        }
-
-        /* 顶部大图 */
-        .banner {
-            width: 100%;
-            height: 420px;
-            background-size: cover;
-            background-position: center;
-            /* 移除原有的 margin-top: 70px; */
-            border-bottom: 4px solid #dbe7ff;
-        }
-
-        /* 服务器运行时间计时器 - 横向 */
-        .uptime-bar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 32px;
-            padding: 20px 40px;
-            max-width: 1100px;
-            margin: 24px auto;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        .uptime-bar .uptime-title {
-            font-size: 15px;
-            color: #4a6fa5;
-            font-weight: 700;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
-
-        .uptime-bar .uptime-blocks {
-            display: flex;
-            gap: 12px;
-        }
-
-        .uptime-bar .uptime-block {
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 12px;
-            padding: 10px 18px;
-            text-align: center;
-            min-width: 64px;
-        }
-
-        .uptime-bar .uptime-num {
-            font-size: 28px;
-            font-weight: 800;
-            color: #2f5fa8;
-            line-height: 1;
-        }
-
-        .uptime-bar .uptime-label {
-            font-size: 12px;
-            color: #7a9cc6;
-            margin-top: 4px;
-        }
-
-        /* 内容区 */
-        .content {
-            padding: 0 40px 40px 40px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: #4a6fa5;
-            margin-bottom: 30px;
-        }
-
-        /* 卡片 */
-        .card {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
-        }
-
-        /* 玩家头像小卡片（带 3D 悬浮效果） */
-        .player-avatar-card {
-            width: 120px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            padding: 15px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: transform 0.15s ease-out, box-shadow 0.25s ease;
-            will-change: transform;
-            transform-style: preserve-3d;
-        }
-
-        .player-avatar-card:hover {
-            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-        }
-
-        /* 玩家简介卡片 */
-        .profile-card {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-
-        .profile-card img {
-            width: 120px;
-            height: 120px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-        }
-
-        .profile-name {
-            font-size: 24px;
-            font-weight: bold;
-            color: #4a6fa5;
-            margin-bottom: 10px;
-        }
-
-        .profile-desc {
-            font-size: 16px;
-            color: #555;
-            line-height: 1.6;
-            white-space: pre-line;
-        }
-
-        /* 按钮 */
-        .join-btn {
-            display: inline-block;
-            margin-top: 16px;
-            padding: 12px 28px;
-            background: #6aa6ff;
-            color: white;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 16px;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .join-btn:hover {
-            background: #4f8df0;
-        }
-
-        /* Sakana Widget 固定容器 */
-        .sakana-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10000;
-            width: 150px;
-            height: 150px;
-            cursor: pointer;
-        }
-
-        #sakana-widget {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
+<body class="home-page">
 
     <!-- Sakana Widget 挂载点 -->
     <div class="sakana-container">
@@ -246,15 +21,26 @@
     <div class="navbar">
         <img src="./images/logo.png" alt="Logo">
         <div class="nav-links">
-            <a href="index.html">主页</a>
+            <a href="index.html" aria-current="page">主页</a>
             <a href="server-exhibition.html">服务器展览</a>
             <a href="projects.html">工程项目</a>
+            <a href="members.html">成员区</a>
             <a href="about.html">关于</a>
         </div>
     </div>
 
-    <!-- 首页大图 -->
-    <div class="banner" style="background-image: url('images/home_banner.jpg');"></div>
+    <!-- 首页首屏 -->
+    <section class="home-hero">
+        <div class="hero-copy">
+            <p class="hero-kicker">Vanilla-neko Minecraft Survival</p>
+            <h1>ねこ宿</h1>
+            <p>对MC纯粹的热爱，注重交流，真诚对待每一位成员，欢迎来到喵宿~</p>
+            <div class="hero-actions">
+                <button class="join-btn" type="button" data-copy-qq>复制审核群号</button>
+                <a class="ghost-btn" href="projects.html">查看工程项目</a>
+            </div>
+        </div>
+    </section>
 
     <!-- 服务器运行时间计时器 -->
     <div class="uptime-bar fade-up">
@@ -281,167 +67,200 @@
 
     <!-- 内容区 -->
     <div class="content">
-        <div class="card fade-up">
-            <h2>主页</h2>
+        <div class="card fade-up players-card">
+            <p class="section-kicker">Players</p>
+            <h2>白名单成员</h2>
 
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
+            <div class="player-grid">
                 <!-- 玩家头像列表，保留原样 -->
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Akari_desu" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Akari_desu" loading="lazy">
                     <p>Akari_desu</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/mengnai123" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/mengnai123" loading="lazy">
                     <p>mengnai123</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Dooryeah730" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Dooryeah730" loading="lazy">
                     <p>Dooryeah730</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/YuriRina" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/YuriRina" loading="lazy">
                     <p>YuriRina</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/huazai111" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/huazai111" loading="lazy">
                     <p>huazai111</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/ninesuncwc" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/ninesuncwc" loading="lazy">
                     <p>ninesuncwc</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/everynum" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/everynum" loading="lazy">
                     <p>everynum</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/TheQuietStarry" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/TheQuietStarry" loading="lazy">
                     <p>TheQuietStarry</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Serein2K" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Serein2K" loading="lazy">
                     <p>Serein2K</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/CYHsama" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/CYHsama" loading="lazy">
                     <p>CYHsama</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/un_vagrant" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/un_vagrant" loading="lazy">
                     <p>un_vagrant</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/JIANFFN" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/JIANFFN" loading="lazy">
                     <p>JIANFFN</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Tling777" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Tling777" loading="lazy">
                     <p>Tling777</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Tek1t_" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Tek1t_" loading="lazy">
                     <p>Tek1t_</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/YGDAY" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/YGDAY" loading="lazy">
                     <p>YGDAY</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/yangyang_xl" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/yangyang_xl" loading="lazy">
                     <p>yangyang_xl</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/xiaoluoawa" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/xiaoluoawa" loading="lazy">
                     <p>xiaoluoawa</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Harutoki" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Harutoki" loading="lazy">
                     <p>Harutoki</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/WYT_1314" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/WYT_1314" loading="lazy">
                     <p>WYT_1314</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/bro_Yummy" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/bro_Yummy" loading="lazy">
                     <p>bro_Yummy</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/lindilinlin" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/lindilinlin" loading="lazy">
                     <p>lindilinlin</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/mcxmy" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/mcxmy" loading="lazy">
                     <p>mcxmy</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Meukr" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Meukr" loading="lazy">
                     <p>Meukr</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/NFnifeng" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/NFnifeng" loading="lazy">
                     <p>NFnifeng</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/erzhanggui520" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/erzhanggui520" loading="lazy">
                     <p>erzhanggui520</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/LKAS" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/LKAS" loading="lazy">
                     <p>LKAS</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/workdaybasezz" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/workdaybasezz" loading="lazy">
                     <p>workdaybasezz</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/chuan_gu" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/chuan_gu" loading="lazy">
                     <p>chuan_gu</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Jim_chim" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Jim_chim" loading="lazy">
                     <p>Jim_chim</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Rion" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Rion" loading="lazy">
                     <p>Rion</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/SBrecord" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/SBrecord" loading="lazy">
                     <p>SBrecord</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Geopelia_39" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/Geopelia_39" loading="lazy">
                     <p>Geopelia_39</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/BaiYi_" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/BaiYi_" loading="lazy">
                     <p>BaiYi_</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/msmht" style="width: 80px; height: 80px; border-radius: 10px;">
+                    <img src="https://mc-heads.net/avatar/msmht" loading="lazy">
                     <p>msmht</p>
                 </div>
             </div>
         </div>
 
         <div class="card fade-up">
+            <p class="section-kicker">Join Us</p>
             <h1>欢迎来到ねこ宿</h1>
-            <p>我们真心希望，想要来一次永不落幕的MC</p>
-            <p>如果屏幕前的你也有这样的想法以及热情，请一定要加入我们！</p>
+            <p class="section-note">我们真心希望，想要来一次永不落幕的 MC。如果屏幕前的你也有这样的想法以及热情，请一定要加入我们！</p>
 
-            <a class="join-btn" onclick="copyQQ()">点击复制服务器 QQ 审核群号</a>
+            <div class="join-actions">
+                <button class="join-btn" type="button" data-copy-qq>复制服务器 QQ 审核群号</button>
+            </div>
         </div>
     </div>
+
+    <div id="copyToast" class="copy-toast" role="status" aria-live="polite"></div>
 
     <!-- 脚本 -->
     <script>
         function copyQQ() {
             const qq = "1082948381";
-            navigator.clipboard.writeText(qq).then(() => {
-                alert("已复制 QQ 审核群号：" + qq);
-            });
+            const showCopied = () => showCopyToast("已复制 QQ 审核群号：" + qq);
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(qq).then(showCopied).catch(() => fallbackCopy(qq));
+            } else {
+                fallbackCopy(qq);
+            }
         }
+
+        function fallbackCopy(text) {
+            const input = document.createElement("input");
+            input.value = text;
+            input.style.position = "fixed";
+            input.style.opacity = "0";
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand("copy");
+            input.remove();
+            showCopyToast("已复制 QQ 审核群号：" + text);
+        }
+
+        function showCopyToast(message) {
+            const toast = document.getElementById("copyToast");
+            if (!toast) return;
+            toast.textContent = message;
+            toast.classList.add("show");
+            clearTimeout(window.copyToastTimer);
+            window.copyToastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+        }
+
+        document.querySelectorAll("[data-copy-qq]").forEach(button => {
+            button.addEventListener("click", copyQQ);
+        });
 
         // 服务器运行时间计时器
         const SERVER_START = new Date("2026-02-14T00:00:00");
@@ -465,12 +284,12 @@
         updateUptime();
         setInterval(updateUptime, 1000);
 
-        
+
         function initSakanaWidget() {
     const myChar = SakanaWidget.getCharacter('chisato');
-    myChar.image = './images/Akari.png';  
+    myChar.image = './images/Akari.png';
     SakanaWidget.registerCharacter('Akari', myChar);
-    
+
     new SakanaWidget({
         character: 'Akari',
         size: 150,
@@ -479,9 +298,9 @@
     }).mount('#sakana-widget');
 }
     </script>
-    <script 
-        async 
-        onload="initSakanaWidget()" 
+    <script
+        async
+        onload="initSakanaWidget()"
         src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js">
     </script>
     <script src="js/animations.js"></script>
@@ -489,15 +308,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.player-avatar-card');
-            console.log('Found cards:', cards.length);
             cards.forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left; 
-                    const y = e.clientY - rect.top;  
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -15; 
+                    const rotateX = ((y - centerY) / centerY) * -15;
                     const rotateY = ((x - centerX) / centerX) * 15;
                     card.style.transform = 'perspective(800px) translateY(-10px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
                 });
@@ -509,7 +327,3 @@
     </script>
 </body>
 </html>
-
-
-
-

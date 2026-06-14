@@ -2,135 +2,28 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>服务器展览 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
-    <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: #f4f8ff;
-        }
-
-        /* 统一导航栏 */
-        .navbar {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            align-items: center;
-            padding: 12px 40px;
-            background: #ffffffcc;
-            backdrop-filter: blur(10px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            box-sizing: border-box;
-        }
-
-        .navbar img {
-            height: 48px;
-            filter: drop-shadow(0 0 4px rgba(0,0,0,0.2));
-        }
-
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #4a6fa5;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: #1e4f91;
-        }
-
-        .content {
-            padding: 120px 40px 40px 40px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-        }
-
-        h1, h2 {
-            color: #4a6fa5;
-            margin: 0 0 16px;
-            text-align: center;
-        }
-
-        .gallery {
-            display: grid;
-            gap: 16px;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            margin-top: 16px;
-        }
-
-        .thumb {
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-            overflow: hidden;
-            border: 1px solid #e6ecff;
-        }
-
-        .thumb img {
-            width: 100%;
-            display: block;
-            object-fit: cover;
-            height: 160px;
-            background: #f7f9ff;
-            cursor: zoom-in;
-        }
-
-        /* 放大预览遮罩 */
-        .viewer-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 20px;
-        }
-
-        .viewer-image {
-            max-width: 90vw;
-            max-height: 90vh;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-            background: #111;
-        }
-    </style>
+    <link rel="stylesheet" href="css/main.css">
 </head>
-<body>
+<body class="exhibition-page">
     <div class="navbar">
         <img src="./images/logo.png" alt="Logo">
         <div class="nav-links">
             <a href="index.html">主页</a>
-            <a href="server-exhibition.html">服务器展览</a>
+            <a href="server-exhibition.html" aria-current="page">服务器展览</a>
             <a href="projects.html">工程项目</a>
+            <a href="members.html">成员区</a>
             <a href="about.html">关于</a>
         </div>
     </div>
 
     <div class="content">
         <div class="card fade-up">
+            <p class="section-kicker">Gallery</p>
             <h1>服务器展览</h1>
-            <p style="text-align:center; color:#556;">
-                风风光光的喵~
-            </p>
+            <p class="section-note">风风光光的喵~ 点击图片可以放大预览，也可以用左右键切换。</p>
         </div>
 
         <div class="card fade-up">
@@ -163,45 +56,106 @@
             "./images/server_20.png",
         ];
 
-        function showViewer(src) {
+        let currentImageIndex = 0;
+        let viewer = null;
+
+        function showViewer(index) {
+            currentImageIndex = index;
             const backdrop = document.createElement("div");
             backdrop.className = "viewer-backdrop";
 
+            const closeBtn = document.createElement("button");
+            closeBtn.className = "viewer-close";
+            closeBtn.type = "button";
+            closeBtn.title = "关闭";
+            closeBtn.textContent = "×";
+
+            const prevBtn = document.createElement("button");
+            prevBtn.className = "viewer-nav viewer-prev";
+            prevBtn.type = "button";
+            prevBtn.title = "上一张";
+            prevBtn.textContent = "‹";
+
             const img = document.createElement("img");
             img.className = "viewer-image";
-            img.src = src;
-            img.alt = "preview";
+            img.alt = "服务器展览图片";
 
+            const nextBtn = document.createElement("button");
+            nextBtn.className = "viewer-nav viewer-next";
+            nextBtn.type = "button";
+            nextBtn.title = "下一张";
+            nextBtn.textContent = "›";
+
+            const counter = document.createElement("div");
+            counter.className = "viewer-counter";
+
+            backdrop.appendChild(closeBtn);
+            backdrop.appendChild(prevBtn);
             backdrop.appendChild(img);
+            backdrop.appendChild(nextBtn);
+            backdrop.appendChild(counter);
             document.body.appendChild(backdrop);
+
+            viewer = { backdrop, img, counter };
+            updateViewer();
 
             function closeViewer() {
                 document.removeEventListener("keydown", onKey);
                 backdrop.removeEventListener("click", onClick);
                 backdrop.remove();
+                viewer = null;
             }
             function onClick(e) {
                 if (e.target === backdrop) closeViewer();
             }
             function onKey(e) {
                 if (e.key === "Escape") closeViewer();
+                if (e.key === "ArrowLeft") showPrevImage();
+                if (e.key === "ArrowRight") showNextImage();
             }
 
+            closeBtn.addEventListener("click", closeViewer);
+            prevBtn.addEventListener("click", showPrevImage);
+            nextBtn.addEventListener("click", showNextImage);
             backdrop.addEventListener("click", onClick);
             document.addEventListener("keydown", onKey);
+        }
+
+        function updateViewer() {
+            if (!viewer) return;
+            viewer.img.src = EXHIBITION_IMAGES[currentImageIndex];
+            viewer.counter.textContent = `${currentImageIndex + 1} / ${EXHIBITION_IMAGES.length}`;
+        }
+
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + EXHIBITION_IMAGES.length) % EXHIBITION_IMAGES.length;
+            updateViewer();
+        }
+
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % EXHIBITION_IMAGES.length;
+            updateViewer();
         }
 
         function render(arr) {
             const gallery = document.getElementById("gallery");
             if (!gallery) return;
             gallery.innerHTML = "";
-            arr.forEach((src) => {
+            arr.forEach((src, index) => {
                 const div = document.createElement("div");
                 div.className = "thumb";
+                div.tabIndex = 0;
                 const img = document.createElement("img");
                 img.src = src;
                 img.alt = "server image";
-                img.ondblclick = () => showViewer(src);
+                img.loading = "lazy";
+                div.addEventListener("click", () => showViewer(index));
+                div.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        showViewer(index);
+                    }
+                });
                 div.appendChild(img);
                 gallery.appendChild(div);
             });

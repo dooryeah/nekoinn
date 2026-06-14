@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成员区 - 喵宿咖啡厅</title>
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="members-page">
+    <div class="navbar">
+        <img src="./images/logo.png" alt="Logo">
+        <div class="nav-links">
+            <a href="index.html">主页</a>
+            <a href="server-exhibition.html">服务器展览</a>
+            <a href="projects.html">工程项目</a>
+            <a href="members.html" aria-current="page">成员区</a>
+            <a href="about.html">关于</a>
+        </div>
+    </div>
+
+    <main class="content members-shell">
+        <section class="card fade-up">
+            <p class="section-kicker">Members</p>
+            <h1>喵宿成员区</h1>
+            <p class="section-note">这里会根据 Supabase 白名单展示成员内容。</p>
+        </section>
+
+        <section id="memberLoading" class="card fade-up member-state">
+            <h2>正在检查登录状态...</h2>
+        </section>
+
+        <section id="memberSetup" class="card fade-up member-state" hidden>
+            <h2>还差一点配置</h2>
+            <p>请先填写 <code>js/supabase-config.js</code>，并在 Supabase 执行 <code>supabase/schema.sql</code>。</p>
+            <a class="ghost-btn" href="login.html">返回登录</a>
+        </section>
+
+        <section id="memberGuest" class="card fade-up member-state" hidden>
+            <h2>需要登录</h2>
+            <p>登录后才可以检查成员白名单。</p>
+            <a class="join-btn" href="login.html">去登录</a>
+        </section>
+
+        <section id="memberDenied" class="card fade-up member-state" hidden>
+            <h2>暂时不能进入</h2>
+            <p><span id="deniedEmail"></span> 不在成员白名单里。</p>
+            <div class="auth-actions">
+                <a class="ghost-btn" href="index.html">回到主页</a>
+                <button class="ghost-btn" type="button" data-sign-out>换个账号</button>
+            </div>
+        </section>
+
+        <section id="memberContent" class="members-content" hidden>
+            <div class="card fade-up member-profile">
+                <img id="profileAvatar" class="member-avatar" src="./images/logo.png" alt="成员头像">
+                <div>
+                    <p class="section-kicker">Profile</p>
+                    <h2 id="profileName">成员</h2>
+                    <p id="profileEmail" class="member-muted"></p>
+                    <p class="member-role">身份：<span id="profileRole"></span></p>
+                </div>
+                <button class="ghost-btn member-signout" type="button" data-sign-out>退出登录</button>
+            </div>
+
+            <div class="card fade-up">
+                <p class="section-kicker">Resources</p>
+                <h2>内部资料</h2>
+                <p id="resourceEmpty" class="section-note">暂无内部资料。</p>
+                <div id="memberResources" class="member-resource-grid"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/members.js"></script>
+    <script src="js/animations.js"></script>
+</body>
+</html>
