@@ -7,9 +7,44 @@ create table if not exists public.member_whitelist (
     minecraft_name text,
     role text not null default 'member',
     avatar_url text,
+    signature text,
+    background_path text,
     is_active boolean not null default true,
     created_at timestamptz not null default now()
 );
+
+alter table public.member_whitelist
+    add column if not exists signature text,
+    add column if not exists background_path text;
+
+do $$
+begin
+    if not exists (
+        select 1
+        from pg_constraint
+        where conname = 'member_whitelist_signature_length'
+        and conrelid = 'public.member_whitelist'::regclass
+    ) then
+        alter table public.member_whitelist
+            add constraint member_whitelist_signature_length
+            check (signature is null or char_length(signature) <= 80);
+    end if;
+end
+$$;
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+    'member-backgrounds',
+    'member-backgrounds',
+    true,
+    4194304,
+    array['image/png', 'image/jpeg', 'image/webp', 'image/gif']
+)
+on conflict (id) do update
+set
+    public = excluded.public,
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
 
 create table if not exists public.member_checkins (
     id uuid primary key default gen_random_uuid(),
@@ -61,6 +96,54 @@ to authenticated
 with check (
     email_normalized = lower(auth.jwt() ->> 'email')
     and checkin_date = ((timezone('Asia/Shanghai', now()))::date)
+    and exists (
+        select 1
+        from public.member_whitelist mw
+        where mw.is_active
+        and mw.email_normalized = lower(auth.jwt() ->> 'email')
+    )
+);
+
+drop policy if exists "members can upload own backgrounds" on storage.objects;
+create policy "members can upload own backgrounds"
+on storage.objects
+for insert
+to authenticated
+with check (
+    bucket_id = 'member-backgrounds'
+    and (storage.foldername(name))[1] = lower(auth.jwt() ->> 'email')
+    and exists (
+        select 1
+        from public.member_whitelist mw
+        where mw.is_active
+        and mw.email_normalized = lower(auth.jwt() ->> 'email')
+    )
+);
+
+drop policy if exists "members can read own background records" on storage.objects;
+create policy "members can read own background records"
+on storage.objects
+for select
+to authenticated
+using (
+    bucket_id = 'member-backgrounds'
+    and (storage.foldername(name))[1] = lower(auth.jwt() ->> 'email')
+    and exists (
+        select 1
+        from public.member_whitelist mw
+        where mw.is_active
+        and mw.email_normalized = lower(auth.jwt() ->> 'email')
+    )
+);
+
+drop policy if exists "members can delete own backgrounds" on storage.objects;
+create policy "members can delete own backgrounds"
+on storage.objects
+for delete
+to authenticated
+using (
+    bucket_id = 'member-backgrounds'
+    and (storage.foldername(name))[1] = lower(auth.jwt() ->> 'email')
     and exists (
         select 1
         from public.member_whitelist mw
@@ -153,6 +236,52 @@ begin
 end;
 $$;
 
+create or replace function public.update_my_profile(
+    new_signature text default null,
+    new_background_path text default null
+)
+returns table (
+    signature text,
+    background_path text
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    current_email text := lower(auth.jwt() ->> 'email');
+    normalized_signature text := nullif(btrim(coalesce(new_signature, '')), '');
+    normalized_background_path text := nullif(btrim(coalesce(new_background_path, '')), '');
+begin
+    if current_email is null or not exists (
+        select 1
+        from public.member_whitelist mw
+        where mw.is_active
+        and mw.email_normalized = current_email
+    ) then
+        raise exception 'not_whitelisted';
+    end if;
+
+    if normalized_signature is not null and char_length(normalized_signature) > 80 then
+        raise exception 'signature_too_long';
+    end if;
+
+    if normalized_background_path is not null
+        and split_part(normalized_background_path, '/', 1) <> current_email then
+        raise exception 'invalid_background_path';
+    end if;
+
+    return query
+    update public.member_whitelist mw
+    set
+        signature = normalized_signature,
+        background_path = normalized_background_path
+    where mw.is_active
+    and mw.email_normalized = current_email
+    returning mw.signature, mw.background_path;
+end;
+$$;
+
 create or replace function public.get_checkin_leaderboard(limit_count integer default 30)
 returns table (
     rank_position bigint,
@@ -217,8 +346,10 @@ $$;
 
 revoke all on function public.get_my_checkin_status() from public;
 revoke all on function public.check_in_member() from public;
+revoke all on function public.update_my_profile(text, text) from public;
 revoke all on function public.get_checkin_leaderboard(integer) from public;
 
 grant execute on function public.get_my_checkin_status() to authenticated;
 grant execute on function public.check_in_member() to authenticated;
+grant execute on function public.update_my_profile(text, text) to authenticated;
 grant execute on function public.get_checkin_leaderboard(integer) to authenticated;

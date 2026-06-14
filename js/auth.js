@@ -37,7 +37,7 @@
 
         const { data, error } = await client
             .from("member_whitelist")
-            .select("email,nickname,minecraft_name,role,avatar_url")
+            .select("email,nickname,minecraft_name,role,avatar_url,signature,background_path")
             .eq("email_normalized", user.email.toLowerCase())
             .eq("is_active", true)
             .maybeSingle();

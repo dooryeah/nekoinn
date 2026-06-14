@@ -1,11 +1,11 @@
 # Supabase Auth + 成员白名单
 
-这个静态站使用 Supabase Auth 做登录，用 `member_whitelist` 表决定谁能进入个人页面，并用 `member_checkins` 记录每日签到。
+这个静态站使用 Supabase Auth 做登录，用 `member_whitelist` 表决定谁能进入个人页面，并用 `member_checkins` 记录每日签到。个人页的文字签名存在 `member_whitelist`，背景图上传到 Supabase Storage 的 `member-backgrounds` bucket。
 
 ## 设置步骤
 
 1. 在 Supabase 新建项目。
-2. 到 SQL Editor 执行 `supabase/schema.sql`。以后新增签到功能或表结构变化时，也可以重新执行这个文件。
+2. 到 SQL Editor 执行 `supabase/schema.sql`。以后新增签到、个人资料或 Storage 权限变化时，也可以重新执行这个文件。
 3. 在 `member_whitelist` 表插入成员邮箱，例如：
 
 ```sql
@@ -36,3 +36,5 @@ Redirect URLs: https://nekoinn.top/login.html
 `members.html` 是静态文件，任何人都能打开页面源码。真正需要保护的成员资料应放在 Supabase 表里，通过 RLS 规则限制读取。
 
 签到按北京时间计算日期。每个白名单邮箱每天只能签到一次，排行榜按累计签到天数排序。
+
+背景图 bucket 是公开读取的，方便静态网页直接展示图片；上传、删除和资料保存都限制为已登录且在白名单内的成员。前端限制图片最大 4MB，支持 PNG、JPG、WebP 和 GIF。

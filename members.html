@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-hidden-fix">
+    <link rel="stylesheet" href="css/main.css?v=20260615-profile-custom">
 </head>
 <body class="members-page">
     <div class="navbar">
@@ -54,12 +54,17 @@
         <section id="memberContent" class="members-content" hidden>
             <div class="personal-grid">
                 <section class="card fade-up personal-card">
+                    <div id="profileBackgroundPreview" class="profile-background-preview" aria-label="个人背景图预览">
+                        <span id="profileBackgroundEmpty">还没有设置背景图</span>
+                    </div>
+
                     <div class="member-profile personal-profile">
                         <img id="profileAvatar" class="member-avatar" src="./images/logo.png" alt="成员头像">
                         <div>
                             <p class="section-kicker">Profile</p>
                             <h2 id="profileName">成员</h2>
                             <p id="profileEmail" class="member-muted"></p>
+                            <p id="profileSignatureText" class="profile-signature">还没有签名。</p>
                         </div>
                     </div>
 
@@ -84,6 +89,21 @@
                         <p id="checkinTotal" class="checkin-total">累计签到 0 天</p>
                     </div>
 
+                    <form id="profileEditForm" class="profile-edit-form">
+                        <label for="profileSignatureInput">文字签名</label>
+                        <textarea id="profileSignatureInput" maxlength="80" rows="3" placeholder="写一句给大家看的签名"></textarea>
+                        <div class="profile-upload-row">
+                            <label class="ghost-btn profile-file-button" for="profileBackgroundInput">选择背景图</label>
+                            <input id="profileBackgroundInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+                            <span id="profileFileName" class="member-muted">支持 PNG/JPG/WebP/GIF，最大 4MB</span>
+                        </div>
+                        <div class="profile-edit-actions">
+                            <button id="profileSaveButton" class="join-btn" type="submit">保存资料</button>
+                            <button id="profileClearBackgroundButton" class="ghost-btn" type="button">清除背景图</button>
+                        </div>
+                        <p id="profileEditStatus" class="member-muted profile-edit-status"></p>
+                    </form>
+
                     <button class="ghost-btn member-signout" type="button" data-sign-out>退出登录</button>
                 </section>
 
@@ -99,8 +119,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/members.js?v=20260615-personal-checkin"></script>
+    <script src="js/auth.js?v=20260615-profile-custom"></script>
+    <script src="js/members.js?v=20260615-profile-custom"></script>
     <script src="js/animations.js"></script>
 </body>
 </html>
