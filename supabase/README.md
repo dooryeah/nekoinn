@@ -20,7 +20,16 @@ Site URL: https://nekoinn.top
 Redirect URLs: https://nekoinn.top/login.html
 ```
 
-5. 把 `js/supabase-config.js` 里的 `url` 和 `anonKey` 换成你的 Supabase Project URL 和 anon/public key。
+5. 到 Authentication > Email Templates > Magic Link，把模板改成显示验证码：
+
+```html
+<h2>喵宿登录验证码</h2>
+<p>你的登录验证码是：</p>
+<p style="font-size: 28px; font-weight: 700; letter-spacing: 4px;">{{ .Token }}</p>
+<p>验证码请勿转发给其他人。</p>
+```
+
+6. 把 `js/supabase-config.js` 里的 `url` 和 `anonKey` 换成你的 Supabase Project URL 和 anon/public key。
 
 ## 注意
 

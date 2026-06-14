@@ -23,12 +23,23 @@
         <section class="card fade-up auth-card">
             <p class="section-kicker">Member Login</p>
             <h1>成员登录</h1>
-            <p class="section-note">使用白名单邮箱登录后，可以进入喵宿成员区。</p>
+            <p class="section-note">输入白名单邮箱，收到验证码后在这里完成登录。</p>
 
-            <form id="loginForm" class="auth-form">
+            <form id="emailForm" class="auth-form">
                 <label for="loginEmail">邮箱</label>
                 <input id="loginEmail" type="email" name="email" autocomplete="email" placeholder="name@example.com" required>
-                <button id="loginSubmit" class="join-btn" type="submit">发送登录邮件</button>
+                <button id="sendCodeSubmit" class="join-btn" type="submit">发送验证码</button>
+            </form>
+
+            <form id="codeForm" class="auth-form auth-code-form" hidden>
+                <div class="auth-code-target" id="codeTarget"></div>
+                <label for="loginCode">验证码</label>
+                <input id="loginCode" class="auth-code-input" type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="输入 6 位验证码" required>
+                <button id="verifyCodeSubmit" class="join-btn" type="submit">验证并登录</button>
+                <div class="auth-actions">
+                    <button id="resendCode" class="ghost-btn" type="button">重新发送</button>
+                    <button id="changeEmail" class="ghost-btn" type="button">换个邮箱</button>
+                </div>
             </form>
 
             <div id="loginStatus" class="auth-status" role="status" aria-live="polite"></div>

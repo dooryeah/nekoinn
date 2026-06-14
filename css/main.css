@@ -1086,6 +1086,28 @@ h2 {
     box-shadow: 0 0 0 3px rgba(58, 155, 117, 0.16);
 }
 
+.auth-code-form {
+    margin-top: 18px;
+}
+
+.auth-code-target {
+    padding: 10px 12px;
+    border: 1px solid rgba(58, 155, 117, 0.18);
+    border-radius: var(--radius);
+    color: var(--brand-dark);
+    background: rgba(58, 155, 117, 0.1);
+    font-size: 14px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.auth-code-input {
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.18em !important;
+    text-align: center;
+}
+
 .auth-status {
     min-height: 24px;
     margin-top: 14px;
