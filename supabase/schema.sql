@@ -155,7 +155,7 @@ $$;
 
 create or replace function public.get_checkin_leaderboard(limit_count integer default 30)
 returns table (
-    position bigint,
+    rank_position bigint,
     display_name text,
     email text,
     minecraft_name text,
@@ -201,7 +201,7 @@ begin
     select
         row_number() over (
             order by totals.total_count desc, totals.last_checkin_date desc nulls last, totals.display_name asc
-        ) as position,
+        ) as rank_position,
         totals.display_name,
         totals.email,
         totals.minecraft_name,

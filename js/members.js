@@ -97,7 +97,7 @@
             const todayText = row.checked_in_today ? '<span class="ranking-chip">今日已签</span>' : "";
 
             item.innerHTML = `
-                <div class="ranking-position">#${escapeHtml(row.position)}</div>
+                <div class="ranking-position">#${escapeHtml(row.rank_position)}</div>
                 <img class="ranking-avatar" src="${escapeHtml(avatar)}" alt="${escapeHtml(row.display_name)}">
                 <div class="ranking-main">
                     <div class="ranking-name">${escapeHtml(row.display_name)}</div>
