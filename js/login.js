@@ -125,8 +125,9 @@
             return;
         }
 
-        if (!/^\d{6}$/.test(token)) {
-            setStatus("请输入 6 位数字验证码。", "error");
+        const normalizedToken = token.replace(/\D/g, "");
+        if (!/^\d{8}$/.test(normalizedToken)) {
+            setStatus("请输入 8 位数字验证码。", "error");
             return;
         }
 
@@ -135,7 +136,7 @@
 
         const { error } = await auth.client.auth.verifyOtp({
             email,
-            token,
+            token: normalizedToken,
             type: "email",
         });
 
@@ -180,6 +181,12 @@
         codeForm.addEventListener("submit", async (event) => {
             event.preventDefault();
             await verifyCode(pendingEmail, codeInput.value.trim());
+        });
+    }
+
+    if (codeInput) {
+        codeInput.addEventListener("input", () => {
+            codeInput.value = codeInput.value.replace(/\D/g, "").slice(0, 8);
         });
     }
 
