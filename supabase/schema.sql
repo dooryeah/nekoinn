@@ -192,9 +192,9 @@ begin
             count(mc.id)::bigint as total_count,
             max(mc.checkin_date) as last_checkin_date,
             bool_or(mc.checkin_date = today) as checked_in_today
-        from public.member_whitelist mw
-        left join public.member_checkins mc
-            on mc.email_normalized = mw.email_normalized
+        from public.member_checkins mc
+        join public.member_whitelist mw
+            on mw.email_normalized = mc.email_normalized
         where mw.is_active
         group by mw.email, mw.nickname, mw.minecraft_name, mw.avatar_url
     )
