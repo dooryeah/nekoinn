@@ -1154,7 +1154,8 @@ h2 {
 }
 
 .personal-shell {
-    width: min(1180px, calc(100% - 40px));
+    width: min(1320px, calc(100% - 36px));
+    padding-top: 28px;
 }
 
 .member-state {
@@ -1171,14 +1172,19 @@ h2 {
 
 .personal-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
-    gap: 22px;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    gap: clamp(20px, 3vw, 34px);
     align-items: start;
 }
 
 .personal-card,
 .ranking-card {
     margin-bottom: 0;
+}
+
+.ranking-card {
+    justify-self: end;
+    width: 100%;
 }
 
 .profile-background-preview {
