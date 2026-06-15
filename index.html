@@ -6,16 +6,9 @@
     <title>主页 - 欢迎来到喵宿~</title>
     <link rel="stylesheet" href="css/animations.css">
 
-    <!-- Sakana Widget 样式 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-mobile-grid-fit">
+    <link rel="stylesheet" href="css/main.css?v=20260615-widget-members-mobile-desktop">
 </head>
 <body class="home-page">
-
-    <!-- Sakana Widget 挂载点 -->
-    <div class="sakana-container">
-        <div id="sakana-widget"></div>
-    </div>
 
     <!-- 导航栏 -->
     <div class="navbar">
@@ -288,25 +281,6 @@
 
         updateUptime();
         setInterval(updateUptime, 1000);
-
-
-        function initSakanaWidget() {
-    const myChar = SakanaWidget.getCharacter('chisato');
-    myChar.image = './images/Akari.png';
-    SakanaWidget.registerCharacter('Akari', myChar);
-
-    new SakanaWidget({
-        character: 'Akari',
-        size: 150,
-        controls: false,
-        draggable: true
-    }).mount('#sakana-widget');
-}
-    </script>
-    <script
-        async
-        onload="initSakanaWidget()"
-        src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js">
     </script>
     <script src="js/animations.js"></script>
 

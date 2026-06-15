@@ -5,9 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-public-profile">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css">
+    <link rel="stylesheet" href="css/main.css?v=20260615-widget-members-mobile-desktop">
 </head>
 <body class="members-page">
+    <div class="sakana-container">
+        <div id="sakana-widget"></div>
+    </div>
+
     <div class="navbar">
         <img src="./images/logo.png" alt="Logo">
         <div class="nav-links">
@@ -115,6 +120,26 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js?v=20260615-profile-custom"></script>
     <script src="js/members.js?v=20260615-profile-custom"></script>
+    <script>
+        function initSakanaWidget() {
+            if (!window.SakanaWidget) return;
+            const myChar = SakanaWidget.getCharacter('chisato');
+            myChar.image = './images/Akari.png';
+            SakanaWidget.registerCharacter('Akari', myChar);
+
+            new SakanaWidget({
+                character: 'Akari',
+                size: 150,
+                controls: false,
+                draggable: true
+            }).mount('#sakana-widget');
+        }
+    </script>
+    <script
+        async
+        onload="initSakanaWidget()"
+        src="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.js">
+    </script>
     <script src="js/animations.js"></script>
 </body>
 </html>

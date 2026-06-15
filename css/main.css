@@ -48,7 +48,12 @@ a {
 }
 
 body.home-page {
-    background: #101923 url("../images/bg_overlay.jpg") center/cover fixed no-repeat;
+    background-color: #101923;
+    background-image: url("../images/bg_overlay.jpg");
+    background-position: center top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
 }
 
 body.about-page {
@@ -1893,7 +1898,8 @@ body.lightbox-open {
     }
 
     body.home-page {
-        background-attachment: scroll;
+        background-size: auto 100vh;
+        background-position: center top;
     }
 
     body.about-page {
@@ -2081,11 +2087,11 @@ body.lightbox-open {
     }
 
     .home-hero {
-        min-height: clamp(420px, 118vw, 560px);
+        min-height: clamp(400px, 108vw, 520px);
         align-items: flex-end;
         padding: 24px 18px;
-        background-size: 100% auto;
-        background-position: center top;
+        background-size: cover;
+        background-position: center center;
         background-repeat: no-repeat;
         background-color: #111c29;
     }
@@ -2123,27 +2129,27 @@ body.lightbox-open {
     }
 
     .player-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .player-grid {
-        gap: 10px;
+        gap: 12px;
     }
 
     .player-avatar-card {
-        min-height: 114px;
-        padding: 12px 6px 10px;
+        min-height: 136px;
+        padding: 14px 8px 12px;
     }
 
     .player-avatar-card img {
-        width: 56px !important;
-        height: 56px !important;
-        margin-bottom: 8px;
+        width: 72px !important;
+        height: 72px !important;
+        margin-bottom: 10px;
     }
 
     .player-avatar-card p {
-        font-size: 11px;
-        line-height: 1.2;
+        font-size: 12px;
+        line-height: 1.25;
     }
 
     .project-grid,
@@ -2153,17 +2159,17 @@ body.lightbox-open {
     }
 
     .project-list-card {
-        padding-inline: 12px;
+        padding-inline: clamp(16px, 4vw, 24px);
     }
 
     .project-card .project-info {
-        gap: 6px;
-        padding: 10px;
+        gap: 7px;
+        padding: 12px;
     }
 
     .project-image-wrap,
     .thumb {
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 16 / 10;
     }
 
     .project-card img,
@@ -2174,17 +2180,17 @@ body.lightbox-open {
     }
 
     .project-name {
-        font-size: 13px;
+        font-size: 14px;
     }
 
     .project-author,
     .project-desc {
-        font-size: 11px;
-        line-height: 1.35;
+        font-size: 12px;
+        line-height: 1.4;
     }
 
     .project-desc {
-        min-height: 30px;
+        min-height: 34px;
     }
 
     .project-tags {
@@ -2192,8 +2198,8 @@ body.lightbox-open {
     }
 
     .ptag {
-        min-height: 20px;
-        padding: 1px 6px;
+        min-height: 21px;
+        padding: 2px 7px;
         font-size: 10px;
     }
 
@@ -2293,10 +2299,6 @@ body.lightbox-open {
 }
 
 @media (max-width: 360px) {
-    .player-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .project-grid,
     .exhibition-page .gallery {
         gap: 10px;
