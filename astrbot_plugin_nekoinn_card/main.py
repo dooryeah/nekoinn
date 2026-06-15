@@ -1,4 +1,5 @@
 import os
+import re
 import tempfile
 from dataclasses import dataclass
 from io import BytesIO
@@ -69,6 +70,49 @@ class NekoinnCardPlugin(Star):
         async for result in self._render_player(event, name):
             yield result
 
+    @filter.command("签到")
+    async def check_in(self, event: AstrMessageEvent):
+        if not self.settings.is_ready:
+            yield event.plain_result("插件还没有配置 Supabase，请在 AstrBot 插件管理里填写配置。")
+            return
+
+        if not str(event.get_group_id() or "").strip():
+            yield event.plain_result("请在 QQ 群里发送 /签到，这样才能用你的 QQ 号匹配网页账号。")
+            return
+
+        qq_number = extract_qq_number(event.get_sender_id())
+        if not qq_number:
+            yield event.plain_result(
+                "没有识别到你的数字 QQ 号，暂时不能自动匹配 QQ 邮箱账号。"
+                "如果当前 QQ 适配器返回的是 OpenID，请改用能返回真实 QQ 号的 OneBot/NapCat 连接。"
+            )
+            return
+
+        email = f"{qq_number}@qq.com"
+        try:
+            result = await bot_check_in(self.settings, email)
+        except httpx.HTTPStatusError as exc:
+            detail = response_error_detail(exc.response)
+            if "not_whitelisted" in detail:
+                yield event.plain_result(f"没有找到 {email} 对应的成员账号，暂时不能签到。")
+            else:
+                yield event.plain_result(f"签到失败：{detail}")
+            return
+        except Exception as exc:
+            yield event.plain_result(f"签到失败：{exc}")
+            return
+
+        if not result:
+            yield event.plain_result(f"没有找到 {email} 对应的成员账号，暂时不能签到。")
+            return
+
+        display_name = result.get("display_name") or result.get("minecraft_name") or "成员"
+        total_count = int(result.get("total_count") or 0)
+        if result.get("already_checked"):
+            yield event.plain_result(f"{display_name} 今天已经签到过啦。累计签到 {total_count} 天。")
+        else:
+            yield event.plain_result(f"{display_name} 签到成功！累计签到 {total_count} 天。")
+
     async def _render_player(self, event: AstrMessageEvent, name: str):
         name = str(name or "").strip()
         if not name:
@@ -102,17 +146,50 @@ class NekoinnCardPlugin(Star):
         yield event.image_result(image_path)
 
 
-async def fetch_profile(settings: PluginSettings, name: str):
-    headers = {
+def supabase_headers(settings: PluginSettings):
+    return {
         "apikey": settings.supabase_service_role,
         "Authorization": f"Bearer {settings.supabase_service_role}",
         "Content-Type": "application/json",
     }
+
+
+def response_error_detail(response: httpx.Response | None):
+    if response is None:
+        return "unknown_error"
+    try:
+        data = response.json()
+        if isinstance(data, dict):
+            return str(data.get("message") or data.get("details") or data)
+    except Exception:
+        pass
+    return response.text[:180] or f"HTTP {response.status_code}"
+
+
+def extract_qq_number(sender_id):
+    sender_id = str(sender_id or "").strip()
+    return sender_id if re.fullmatch(r"\d{5,12}", sender_id) else ""
+
+
+async def fetch_profile(settings: PluginSettings, name: str):
     async with httpx.AsyncClient(timeout=20) as client:
         response = await client.post(
             f"{settings.supabase_url}/rest/v1/rpc/get_bot_member_card",
-            headers=headers,
+            headers=supabase_headers(settings),
             json={"player_name": name},
+        )
+        response.raise_for_status()
+        data = response.json()
+
+    return data[0] if data else None
+
+
+async def bot_check_in(settings: PluginSettings, email: str):
+    async with httpx.AsyncClient(timeout=20) as client:
+        response = await client.post(
+            f"{settings.supabase_url}/rest/v1/rpc/bot_check_in_member",
+            headers=supabase_headers(settings),
+            json={"member_email": email},
         )
         response.raise_for_status()
         data = response.json()

@@ -41,7 +41,7 @@ Redirect URLs: https://nekoinn.top/login.html
 
 ## AstrBot 机器人
 
-仓库里的 `astrbot_plugin_nekoinn_card` 插件会调用 `get_bot_member_card` 渲染玩家卡片。重新执行 `supabase/schema.sql` 后，把 Supabase Project URL 和 `service_role` key 填到 AstrBot WebUI 的插件配置里：
+仓库里的 `astrbot_plugin_nekoinn_card` 插件会调用 `get_bot_member_card` 渲染玩家卡片，并调用 `bot_check_in_member` 处理 QQ 群 `/签到`。重新执行 `supabase/schema.sql` 后，把 Supabase Project URL 和 `service_role` key 填到 AstrBot WebUI 的插件配置里：
 
 ```text
 supabase_url: https://dpunqvmelqtmwhmgmbzd.supabase.co
@@ -50,3 +50,5 @@ site_url: https://nekoinn.top
 ```
 
 插件也支持环境变量兜底。`service_role` key 权限很高，只能放在机器人本地配置或运行环境里，不要提交到仓库或写进网页。
+
+`/签到` 会把发送者 QQ 号映射成 `QQ号@qq.com`，所以白名单邮箱需要与 QQ 邮箱一致。

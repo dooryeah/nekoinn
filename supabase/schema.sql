@@ -236,6 +236,71 @@ begin
 end;
 $$;
 
+drop function if exists public.bot_check_in_member(text);
+
+create or replace function public.bot_check_in_member(member_email text)
+returns table (
+    display_name text,
+    email text,
+    minecraft_name text,
+    checked_in_today boolean,
+    already_checked boolean,
+    total_count bigint,
+    checked_at timestamptz,
+    checkin_date date
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    current_email text := lower(btrim(coalesce(member_email, '')));
+    today date := ((timezone('Asia/Shanghai', now()))::date);
+    inserted_count integer := 0;
+begin
+    if current_email = '' or current_email !~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$' then
+        raise exception 'invalid_email';
+    end if;
+
+    if not exists (
+        select 1
+        from public.member_whitelist mw
+        where mw.is_active
+        and mw.email_normalized = current_email
+    ) then
+        raise exception 'not_whitelisted';
+    end if;
+
+    insert into public.member_checkins (email_normalized, checkin_date)
+    values (current_email, today)
+    on conflict (email_normalized, checkin_date) do nothing;
+
+    get diagnostics inserted_count = row_count;
+
+    return query
+    select
+        coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') as display_name,
+        mw.email,
+        mw.minecraft_name,
+        exists (
+            select 1
+            from public.member_checkins today_checkin
+            where today_checkin.email_normalized = current_email
+            and today_checkin.checkin_date = today
+        ) as checked_in_today,
+        inserted_count = 0 as already_checked,
+        count(mc.id)::bigint as total_count,
+        max(mc.created_at) as checked_at,
+        today as checkin_date
+    from public.member_whitelist mw
+    left join public.member_checkins mc
+        on mc.email_normalized = mw.email_normalized
+    where mw.is_active
+    and mw.email_normalized = current_email
+    group by mw.email, mw.nickname, mw.minecraft_name;
+end;
+$$;
+
 create or replace function public.update_my_profile(
     new_signature text default null,
     new_background_path text default null
@@ -464,6 +529,7 @@ revoke all on function public.update_my_profile(text, text) from public;
 revoke all on function public.get_checkin_leaderboard(integer) from public;
 revoke all on function public.get_member_public_profile(text) from public;
 revoke all on function public.get_bot_member_card(text) from public;
+revoke all on function public.bot_check_in_member(text) from public;
 
 grant execute on function public.get_my_checkin_status() to authenticated;
 grant execute on function public.check_in_member() to authenticated;
@@ -471,3 +537,4 @@ grant execute on function public.update_my_profile(text, text) to authenticated;
 grant execute on function public.get_checkin_leaderboard(integer) to authenticated;
 grant execute on function public.get_member_public_profile(text) to authenticated;
 grant execute on function public.get_bot_member_card(text) to service_role;
+grant execute on function public.bot_check_in_member(text) to service_role;
