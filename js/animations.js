@@ -1,22 +1,476 @@
-// ===== 滚动淡入观察器 =====
-const fadeObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-        if (e.isIntersecting) {
-            e.target.classList.add('visible');
-            fadeObserver.unobserve(e.target);
+const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+const reduceMotion = reduceMotionQuery.matches;
+const THEME_KEY = 'nekoinn-theme';
+const hasGsap = Boolean(window.gsap);
+const hasScrollTrigger = Boolean(window.gsap && window.ScrollTrigger);
+const revealRecords = new WeakMap();
+
+if (hasGsap) {
+    if (hasScrollTrigger) {
+        gsap.registerPlugin(ScrollTrigger);
+    }
+    gsap.defaults({
+        duration: 0.72,
+        ease: 'power3.out'
+    });
+}
+
+function getStoredTheme() {
+    try {
+        const saved = localStorage.getItem(THEME_KEY);
+        return saved === 'night' || saved === 'day' ? saved : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function getPreferredTheme() {
+    const stored = getStoredTheme();
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+}
+
+function applyTheme(theme, animate = false) {
+    const nextTheme = theme === 'night' ? 'night' : 'day';
+    const root = document.documentElement;
+
+    if (animate && !reduceMotion && document.body) {
+        const veil = document.createElement('span');
+        veil.className = `theme-transition-veil to-${nextTheme}`;
+        document.body.appendChild(veil);
+        window.setTimeout(() => veil.remove(), 680);
+        root.classList.add('theme-switching');
+        window.setTimeout(() => root.classList.remove('theme-switching'), 560);
+    }
+
+    root.dataset.theme = nextTheme;
+    root.style.colorScheme = nextTheme === 'night' ? 'dark' : 'light';
+}
+
+function setupThemeToggle() {
+    applyTheme(document.documentElement.dataset.theme || getPreferredTheme());
+
+    if (document.querySelector('.theme-toggle')) return;
+
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'theme-toggle';
+    toggle.innerHTML = `
+        <span class="theme-toggle-track" aria-hidden="true">
+            <span class="theme-toggle-orb"></span>
+        </span>
+        <span class="sr-only">切换日夜模式</span>
+    `;
+    document.body.appendChild(toggle);
+
+    const syncToggle = () => {
+        const isNight = document.documentElement.dataset.theme === 'night';
+        toggle.setAttribute('aria-pressed', String(isNight));
+        toggle.setAttribute('aria-label', isNight ? '切换到日间模式' : '切换到夜间模式');
+        toggle.title = isNight ? '切换到日间模式' : '切换到夜间模式';
+    };
+
+    toggle.addEventListener('click', () => {
+        const nextTheme = document.documentElement.dataset.theme === 'night' ? 'day' : 'night';
+        try {
+            localStorage.setItem(THEME_KEY, nextTheme);
+        } catch (error) {
+            // 浏览器禁用本地存储时仍允许本次切换生效。
+        }
+        applyTheme(nextTheme, true);
+        syncToggle();
+    });
+
+    const preference = window.matchMedia('(prefers-color-scheme: dark)');
+    const handlePreferenceChange = (event) => {
+        if (getStoredTheme()) return;
+        applyTheme(event.matches ? 'night' : 'day', true);
+        syncToggle();
+    };
+
+    if (preference.addEventListener) {
+        preference.addEventListener('change', handlePreferenceChange);
+    } else if (preference.addListener) {
+        preference.addListener(handlePreferenceChange);
+    }
+
+    syncToggle();
+}
+
+function setupScrollProgress() {
+    if (document.querySelector('.scroll-progress')) return;
+    const progress = document.createElement('div');
+    progress.className = 'scroll-progress';
+    document.body.appendChild(progress);
+
+    if (hasGsap && hasScrollTrigger && !reduceMotion) {
+        gsap.to(progress, {
+            scaleX: 1,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: document.documentElement,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.24
+            }
+        });
+        return;
+    }
+
+    const update = () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const value = max > 0 ? window.scrollY / max : 0;
+        document.documentElement.style.setProperty('--scroll-progress', Math.min(1, Math.max(0, value)).toFixed(4));
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+}
+
+function getRevealCandidates(root = document) {
+    const scope = root && root.querySelectorAll ? root : document;
+    const items = [];
+
+    if (root instanceof Element && root.matches('.fade-up')) {
+        items.push(root);
+    }
+
+    scope.querySelectorAll('.fade-up').forEach(el => items.push(el));
+    return Array.from(new Set(items));
+}
+
+function isRevealReady(el) {
+    return Boolean(
+        el
+        && el.isConnected
+        && !el.hidden
+        && !el.closest('[hidden]')
+        && el.getClientRects().length
+    );
+}
+
+function cleanupRevealTargets(root) {
+    if (!hasGsap) return;
+
+    getRevealCandidates(root).forEach(el => {
+        const record = revealRecords.get(el);
+        if (record) {
+            if (record.scrollTrigger) record.scrollTrigger.kill();
+            if (record.tween) record.tween.kill();
+            revealRecords.delete(el);
+        }
+
+        gsap.killTweensOf(el);
+        delete el.dataset.revealReady;
+    });
+}
+
+function refreshMotion() {
+    if (hasScrollTrigger && !reduceMotion) {
+        ScrollTrigger.refresh();
+    }
+}
+
+function setupReveal() {
+    const getItems = (root = document) => getRevealCandidates(root)
+        .filter(el => !el.classList.contains('visible') && el.dataset.revealReady !== 'true' && isRevealReady(el));
+
+    if (hasGsap && hasScrollTrigger && !reduceMotion) {
+        const reveal = (items) => {
+            items.forEach((el, index) => {
+                el.dataset.revealReady = 'true';
+                gsap.set(el, {
+                    autoAlpha: 0,
+                    y: 30,
+                    scale: 0.985,
+                    filter: 'blur(7px)'
+                });
+                const tween = gsap.to(el, {
+                    autoAlpha: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: 'blur(0px)',
+                    delay: Math.min(index * 0.045, 0.22),
+                    clearProps: 'visibility,filter,transform,opacity',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 88%',
+                        once: true,
+                        onEnter: () => el.classList.add('visible')
+                    }
+                });
+                revealRecords.set(el, {
+                    tween,
+                    scrollTrigger: tween.scrollTrigger
+                });
+            });
+        };
+
+        reveal(getItems());
+
+        const observer = new MutationObserver((mutations) => {
+            const shouldCheck = mutations.some(mutation => mutation.addedNodes.length > 0 || mutation.type === 'attributes');
+            if (!shouldCheck) return;
+            requestAnimationFrame(() => {
+                const items = getItems();
+                if (items.length) reveal(items);
+                refreshMotion();
+            });
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['hidden', 'class']
+        });
+        return;
+    }
+
+    const items = getRevealCandidates().filter(isRevealReady);
+    items.forEach((el, index) => {
+        el.style.setProperty('--reveal-delay', `${Math.min(index * 70, 420)}ms`);
+    });
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+        items.forEach(el => el.classList.add('visible'));
+        return;
+    }
+
+    const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                fadeObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -8% 0px'
+    });
+
+    items.forEach(el => fadeObserver.observe(el));
+
+    const observer = new MutationObserver(() => {
+        getRevealCandidates()
+            .filter(el => !el.classList.contains('visible') && isRevealReady(el))
+            .forEach(el => fadeObserver.observe(el));
+    });
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['hidden', 'class']
+    });
+}
+
+function setupGsapStage() {
+    if (!hasGsap || reduceMotion) {
+        document.body.classList.add('motion-ready');
+        return;
+    }
+
+    document.body.classList.add('motion-ready');
+
+    const nav = document.querySelector('.navbar');
+    const hero = document.querySelector('.home-hero');
+    const heroCopy = document.querySelector('.hero-copy');
+    const heroItems = document.querySelectorAll('.hero-kicker, .hero-copy h1, .hero-copy p, .hero-actions');
+
+    const intro = gsap.timeline({
+        defaults: {
+            ease: 'power3.out'
         }
     });
-}, { threshold: 0.15 });
 
-document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+    if (nav) {
+        intro.from(nav, {
+            autoAlpha: 0,
+            y: -18,
+            duration: 0.58
+        }, 0);
+    }
 
-// ===== 页面跳转淡出 =====
-document.querySelectorAll('a[href]').forEach(a => {
-    a.addEventListener('click', (e) => {
-        const url = a.getAttribute('href');
-        if (!url || url.startsWith('#') || url.startsWith('javascript:') || a.target === '_blank') return;
-        e.preventDefault();
-        document.body.classList.add('page-fade-out');
-        setTimeout(() => window.location.href = url, 320);
+    if (hero) {
+        intro.from(hero, {
+            autoAlpha: 0,
+            scale: 1.018,
+            duration: 1.05
+        }, 0.05);
+    }
+
+    if (heroItems.length) {
+        intro.from(heroItems, {
+            autoAlpha: 0,
+            y: 28,
+            duration: 0.8,
+            stagger: 0.08
+        }, hero ? 0.28 : 0.12);
+    }
+
+    if (hero && hasScrollTrigger) {
+        gsap.to(hero, {
+            backgroundPosition: 'center 58%',
+            ease: 'none',
+            scrollTrigger: {
+                trigger: hero,
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 0.7
+            }
+        });
+
+        if (heroCopy) {
+            gsap.set(heroCopy, {
+                autoAlpha: 1,
+                y: 0
+            });
+        }
+    }
+
+    const hoverTargets = document.querySelectorAll('.join-btn, .ghost-btn, .filter-tag, .viewer-nav, .modal-nav, .theme-toggle');
+    hoverTargets.forEach(target => {
+        target.addEventListener('pointerenter', () => {
+            gsap.to(target, {
+                y: -2,
+                scale: 1.015,
+                duration: 0.22,
+                overwrite: 'auto'
+            });
+        });
+        target.addEventListener('pointerleave', () => {
+            gsap.to(target, {
+                y: 0,
+                scale: 1,
+                duration: 0.28,
+                overwrite: 'auto',
+                clearProps: 'transform'
+            });
+        });
     });
+
+    if (hasScrollTrigger) {
+        gsap.utils.toArray('.project-card, .gallery-item, .thumb, .ranking-item, .profile-fact').forEach((el) => {
+            gsap.set(el, {
+                transformOrigin: '50% 65%'
+            });
+        });
+    }
+}
+
+function setupPointerGlow() {
+    if (reduceMotion || !window.matchMedia('(hover: hover)').matches) return;
+
+    const targets = document.querySelectorAll(
+        '.card, .player-avatar-card, .project-card, .thumb, .profile-card, .ranking-item, .profile-fact, .uptime-block'
+    );
+
+    targets.forEach(target => {
+        target.addEventListener('pointermove', (event) => {
+            const rect = target.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            target.style.setProperty('--spot-x', `${x.toFixed(2)}%`);
+            target.style.setProperty('--spot-y', `${y.toFixed(2)}%`);
+        });
+    });
+}
+
+function setupPremiumTilts() {
+    if (reduceMotion || !hasGsap || !window.matchMedia('(hover: hover)').matches) return;
+
+    const attach = (target) => {
+        if (target.dataset.tiltReady === 'true') return;
+        target.dataset.tiltReady = 'true';
+
+        const rotateXTo = gsap.quickTo(target, 'rotationX', {
+            duration: 0.34,
+            ease: 'power3.out'
+        });
+        const rotateYTo = gsap.quickTo(target, 'rotationY', {
+            duration: 0.34,
+            ease: 'power3.out'
+        });
+        const yTo = gsap.quickTo(target, 'y', {
+            duration: 0.34,
+            ease: 'power3.out'
+        });
+
+        target.addEventListener('pointermove', (event) => {
+            const rect = target.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            rotateXTo(y * -4);
+            rotateYTo(x * 5);
+            yTo(-4);
+        });
+
+        target.addEventListener('pointerleave', () => {
+            gsap.to(target, {
+                rotationX: 0,
+                rotationY: 0,
+                y: 0,
+                duration: 0.42,
+                ease: 'power3.out',
+                overwrite: 'auto',
+                clearProps: 'transform'
+            });
+        });
+    };
+
+    const attachAll = () => {
+        document
+            .querySelectorAll('.project-card, .thumb, .gallery-item, .profile-card, .ranking-item, .uptime-block')
+            .forEach(attach);
+    };
+
+    attachAll();
+
+    const observer = new MutationObserver((mutations) => {
+        if (!mutations.some(mutation => mutation.addedNodes.length > 0)) return;
+        requestAnimationFrame(attachAll);
+    });
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+}
+
+function setupPageTransitions() {
+    document.querySelectorAll('a[href]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            const url = a.getAttribute('href');
+            if (
+                !url
+                || url.startsWith('#')
+                || url.startsWith('javascript:')
+                || url.startsWith('mailto:')
+                || url.startsWith('tel:')
+                || a.target === '_blank'
+                || a.hasAttribute('download')
+            ) {
+                return;
+            }
+            e.preventDefault();
+            document.body.classList.add('page-fade-out');
+            setTimeout(() => window.location.href = url, reduceMotion ? 0 : 260);
+        });
+    });
+}
+
+setupThemeToggle();
+setupGsapStage();
+setupScrollProgress();
+setupReveal();
+setupPointerGlow();
+setupPremiumTilts();
+setupPageTransitions();
+
+window.addEventListener('load', () => {
+    refreshMotion();
 });
+
+window.NekoinnMotion = {
+    cleanupRevealTargets,
+    refresh: refreshMotion
+};

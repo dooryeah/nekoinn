@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工程项目 - 喵宿咖啡厅</title>
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-widget-members-mobile-desktop">
+    <script src="js/theme-init.js?v=local-gsap-polish"></script>
+    <link rel="stylesheet" href="css/animations.css?v=local-gsap-polish">
+    <link rel="stylesheet" href="css/main.css?v=local-gsap-polish">
 </head>
 <body class="projects-page">
 
@@ -443,6 +444,7 @@
     const grid = document.getElementById("projectGrid");
     const count = document.getElementById("projectCount");
     if (!grid) return;
+    if (window.NekoinnMotion) window.NekoinnMotion.cleanupRevealTargets(grid);
     grid.innerHTML = "";
 
     filteredProjects = PROJECTS.filter(p => {
@@ -459,12 +461,16 @@
 
     if (filteredProjects.length === 0) {
     grid.innerHTML = '<div class="no-result">暂无匹配的项目 🐱</div>';
+    requestAnimationFrame(() => {
+    if (window.NekoinnMotion) window.NekoinnMotion.refresh();
+    else if (window.ScrollTrigger) ScrollTrigger.refresh();
+    });
     return;
     }
 
     filteredProjects.forEach((project, index) => {
     const card = document.createElement("button");
-    card.className = "project-card";
+    card.className = "project-card fade-up";
     card.type = "button";
     card.addEventListener("click", () => showProjectModal(index));
 
@@ -484,6 +490,11 @@
     </div>
     `;
     grid.appendChild(card);
+    });
+
+    requestAnimationFrame(() => {
+    if (window.NekoinnMotion) window.NekoinnMotion.refresh();
+    else if (window.ScrollTrigger) ScrollTrigger.refresh();
     });
     }
 
@@ -701,6 +712,8 @@
     renderProjects();
     initProjectionPanel();
 </script>
-    <script src="js/animations.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="js/animations.js?v=local-gsap-polish"></script>
 </body>
 </html>
