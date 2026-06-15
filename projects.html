@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工程项目 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-dialog-modal-fix">
+    <link rel="stylesheet" href="css/main.css?v=20260615-lightbox-center-fix">
 </head>
 <body class="projects-page">
 
@@ -511,10 +511,6 @@
     function closeProjectModal() {
     if (!projectModal) return;
     document.removeEventListener("keydown", projectModal.onKey);
-    projectModal.wrapper.removeEventListener("cancel", projectModal.onCancel);
-    if (typeof projectModal.wrapper.close === "function" && projectModal.wrapper.open) {
-    projectModal.wrapper.close();
-    }
     projectModal.wrapper.remove();
     projectModal = null;
     unlockProjectModalScroll();
@@ -539,10 +535,15 @@
     return;
     }
 
-    const wrapper = document.createElement("dialog");
+    const wrapper = document.createElement("div");
     wrapper.className = "modal-wrapper";
     wrapper.setAttribute("role", "dialog");
     wrapper.setAttribute("aria-modal", "true");
+    wrapper.setAttribute("aria-label", "项目图片预览");
+    wrapper.tabIndex = -1;
+
+    const stage = document.createElement("div");
+    stage.className = "modal-stage";
 
     const backdrop = document.createElement("div");
     backdrop.className = "modal-backdrop";
@@ -566,20 +567,16 @@
     </div>
     `;
 
-    wrapper.appendChild(backdrop);
-    wrapper.appendChild(modal);
-    document.body.appendChild(wrapper);
+    stage.appendChild(backdrop);
+    stage.appendChild(modal);
+    wrapper.appendChild(stage);
     lockProjectModalScroll();
+    document.body.appendChild(wrapper);
 
     function onKey(e) {
-    if (e.key === "Escape") return;
+    if (e.key === "Escape") closeProjectModal();
     if (e.key === "ArrowLeft") showPrevProject();
     if (e.key === "ArrowRight") showNextProject();
-    }
-
-    function onCancel(e) {
-    e.preventDefault();
-    closeProjectModal();
     }
 
     projectModal = {
@@ -594,20 +591,13 @@
     prev: modal.querySelector(".modal-prev"),
     next: modal.querySelector(".modal-next"),
     onKey,
-    onCancel,
     };
 
     modal.querySelector(".modal-close").addEventListener("click", closeProjectModal);
     projectModal.prev.addEventListener("click", showPrevProject);
     projectModal.next.addEventListener("click", showNextProject);
     backdrop.addEventListener("click", closeProjectModal);
-    wrapper.addEventListener("cancel", onCancel);
     document.addEventListener("keydown", onKey);
-    if (typeof wrapper.showModal === "function") {
-    wrapper.showModal();
-    } else {
-    wrapper.setAttribute("open", "");
-    }
     updateProjectModal();
     }
 

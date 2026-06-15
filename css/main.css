@@ -659,13 +659,12 @@ h2 {
     position: fixed;
     inset: 0;
     z-index: 30000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 14px;
+    display: block;
+    padding: 0;
     width: 100vw;
     height: 100vh;
     height: 100dvh;
+    overflow: hidden;
     color: var(--text);
     font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
     line-height: 1.65;
@@ -681,6 +680,18 @@ h2 {
     background: transparent;
 }
 
+.modal-stage {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    padding: 14px;
+    overflow: hidden;
+}
+
 .modal-backdrop {
     position: absolute;
     inset: 0;
@@ -692,14 +703,14 @@ h2 {
     position: relative;
     z-index: 1;
     display: block;
-    width: min(1500px, calc(100vw - 28px));
+    width: calc(100vw - 28px);
     height: calc(100vh - 28px);
     height: calc(100dvh - 28px);
-    max-height: 920px;
     overflow: hidden;
     background: #ffffff;
     box-shadow: 0 18px 54px rgba(0, 0, 0, 0.28);
-    animation: modalSlideIn 0.26s ease forwards;
+    animation: fadeIn 0.2s ease forwards;
+    transform-origin: center center;
 }
 
 .modal-media {
@@ -722,6 +733,8 @@ h2 {
     max-height: none;
     max-height: 100%;
     object-fit: contain;
+    object-position: center center;
+    transform-origin: center center;
 }
 
 .modal-body {
@@ -1031,25 +1044,25 @@ h2 {
     position: fixed;
     inset: 0;
     z-index: 10000;
-    display: grid;
-    grid-template-columns: 52px minmax(0, 1fr) 52px;
-    grid-template-rows: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 16px;
+    display: block;
     padding: 26px;
+    overflow: hidden;
     background: rgba(5, 10, 18, 0.9);
 }
 
 .viewer-image {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: center;
-    align-self: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
     max-width: 100%;
-    max-height: calc(100vh - 112px);
+    max-height: 100%;
     object-fit: contain;
+    object-position: center center;
     background: #111827;
     box-shadow: 0 18px 54px rgba(0, 0, 0, 0.45);
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
     transition: opacity 0.2s ease;
 }
 
@@ -1090,29 +1103,36 @@ h2 {
 }
 
 .viewer-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
     width: 48px;
     height: 64px;
     font-size: 28px;
+    transform: translateY(-50%);
+}
+
+.viewer-nav:active {
+    transform: translateY(-50%) scale(0.96);
 }
 
 .viewer-prev {
-    grid-column: 1;
-    grid-row: 1;
+    left: 26px;
 }
 
 .viewer-next {
-    grid-column: 3;
-    grid-row: 1;
+    right: 26px;
 }
 
 .viewer-meta {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    justify-self: center;
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    z-index: 2;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    max-width: min(680px, 100%);
+    max-width: min(680px, calc(100vw - 52px));
     padding: 7px 12px;
     border-radius: var(--radius);
     color: #ffffff;
@@ -1120,6 +1140,7 @@ h2 {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     font-size: 13px;
+    transform: translateX(-50%);
 }
 
 .viewer-title {
@@ -1137,6 +1158,12 @@ h2 {
 html.lightbox-open,
 body.lightbox-open {
     overflow: hidden;
+}
+
+body.lightbox-open {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
 }
 
 .bible-page .gallery {
@@ -1784,18 +1811,6 @@ body.lightbox-open {
     }
 }
 
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 @keyframes linkSlideIn {
     to {
         opacity: 1;
@@ -1933,9 +1948,14 @@ body.lightbox-open {
         max-height: 220px;
     }
 
+    .modal-stage {
+        padding: 10px;
+    }
+
     .modal-content {
         width: calc(100vw - 20px);
         height: calc(100vh - 20px);
+        height: calc(100dvh - 20px);
         max-height: none;
         overflow: hidden;
     }
@@ -1968,6 +1988,7 @@ body.lightbox-open {
 
     .viewer-image {
         max-height: calc(100vh - 104px);
+        max-height: calc(100dvh - 104px);
     }
 
     .viewer-nav {
@@ -2057,13 +2078,13 @@ body.lightbox-open {
         width: max-content;
     }
 
-    .modal-wrapper {
-        align-items: stretch;
+    .modal-stage {
         padding: 10px;
     }
 
     .modal-content {
         max-height: calc(100vh - 20px);
+        max-height: calc(100dvh - 20px);
     }
 
     .modal-media {
@@ -2090,38 +2111,42 @@ body.lightbox-open {
     }
 
     .viewer-backdrop {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: minmax(0, 1fr) auto auto;
-        gap: 10px;
+        padding: 10px;
     }
 
     .viewer-image {
-        grid-column: 1 / -1;
-        grid-row: 1;
-        max-height: calc(100vh - 150px);
+        max-width: calc(100vw - 20px);
+        max-height: calc(100vh - 20px);
+        max-height: calc(100dvh - 20px);
     }
 
     .viewer-prev {
-        grid-column: 1;
-        grid-row: 2;
-        justify-self: stretch;
+        right: calc(50% + 6px);
+        bottom: 58px;
+        left: auto;
     }
 
     .viewer-next {
-        grid-column: 2;
-        grid-row: 2;
-        justify-self: stretch;
+        right: auto;
+        bottom: 58px;
+        left: calc(50% + 6px);
     }
 
     .viewer-nav {
-        width: 100%;
+        top: auto;
+        width: min(132px, calc(50vw - 18px));
         height: 44px;
         font-size: 22px;
+        transform: none;
+    }
+
+    .viewer-nav:active {
+        transform: scale(0.96);
     }
 
     .viewer-meta {
-        grid-column: 1 / -1;
-        grid-row: 3;
+        bottom: 10px;
+        max-width: calc(100vw - 20px);
     }
 
     .bible-page .gallery {
