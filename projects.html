@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工程项目 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-hidden-fix">
+    <link rel="stylesheet" href="css/main.css?v=20260615-gallery-lightbox">
 </head>
 <body class="projects-page">
 
@@ -405,6 +405,9 @@
         ];
 
             const filters = { dimension: "all", type: "all", query: "" };
+            let filteredProjects = PROJECTS.slice();
+            let projectModal = null;
+            let currentProjectIndex = 0;
 
     function toPlainText(text) {
     return String(text || "")
@@ -414,13 +417,34 @@
     .trim();
     }
 
+    function escapeHtml(value) {
+    return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+    }
+
+    function formatDescription(text) {
+    return String(text || "")
+    .split(/<br\s*\/?>/gi)
+    .map(part => escapeHtml(part.trim()))
+    .filter(Boolean)
+    .join("<br>");
+    }
+
+    function getProjectList() {
+    return filteredProjects.length ? filteredProjects : PROJECTS;
+    }
+
     function renderProjects() {
     const grid = document.getElementById("projectGrid");
     const count = document.getElementById("projectCount");
     if (!grid) return;
     grid.innerHTML = "";
 
-    const filtered = PROJECTS.filter(p => {
+    filteredProjects = PROJECTS.filter(p => {
     const dimOk = filters.dimension === "all" || p.dimension === filters.dimension;
     const typeOk = filters.type === "all" || p.type === filters.type;
     const haystack = [p.name, p.author, p.dimension, p.type, toPlainText(p.description)].join(" ").toLowerCase();
@@ -429,35 +453,32 @@
     });
 
     if (count) {
-    count.textContent = `显示 ${filtered.length} / ${PROJECTS.length} 个项目`;
+    count.textContent = `显示 ${filteredProjects.length} / ${PROJECTS.length} 个项目`;
     }
 
-    if (filtered.length === 0) {
+    if (filteredProjects.length === 0) {
     grid.innerHTML = '<div class="no-result">暂无匹配的项目 🐱</div>';
     return;
     }
 
-    filtered.forEach(project => {
-    const card = document.createElement("div");
+    filteredProjects.forEach((project, index) => {
+    const card = document.createElement("button");
     card.className = "project-card";
-    card.tabIndex = 0;
-    card.onclick = () => showProjectModal(project);
-    card.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    showProjectModal(project);
-    }
-    });
+    card.type = "button";
+    card.addEventListener("click", () => showProjectModal(index));
 
     card.innerHTML = `
-    <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
+    <span class="project-image-wrap">
+    <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.name)}" loading="lazy" onerror="this.src='./images/logo.png'">
+    <span class="project-zoom-label">查看大图</span>
+    </span>
     <div class="project-info">
-    <div class="project-name">${project.name}</div>
-    <p class="project-author">建造者：${project.author}</p>
-    <p class="project-desc">${toPlainText(project.description) || "暂无描述喵"}</p>
+    <div class="project-name">${escapeHtml(project.name)}</div>
+    <p class="project-author">建造者：${escapeHtml(project.author)}</p>
+    <p class="project-desc">${escapeHtml(toPlainText(project.description) || "暂无描述喵")}</p>
     <div class="project-tags">
-    <span class="ptag">${project.dimension}</span>
-    <span class="ptag">${project.type}</span>
+    <span class="ptag">${escapeHtml(project.dimension)}</span>
+    <span class="ptag">${escapeHtml(project.type)}</span>
     </div>
     </div>
     `;
@@ -486,9 +507,25 @@
     });
     }
 
-    function showProjectModal(project) {
+    function closeProjectModal() {
+    if (!projectModal) return;
+    document.removeEventListener("keydown", projectModal.onKey);
+    document.body.classList.remove("lightbox-open");
+    projectModal.wrapper.remove();
+    projectModal = null;
+    }
+
+    function showProjectModal(index) {
+    currentProjectIndex = index;
+    if (projectModal) {
+    updateProjectModal();
+    return;
+    }
+
     const wrapper = document.createElement("div");
     wrapper.className = "modal-wrapper";
+    wrapper.setAttribute("role", "dialog");
+    wrapper.setAttribute("aria-modal", "true");
 
     const backdrop = document.createElement("div");
     backdrop.className = "modal-backdrop";
@@ -496,35 +533,102 @@
     const modal = document.createElement("div");
     modal.className = "modal-content";
     modal.innerHTML = `
-    <button class="modal-close" title="关闭">✕</button>
-    <img src="${project.image}" alt="${project.name}" onerror="this.src='./images/logo.png'">
-    <div class="modal-body">
-    <h2>${project.name}</h2>
-    <div class="modal-tags">
-    <span class="ptag">${project.dimension}</span>
-    <span class="ptag">${project.type}</span>
+    <button class="modal-close" type="button" title="关闭" aria-label="关闭预览">✕</button>
+    <button class="modal-nav modal-prev" type="button" title="上一个项目" aria-label="上一个项目">‹</button>
+    <div class="modal-media">
+    <img class="modal-image" src="" alt="">
+    <div class="modal-loading" aria-hidden="true"></div>
     </div>
-    <div class="modal-desc">${project.description}</div>
-    <div class="modal-meta">建造者：${project.author}</div>
+    <button class="modal-nav modal-next" type="button" title="下一个项目" aria-label="下一个项目">›</button>
+    <div class="modal-body">
+    <div class="modal-count"></div>
+    <h2 class="modal-title"></h2>
+    <div class="modal-tags"></div>
+    <div class="modal-desc"></div>
+    <div class="modal-meta"></div>
     </div>
     `;
 
     wrapper.appendChild(backdrop);
     wrapper.appendChild(modal);
     document.body.appendChild(wrapper);
-
-    function close() {
-    document.removeEventListener("keydown", onKey);
-    wrapper.remove();
-    }
+    document.body.classList.add("lightbox-open");
 
     function onKey(e) {
-    if (e.key === "Escape") close();
+    if (e.key === "Escape") closeProjectModal();
+    if (e.key === "ArrowLeft") showPrevProject();
+    if (e.key === "ArrowRight") showNextProject();
     }
 
-    modal.querySelector(".modal-close").addEventListener("click", close);
-    backdrop.addEventListener("click", close);
+    projectModal = {
+    wrapper,
+    modal,
+    image: modal.querySelector(".modal-image"),
+    title: modal.querySelector(".modal-title"),
+    tags: modal.querySelector(".modal-tags"),
+    description: modal.querySelector(".modal-desc"),
+    meta: modal.querySelector(".modal-meta"),
+    count: modal.querySelector(".modal-count"),
+    prev: modal.querySelector(".modal-prev"),
+    next: modal.querySelector(".modal-next"),
+    onKey,
+    };
+
+    modal.querySelector(".modal-close").addEventListener("click", closeProjectModal);
+    projectModal.prev.addEventListener("click", showPrevProject);
+    projectModal.next.addEventListener("click", showNextProject);
+    backdrop.addEventListener("click", closeProjectModal);
     document.addEventListener("keydown", onKey);
+    updateProjectModal();
+    modal.querySelector(".modal-close").focus();
+    }
+
+    function updateProjectModal() {
+    if (!projectModal) return;
+    const list = getProjectList();
+    const project = list[currentProjectIndex];
+    if (!project) return;
+
+    projectModal.wrapper.classList.add("is-loading");
+    projectModal.image.onload = () => projectModal.wrapper.classList.remove("is-loading");
+    projectModal.image.onerror = () => {
+    projectModal.wrapper.classList.remove("is-loading");
+    projectModal.image.onerror = null;
+    projectModal.image.src = "./images/logo.png";
+    };
+    projectModal.image.src = project.image;
+    projectModal.image.alt = project.name;
+    projectModal.title.textContent = project.name;
+    projectModal.tags.innerHTML = `
+    <span class="ptag">${escapeHtml(project.dimension)}</span>
+    <span class="ptag">${escapeHtml(project.type)}</span>
+    `;
+    projectModal.description.innerHTML = formatDescription(project.description) || "暂无描述喵";
+    projectModal.meta.textContent = `建造者：${project.author}`;
+    projectModal.count.textContent = `${currentProjectIndex + 1} / ${list.length}`;
+    projectModal.prev.disabled = list.length <= 1;
+    projectModal.next.disabled = list.length <= 1;
+
+    [
+    (currentProjectIndex - 1 + list.length) % list.length,
+    (currentProjectIndex + 1) % list.length,
+    ].forEach((neighborIndex) => {
+    if (!list[neighborIndex]) return;
+    const preload = new Image();
+    preload.src = list[neighborIndex].image;
+    });
+    }
+
+    function showPrevProject() {
+    const list = getProjectList();
+    currentProjectIndex = (currentProjectIndex - 1 + list.length) % list.length;
+    updateProjectModal();
+    }
+
+    function showNextProject() {
+    const list = getProjectList();
+    currentProjectIndex = (currentProjectIndex + 1) % list.length;
+    updateProjectModal();
     }
 
     function startDownload(url, fileName) {

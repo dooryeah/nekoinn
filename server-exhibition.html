@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>服务器展览 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-hidden-fix">
+    <link rel="stylesheet" href="css/main.css?v=20260615-gallery-lightbox">
 </head>
 <body class="exhibition-page">
     <div class="navbar">
@@ -59,72 +59,124 @@
         let currentImageIndex = 0;
         let viewer = null;
 
+        function getImageTitle(index) {
+            return `服务器展览 ${index + 1}`;
+        }
+
+        function preloadNeighborImages() {
+            [
+                (currentImageIndex - 1 + EXHIBITION_IMAGES.length) % EXHIBITION_IMAGES.length,
+                (currentImageIndex + 1) % EXHIBITION_IMAGES.length,
+            ].forEach((index) => {
+                const preload = new Image();
+                preload.src = EXHIBITION_IMAGES[index];
+            });
+        }
+
+        function closeViewer() {
+            if (!viewer) return;
+            document.removeEventListener("keydown", viewer.onKey);
+            document.body.classList.remove("lightbox-open");
+            viewer.backdrop.remove();
+            viewer = null;
+        }
+
         function showViewer(index) {
             currentImageIndex = index;
+            if (viewer) {
+                updateViewer();
+                return;
+            }
+
             const backdrop = document.createElement("div");
             backdrop.className = "viewer-backdrop";
+            backdrop.setAttribute("role", "dialog");
+            backdrop.setAttribute("aria-modal", "true");
 
             const closeBtn = document.createElement("button");
             closeBtn.className = "viewer-close";
             closeBtn.type = "button";
             closeBtn.title = "关闭";
+            closeBtn.setAttribute("aria-label", "关闭预览");
             closeBtn.textContent = "×";
 
             const prevBtn = document.createElement("button");
             prevBtn.className = "viewer-nav viewer-prev";
             prevBtn.type = "button";
             prevBtn.title = "上一张";
+            prevBtn.setAttribute("aria-label", "上一张");
             prevBtn.textContent = "‹";
 
             const img = document.createElement("img");
             img.className = "viewer-image";
-            img.alt = "服务器展览图片";
+            img.alt = "";
+
+            const loading = document.createElement("div");
+            loading.className = "viewer-loading";
+            loading.setAttribute("aria-hidden", "true");
 
             const nextBtn = document.createElement("button");
             nextBtn.className = "viewer-nav viewer-next";
             nextBtn.type = "button";
             nextBtn.title = "下一张";
+            nextBtn.setAttribute("aria-label", "下一张");
             nextBtn.textContent = "›";
+
+            const meta = document.createElement("div");
+            meta.className = "viewer-meta";
+
+            const title = document.createElement("div");
+            title.className = "viewer-title";
 
             const counter = document.createElement("div");
             counter.className = "viewer-counter";
 
+            meta.appendChild(title);
+            meta.appendChild(counter);
             backdrop.appendChild(closeBtn);
             backdrop.appendChild(prevBtn);
             backdrop.appendChild(img);
+            backdrop.appendChild(loading);
             backdrop.appendChild(nextBtn);
-            backdrop.appendChild(counter);
+            backdrop.appendChild(meta);
             document.body.appendChild(backdrop);
+            document.body.classList.add("lightbox-open");
 
-            viewer = { backdrop, img, counter };
-            updateViewer();
-
-            function closeViewer() {
-                document.removeEventListener("keydown", onKey);
-                backdrop.removeEventListener("click", onClick);
-                backdrop.remove();
-                viewer = null;
-            }
-            function onClick(e) {
+            const onClick = (e) => {
                 if (e.target === backdrop) closeViewer();
-            }
-            function onKey(e) {
+            };
+            const onKey = (e) => {
                 if (e.key === "Escape") closeViewer();
                 if (e.key === "ArrowLeft") showPrevImage();
                 if (e.key === "ArrowRight") showNextImage();
-            }
+            };
 
+            viewer = { backdrop, img, title, counter, onKey };
             closeBtn.addEventListener("click", closeViewer);
             prevBtn.addEventListener("click", showPrevImage);
             nextBtn.addEventListener("click", showNextImage);
             backdrop.addEventListener("click", onClick);
             document.addEventListener("keydown", onKey);
+            updateViewer();
+            closeBtn.focus();
         }
 
         function updateViewer() {
             if (!viewer) return;
-            viewer.img.src = EXHIBITION_IMAGES[currentImageIndex];
+            const src = EXHIBITION_IMAGES[currentImageIndex];
+            const title = getImageTitle(currentImageIndex);
+            viewer.backdrop.classList.add("is-loading");
+            viewer.img.onload = () => viewer.backdrop.classList.remove("is-loading");
+            viewer.img.onerror = () => {
+                viewer.backdrop.classList.remove("is-loading");
+                viewer.img.onerror = null;
+                viewer.img.src = "./images/logo.png";
+            };
+            viewer.img.src = src;
+            viewer.img.alt = title;
+            viewer.title.textContent = title;
             viewer.counter.textContent = `${currentImageIndex + 1} / ${EXHIBITION_IMAGES.length}`;
+            preloadNeighborImages();
         }
 
         function showPrevImage() {
@@ -142,22 +194,17 @@
             if (!gallery) return;
             gallery.innerHTML = "";
             arr.forEach((src, index) => {
-                const div = document.createElement("div");
-                div.className = "thumb";
-                div.tabIndex = 0;
+                const button = document.createElement("button");
+                button.className = "thumb";
+                button.type = "button";
+                button.setAttribute("aria-label", `放大${getImageTitle(index)}`);
                 const img = document.createElement("img");
                 img.src = src;
-                img.alt = "server image";
+                img.alt = getImageTitle(index);
                 img.loading = "lazy";
-                div.addEventListener("click", () => showViewer(index));
-                div.addEventListener("keydown", (e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        showViewer(index);
-                    }
-                });
-                div.appendChild(img);
-                gallery.appendChild(div);
+                button.addEventListener("click", () => showViewer(index));
+                button.appendChild(img);
+                gallery.appendChild(button);
             });
         }
 
