@@ -504,7 +504,7 @@ h2 {
 .project-grid {
     display: grid;
     gap: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
     margin-top: 16px;
 }
 
@@ -1008,7 +1008,7 @@ h2 {
 
 .exhibition-page .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
     gap: 16px;
     align-items: start;
     margin-top: 16px;
@@ -1903,6 +1903,7 @@ body.lightbox-open {
     .home-hero {
         min-height: 430px;
         padding: 34px 24px;
+        background-position: center top;
     }
 
     .hero-copy h1 {
@@ -2080,36 +2081,120 @@ body.lightbox-open {
     }
 
     .home-hero {
-        min-height: 400px;
-        padding: 28px 18px;
+        min-height: clamp(420px, 118vw, 560px);
+        align-items: flex-end;
+        padding: 24px 18px;
+        background-size: 100% auto;
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-color: #111c29;
+    }
+
+    .home-hero::before {
+        background:
+            linear-gradient(0deg, rgba(10, 20, 32, 0.78), rgba(10, 20, 32, 0.16) 58%, rgba(10, 20, 32, 0.06)),
+            linear-gradient(90deg, rgba(12, 25, 42, 0.28), rgba(12, 25, 42, 0.08));
+    }
+
+    .hero-kicker {
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+    .hero-copy h1 {
+        font-size: 42px;
+    }
+
+    .hero-copy p {
+        margin-top: 10px;
+        font-size: 15px;
+        line-height: 1.55;
     }
 
     .hero-actions {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
+        margin-top: 16px;
     }
 
     .uptime-blocks {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .player-grid,
-    .project-grid,
-    .exhibition-page .gallery {
-        grid-template-columns: 1fr;
+    .player-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .player-grid {
-        gap: 12px;
+        gap: 10px;
     }
 
     .player-avatar-card {
-        min-height: 124px;
+        min-height: 114px;
+        padding: 12px 6px 10px;
     }
 
     .player-avatar-card img {
-        width: 68px !important;
-        height: 68px !important;
+        width: 56px !important;
+        height: 56px !important;
+        margin-bottom: 8px;
+    }
+
+    .player-avatar-card p {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+
+    .project-grid,
+    .exhibition-page .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .project-list-card {
+        padding-inline: 12px;
+    }
+
+    .project-card .project-info {
+        gap: 6px;
+        padding: 10px;
+    }
+
+    .project-image-wrap,
+    .thumb {
+        aspect-ratio: 1 / 1;
+    }
+
+    .project-card img,
+    .thumb img {
+        height: 100%;
+        aspect-ratio: auto;
+        object-fit: cover;
+    }
+
+    .project-name {
+        font-size: 13px;
+    }
+
+    .project-author,
+    .project-desc {
+        font-size: 11px;
+        line-height: 1.35;
+    }
+
+    .project-desc {
+        min-height: 30px;
+    }
+
+    .project-tags {
+        gap: 4px;
+    }
+
+    .ptag {
+        min-height: 20px;
+        padding: 1px 6px;
+        font-size: 10px;
     }
 
     .filter-group {
@@ -2204,6 +2289,21 @@ body.lightbox-open {
         width: 86px;
         height: 86px;
         opacity: 0.82;
+    }
+}
+
+@media (max-width: 360px) {
+    .player-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .project-grid,
+    .exhibition-page .gallery {
+        gap: 10px;
+    }
+
+    .project-list-card {
+        padding-inline: 10px;
     }
 }
 
