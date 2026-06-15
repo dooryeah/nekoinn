@@ -8,7 +8,7 @@
 
     <!-- Sakana Widget 样式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-hidden-fix">
+    <link rel="stylesheet" href="css/main.css?v=20260615-public-profile">
 </head>
 <body class="home-page">
 
@@ -71,7 +71,7 @@
             <p class="section-kicker">Players</p>
             <h2>服务器成员</h2>
 
-            <div class="player-grid">
+            <div class="player-grid" id="playerGrid">
                 <!-- 玩家头像列表，保留原样 -->
                 <div class="player-avatar-card">
                     <img src="https://mc-heads.net/avatar/Akari_desu" loading="lazy">
@@ -314,6 +314,23 @@
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.player-avatar-card');
             cards.forEach(card => {
+                const nameEl = card.querySelector('p');
+                const playerName = nameEl ? nameEl.textContent.trim() : '';
+                if (playerName) {
+                    card.tabIndex = 0;
+                    card.setAttribute('role', 'link');
+                    card.setAttribute('aria-label', '查看 ' + playerName + ' 的成员资料');
+                    card.addEventListener('click', () => {
+                        window.location.href = 'profile.html?player=' + encodeURIComponent(playerName);
+                    });
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            window.location.href = 'profile.html?player=' + encodeURIComponent(playerName);
+                        }
+                    });
+                }
+
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;

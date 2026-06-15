@@ -14,9 +14,24 @@
     const sessionText = document.getElementById("sessionText");
     const signOutButton = document.getElementById("loginSignOut");
     const loginEmailKey = "nekoinnLoginEmail";
+    const params = new URLSearchParams(window.location.search);
+    const redirectTarget = sanitizeRedirect(params.get("redirect") || "");
     let pendingEmail = sessionStorage.getItem(loginEmailKey) || "";
     let cooldownTimer = null;
     let cooldownSeconds = 0;
+
+    function sanitizeRedirect(value) {
+        const target = String(value || "").trim();
+        if (
+            !target ||
+            target.startsWith("//") ||
+            target.includes(":") ||
+            target.includes("\\")
+        ) {
+            return "members.html";
+        }
+        return target.replace(/^\/+/, "") || "members.html";
+    }
 
     function setStatus(message, type) {
         if (!status) return;
@@ -147,8 +162,8 @@
         }
 
         sessionStorage.removeItem(loginEmailKey);
-        setStatus("登录成功，正在进入个人...", "success");
-        window.location.href = "members.html";
+        setStatus("登录成功，正在跳转...", "success");
+        window.location.href = redirectTarget;
     }
 
     async function showCurrentSession() {
@@ -164,7 +179,7 @@
         if (sessionBox) sessionBox.hidden = false;
         if (sessionText) {
             sessionText.textContent = profile
-                ? "已登录：" + session.user.email + "，可以进入个人页面。"
+                ? "已登录：" + session.user.email + "，可以继续浏览成员页面。"
                 : "已登录：" + session.user.email + "，但这个邮箱不在成员白名单里。";
         }
     }

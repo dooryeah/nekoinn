@@ -344,12 +344,75 @@ begin
 end;
 $$;
 
+create or replace function public.get_member_public_profile(player_name text)
+returns table (
+    display_name text,
+    minecraft_name text,
+    role text,
+    avatar_url text,
+    signature text,
+    background_path text,
+    total_count bigint,
+    last_checkin_date date,
+    checked_in_today boolean
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    current_email text := lower(auth.jwt() ->> 'email');
+    target_player text := lower(btrim(coalesce(player_name, '')));
+    today date := ((timezone('Asia/Shanghai', now()))::date);
+begin
+    if current_email is null or not exists (
+        select 1
+        from public.member_whitelist mw
+        where mw.is_active
+        and mw.email_normalized = current_email
+    ) then
+        raise exception 'not_whitelisted';
+    end if;
+
+    if target_player = '' then
+        return;
+    end if;
+
+    return query
+    select
+        coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') as display_name,
+        mw.minecraft_name,
+        mw.role,
+        mw.avatar_url,
+        mw.signature,
+        mw.background_path,
+        count(mc.id)::bigint as total_count,
+        max(mc.checkin_date) as last_checkin_date,
+        coalesce(bool_or(mc.checkin_date = today), false) as checked_in_today
+    from public.member_whitelist mw
+    left join public.member_checkins mc
+        on mc.email_normalized = mw.email_normalized
+    where mw.is_active
+    and (
+        lower(coalesce(mw.minecraft_name, '')) = target_player
+        or lower(coalesce(mw.nickname, '')) = target_player
+    )
+    group by mw.email_normalized, mw.nickname, mw.minecraft_name, mw.role, mw.avatar_url, mw.signature, mw.background_path
+    order by
+        case when lower(coalesce(mw.minecraft_name, '')) = target_player then 0 else 1 end,
+        coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') asc
+    limit 1;
+end;
+$$;
+
 revoke all on function public.get_my_checkin_status() from public;
 revoke all on function public.check_in_member() from public;
 revoke all on function public.update_my_profile(text, text) from public;
 revoke all on function public.get_checkin_leaderboard(integer) from public;
+revoke all on function public.get_member_public_profile(text) from public;
 
 grant execute on function public.get_my_checkin_status() to authenticated;
 grant execute on function public.check_in_member() to authenticated;
 grant execute on function public.update_my_profile(text, text) to authenticated;
 grant execute on function public.get_checkin_leaderboard(integer) to authenticated;
+grant execute on function public.get_member_public_profile(text) to authenticated;

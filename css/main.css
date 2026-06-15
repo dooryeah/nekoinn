@@ -351,11 +351,18 @@ h2 {
     transition: transform 0.15s ease-out, box-shadow 0.25s ease, background 0.2s ease;
     transform-style: preserve-3d;
     will-change: transform;
+    cursor: pointer;
 }
 
-.player-avatar-card:hover {
+.player-avatar-card:hover,
+.player-avatar-card:focus-visible {
     background: rgba(255, 255, 255, 0.34);
     box-shadow: 0 15px 30px rgba(38, 67, 98, 0.12);
+}
+
+.player-avatar-card:focus-visible {
+    outline: 3px solid rgba(58, 155, 117, 0.42);
+    outline-offset: 3px;
 }
 
 .player-avatar-card img {
@@ -1651,6 +1658,37 @@ body.lightbox-open {
     font-weight: 800;
 }
 
+.public-profile-shell {
+    width: min(980px, calc(100% - 36px));
+}
+
+.public-profile-content {
+    display: block;
+}
+
+.public-profile-card {
+    margin-bottom: 0;
+}
+
+.public-member-profile .member-avatar {
+    width: 88px;
+    height: 88px;
+}
+
+.public-profile-facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.public-profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+}
+
 .ranking-card h2 {
     margin-top: 0;
     text-align: center;
@@ -1919,6 +1957,15 @@ body.lightbox-open {
 
     .profile-facts {
         grid-template-columns: 1fr;
+    }
+
+    .public-profile-actions {
+        justify-content: stretch;
+    }
+
+    .public-profile-actions .join-btn,
+    .public-profile-actions .ghost-btn {
+        width: 100%;
     }
 
     .project-count {

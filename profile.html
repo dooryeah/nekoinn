@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成员资料 - 喵宿咖啡厅</title>
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/main.css?v=20260615-public-profile">
+</head>
+<body class="members-page public-profile-page">
+    <div class="navbar">
+        <img src="./images/logo.png" alt="Logo">
+        <div class="nav-links">
+            <a href="index.html">主页</a>
+            <a href="server-exhibition.html">服务器展览</a>
+            <a href="projects.html">工程项目</a>
+            <a href="members.html">个人</a>
+            <a href="about.html">关于</a>
+        </div>
+    </div>
+
+    <main class="content personal-shell public-profile-shell">
+        <section id="publicProfileLoading" class="card member-state">
+            <h2>正在读取成员资料...</h2>
+        </section>
+
+        <section id="publicProfileSetup" class="card member-state" hidden>
+            <h2>还差一点配置</h2>
+            <p>请先填写 <code>js/supabase-config.js</code>，并在 Supabase 执行 <code>supabase/schema.sql</code>。</p>
+            <a class="ghost-btn" href="index.html">回到主页</a>
+        </section>
+
+        <section id="publicProfileGuest" class="card member-state" hidden>
+            <h2>需要登录</h2>
+            <p>登录后才可以查看成员公开资料。</p>
+            <a id="publicProfileLoginLink" class="join-btn" href="login.html">去登录</a>
+        </section>
+
+        <section id="publicProfileDenied" class="card member-state" hidden>
+            <h2>暂时不能查看</h2>
+            <p>当前账号不在成员白名单里。</p>
+            <div class="auth-actions">
+                <a class="ghost-btn" href="index.html">回到主页</a>
+                <button class="ghost-btn" type="button" data-sign-out>换个账号</button>
+            </div>
+        </section>
+
+        <section id="publicProfileMissing" class="card member-state" hidden>
+            <h2>没有找到资料</h2>
+            <p id="publicProfileMissingText">这个成员还没有公开资料。</p>
+            <a class="ghost-btn" href="index.html">回到主页</a>
+        </section>
+
+        <section id="publicProfileContent" class="public-profile-content" hidden>
+            <article class="card personal-card public-profile-card">
+                <div id="publicProfileBackground" class="profile-background-preview" aria-label="成员背景图">
+                    <span id="publicProfileBackgroundEmpty">还没有设置背景图</span>
+                </div>
+
+                <div class="member-profile personal-profile public-member-profile">
+                    <img id="publicProfileAvatar" class="member-avatar" src="./images/logo.png" alt="成员头像">
+                    <div>
+                        <p class="section-kicker">Profile</p>
+                        <h2 id="publicProfileName">成员</h2>
+                        <p id="publicProfileMinecraftLine" class="member-muted"></p>
+                        <p id="publicProfileSignature" class="profile-signature">还没有签名。</p>
+                    </div>
+                </div>
+
+                <div class="profile-facts public-profile-facts">
+                    <div class="profile-fact">
+                        <span>MC ID</span>
+                        <strong id="publicProfileMinecraft">未填写</strong>
+                    </div>
+                    <div class="profile-fact">
+                        <span>身份</span>
+                        <strong id="publicProfileRole">member</strong>
+                    </div>
+                    <div class="profile-fact">
+                        <span>累计签到</span>
+                        <strong id="publicProfileCheckins">0 天</strong>
+                    </div>
+                    <div class="profile-fact">
+                        <span>最近签到</span>
+                        <strong id="publicProfileLastCheckin">-</strong>
+                    </div>
+                </div>
+
+                <div class="public-profile-actions">
+                    <a class="ghost-btn" href="index.html">回到主页</a>
+                    <a class="join-btn" href="members.html">查看我的个人页</a>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js?v=20260615-public-profile"></script>
+    <script src="js/profile.js?v=20260615-public-profile"></script>
+    <script src="js/animations.js"></script>
+</body>
+</html>
