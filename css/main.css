@@ -658,11 +658,18 @@ h2 {
 .modal-wrapper {
     position: fixed;
     inset: 0;
-    z-index: 10000;
+    z-index: 30000;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 14px;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    color: var(--text);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.65;
+    isolation: isolate;
 }
 
 .modal-backdrop {
@@ -679,6 +686,7 @@ h2 {
     grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
     width: min(1500px, calc(100vw - 28px));
     height: calc(100vh - 28px);
+    height: calc(100dvh - 28px);
     max-height: 920px;
     overflow: hidden;
     background: #ffffff;
@@ -1101,7 +1109,8 @@ h2 {
     white-space: nowrap;
 }
 
-.lightbox-open {
+html.lightbox-open,
+body.lightbox-open {
     overflow: hidden;
 }
 

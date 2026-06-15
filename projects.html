@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工程项目 - 喵宿咖啡厅</title>
     <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/main.css?v=20260615-fullscreen-lightbox">
+    <link rel="stylesheet" href="css/main.css?v=20260615-modal-position-fix">
 </head>
 <body class="projects-page">
 
@@ -408,6 +408,7 @@
             let filteredProjects = PROJECTS.slice();
             let projectModal = null;
             let currentProjectIndex = 0;
+            let projectModalScrollY = 0;
 
     function toPlainText(text) {
     return String(text || "")
@@ -510,9 +511,31 @@
     function closeProjectModal() {
     if (!projectModal) return;
     document.removeEventListener("keydown", projectModal.onKey);
-    document.body.classList.remove("lightbox-open");
     projectModal.wrapper.remove();
     projectModal = null;
+    unlockProjectModalScroll();
+    }
+
+    function lockProjectModalScroll() {
+    projectModalScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add("lightbox-open");
+    document.body.classList.add("lightbox-open");
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${projectModalScrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.width = "100%";
+    }
+
+    function unlockProjectModalScroll() {
+    document.documentElement.classList.remove("lightbox-open");
+    document.body.classList.remove("lightbox-open");
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    window.scrollTo(0, projectModalScrollY);
     }
 
     function showProjectModal(index) {
@@ -551,8 +574,8 @@
 
     wrapper.appendChild(backdrop);
     wrapper.appendChild(modal);
-    document.body.appendChild(wrapper);
-    document.body.classList.add("lightbox-open");
+    lockProjectModalScroll();
+    document.documentElement.appendChild(wrapper);
 
     function onKey(e) {
     if (e.key === "Escape") closeProjectModal();
@@ -580,7 +603,11 @@
     backdrop.addEventListener("click", closeProjectModal);
     document.addEventListener("keydown", onKey);
     updateProjectModal();
+    try {
+    modal.querySelector(".modal-close").focus({ preventScroll: true });
+    } catch (error) {
     modal.querySelector(".modal-close").focus();
+    }
     }
 
     function updateProjectModal() {
