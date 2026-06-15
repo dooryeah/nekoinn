@@ -247,7 +247,7 @@ returns table (
     already_checked boolean,
     total_count bigint,
     checked_at timestamptz,
-    checkin_date date
+    signed_date date
 )
 language plpgsql
 security definer
@@ -273,7 +273,7 @@ begin
 
     insert into public.member_checkins (email_normalized, checkin_date)
     values (current_email, today)
-    on conflict (email_normalized, checkin_date) do nothing;
+    on conflict on constraint member_checkins_email_normalized_checkin_date_key do nothing;
 
     get diagnostics inserted_count = row_count;
 
@@ -291,7 +291,7 @@ begin
         inserted_count = 0 as already_checked,
         count(mc.id)::bigint as total_count,
         max(mc.created_at) as checked_at,
-        today as checkin_date
+        today as signed_date
     from public.member_whitelist mw
     left join public.member_checkins mc
         on mc.email_normalized = mw.email_normalized
