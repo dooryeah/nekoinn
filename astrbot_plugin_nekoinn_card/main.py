@@ -182,10 +182,6 @@ def draw_wrapped(draw, text, xy, draw_font, fill, max_chars, line_gap=8, max_lin
         y += line_height + line_gap
 
 
-def public_profile_url(settings: PluginSettings, minecraft_name: str):
-    return f"{settings.site_url}/profile.html?player={quote(minecraft_name or '')}"
-
-
 async def render_card(profile: dict, settings: PluginSettings):
     display_name = profile.get("display_name") or profile.get("minecraft_name") or "成员"
     minecraft_name = profile.get("minecraft_name") or "未填写"
@@ -208,68 +204,99 @@ async def render_card(profile: dict, settings: PluginSettings):
         except Exception:
             background = None
 
-    if background:
-        bg = cover(background, (CARD_WIDTH, CARD_HEIGHT)).filter(ImageFilter.GaussianBlur(1.5))
-        card.alpha_composite(bg)
-        card.alpha_composite(Image.new("RGBA", card.size, (8, 18, 31, 142)))
-    else:
-        base = Image.new("RGBA", card.size, "#edf5fb")
-        draw_base = ImageDraw.Draw(base)
-        draw_base.rectangle((0, 0, CARD_WIDTH, CARD_HEIGHT), fill="#edf5fb")
-        draw_base.ellipse((-120, -140, 330, 260), fill="#cfe8dc")
-        draw_base.ellipse((650, -180, 1100, 230), fill="#f7dbad")
-        draw_base.rectangle((0, 0, CARD_WIDTH, CARD_HEIGHT), fill=(247, 251, 255, 92))
-        card.alpha_composite(base)
+    base = Image.new("RGBA", card.size, "#edf5fb")
+    draw_base = ImageDraw.Draw(base)
+    draw_base.rectangle((0, 0, CARD_WIDTH, CARD_HEIGHT), fill="#edf5fb")
+    draw_base.ellipse((-120, -120, 360, 250), fill="#d8ede3")
+    draw_base.ellipse((650, -170, 1120, 240), fill="#f8dfb8")
+    draw_base.rectangle((0, 0, CARD_WIDTH, CARD_HEIGHT), fill=(247, 251, 255, 132))
+    card.alpha_composite(base)
 
-    panel = Image.new("RGBA", (CARD_WIDTH - 80, CARD_HEIGHT - 80), (255, 255, 255, 226))
-    panel_mask = rounded_mask(panel.size, 24)
-    card.paste(panel, (40, 40), panel_mask)
+    panel_pos = (46, 40)
+    panel_size = (CARD_WIDTH - 92, CARD_HEIGHT - 80)
+    panel_mask = rounded_mask(panel_size, 16)
+    panel = Image.new("RGBA", panel_size, (255, 255, 255, 222))
+    card.paste(panel, panel_pos, panel_mask)
+
+    banner_size = (panel_size[0], 178)
+    banner = Image.new("RGBA", banner_size, (47, 95, 168, 255))
+    if background:
+        banner = cover(background, banner_size)
+        banner = banner.filter(ImageFilter.GaussianBlur(0.6))
+        banner.alpha_composite(Image.new("RGBA", banner_size, (14, 31, 51, 84)))
+    else:
+        banner_draw = ImageDraw.Draw(banner)
+        banner_draw.rectangle((0, 0, banner_size[0], banner_size[1]), fill="#2f5fa8")
+        banner_draw.ellipse((-60, -80, 380, 230), fill="#3a9b75")
+        banner_draw.ellipse((560, -120, 980, 200), fill="#f2aa4c")
+        banner.alpha_composite(Image.new("RGBA", banner_size, (255, 255, 255, 18)))
+
+    banner_mask = rounded_mask(banner_size, 16)
+    square_fix = Image.new("L", banner_size, 0)
+    square_draw = ImageDraw.Draw(square_fix)
+    square_draw.rectangle((0, 70, banner_size[0], banner_size[1]), fill=255)
+    banner_mask = Image.composite(Image.new("L", banner_size, 255), banner_mask, square_fix)
+    card.paste(banner, panel_pos, banner_mask)
     draw = ImageDraw.Draw(card)
 
     try:
         avatar = await load_remote_image(avatar_url)
     except Exception:
         avatar = None
+    avatar_size = 116
+    avatar_pos = (90, 138)
+    draw.rounded_rectangle(
+        (avatar_pos[0] - 8, avatar_pos[1] - 8, avatar_pos[0] + avatar_size + 8, avatar_pos[1] + avatar_size + 8),
+        radius=18,
+        fill="#ffffff",
+        outline="#d8e4ef",
+        width=2,
+    )
     if avatar is None:
-        avatar = Image.new("RGBA", (132, 132), "#ffffff")
-    avatar = ImageOps.fit(avatar, (132, 132), method=Image.Resampling.NEAREST)
-    avatar_mask = rounded_mask((132, 132), 18)
-    card.paste(avatar, (82, 84), avatar_mask)
+        avatar = Image.new("RGBA", (avatar_size, avatar_size), "#ffffff")
+    avatar = ImageOps.fit(avatar, (avatar_size, avatar_size), method=Image.Resampling.NEAREST)
+    avatar_mask = rounded_mask((avatar_size, avatar_size), 12)
+    card.paste(avatar, avatar_pos, avatar_mask)
 
-    title_font = font(46, bold=True)
-    mid_font = font(25, bold=True)
-    body_font = font(24)
-    small_font = font(19)
-    chip_font = font(18, bold=True)
-    caption_font = font(16, bold=True)
+    title_font = font(44, bold=True)
+    mid_font = font(24, bold=True)
+    body_font = font(23)
+    small_font = font(18)
+    chip_font = font(17, bold=True)
+    caption_font = font(15, bold=True)
+    fact_label_font = font(17, bold=True)
 
-    draw.text((82, 54), settings.card_title, font=caption_font, fill="#3a9b75")
-    draw.text((246, 82), display_name, font=title_font, fill="#253241")
-    draw.text((248, 146), f"MC ID: {minecraft_name}", font=mid_font, fill="#2f5fa8")
-    draw.text((248, 188), f"身份: {role}", font=body_font, fill="#66758a")
+    draw.rounded_rectangle((82, 72, 286, 104), radius=8, fill=(20, 37, 58, 110))
+    draw.text((100, 79), settings.card_title, font=caption_font, fill="#ffffff")
+
+    draw.text((236, 154), display_name, font=title_font, fill="#253241")
+    draw.text((238, 214), f"@{minecraft_name}", font=mid_font, fill="#2f5fa8")
 
     chip_text = "今日已签到" if checked_today else "今日未签到"
     chip_fill = "#e6f5ee" if checked_today else "#eef3f8"
     chip_text_fill = "#1f6d52" if checked_today else "#66758a"
-    draw.rounded_rectangle((760, 82, 898, 120), radius=10, fill=chip_fill)
-    draw.text((781, 90), chip_text, font=chip_font, fill=chip_text_fill)
+    draw.rounded_rectangle((738, 204, 876, 244), radius=8, fill=chip_fill)
+    draw.text((759, 213), chip_text, font=chip_font, fill=chip_text_fill)
 
-    draw.rounded_rectangle((82, 256, 898, 376), radius=18, fill="#ffffff", outline="#d8e4ef", width=2)
-    draw_wrapped(draw, signature, (112, 280), body_font, "#253241", max_chars=31, max_lines=3)
-
-    fact_y = 408
+    fact_y = 292
     facts = [
+        ("MC ID", minecraft_name),
+        ("身份", role),
         ("累计签到", f"{total_count} 天"),
         ("最近签到", str(last_checkin)),
-        ("公开资料", public_profile_url(settings, minecraft_name)),
     ]
+    fact_width = 188
+    fact_gap = 16
     x = 82
-    widths = [190, 220, 406]
-    for (label, value), width in zip(facts, widths):
-        draw.rounded_rectangle((x, fact_y, x + width, fact_y + 62), radius=14, fill="#f7fbff", outline="#d8e4ef")
-        draw.text((x + 18, fact_y + 8), label, font=small_font, fill="#66758a")
-        draw.text((x + 18, fact_y + 34), value, font=small_font, fill="#253241")
-        x += width + 13
+    for label, value in facts:
+        draw.rounded_rectangle((x, fact_y, x + fact_width, fact_y + 72), radius=8, fill=(255, 255, 255, 150), outline="#d8e4ef")
+        draw.text((x + 16, fact_y + 12), label, font=fact_label_font, fill="#66758a")
+        draw.text((x + 16, fact_y + 40), value, font=small_font, fill="#253241")
+        x += fact_width + fact_gap
+
+    draw.rounded_rectangle((82, 392, 898, 462), radius=8, fill=(58, 155, 117, 22), outline="#c9e8dc")
+    draw.text((106, 410), "文字签名", font=fact_label_font, fill="#1f6d52")
+    draw_wrapped(draw, signature, (210, 408), body_font, "#253241", max_chars=30, max_lines=2)
 
     output = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
     card.convert("RGB").save(output.name, "PNG")

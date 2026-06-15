@@ -19,6 +19,8 @@ supabase_service_role: 新生成的 Supabase service_role key
 site_url: https://nekoinn.top
 ```
 
+当前卡片不会显示公开资料链接；`site_url` 只是保留为站点标识和后续扩展配置。
+
 插件也支持环境变量兜底：
 
 ```text

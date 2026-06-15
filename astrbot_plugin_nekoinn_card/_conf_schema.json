@@ -16,7 +16,7 @@
     "description": "网站地址",
     "type": "string",
     "default": "https://nekoinn.top",
-    "hint": "用于在卡片底部生成公开资料页链接。"
+    "hint": "作为站点标识保留，当前卡片不会显示公开资料链接。"
   },
   "card_title": {
     "description": "卡片小标题",
