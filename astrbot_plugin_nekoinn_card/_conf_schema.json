@@ -1,0 +1,26 @@
+{
+  "supabase_url": {
+    "description": "Supabase Project URL",
+    "type": "string",
+    "default": "https://dpunqvmelqtmwhmgmbzd.supabase.co",
+    "hint": "例如：https://dpunqvmelqtmwhmgmbzd.supabase.co"
+  },
+  "supabase_service_role": {
+    "description": "Supabase service_role key",
+    "type": "text",
+    "default": "",
+    "obvious_hint": true,
+    "hint": "权限很高。只填在 AstrBot 本地 WebUI 配置中，不要发群、不要提交到仓库。"
+  },
+  "site_url": {
+    "description": "网站地址",
+    "type": "string",
+    "default": "https://nekoinn.top",
+    "hint": "用于在卡片底部生成公开资料页链接。"
+  },
+  "card_title": {
+    "description": "卡片小标题",
+    "type": "string",
+    "default": "Nekoinn Player Card"
+  }
+}

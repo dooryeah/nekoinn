@@ -1,5 +1,6 @@
 import os
 import tempfile
+from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path
 from textwrap import wrap
@@ -8,21 +9,55 @@ from urllib.parse import quote
 import httpx
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
+from astrbot.api import AstrBotConfig
 from astrbot.api.event import AstrMessageEvent, filter
 from astrbot.api.star import Context, Star
 
 
-SUPABASE_URL = os.getenv("NEKOINN_SUPABASE_URL", "").rstrip("/")
-SUPABASE_SERVICE_ROLE = os.getenv("NEKOINN_SUPABASE_SERVICE_ROLE", "")
-SITE_URL = os.getenv("NEKOINN_SITE_URL", "https://nekoinn.top").rstrip("/")
 BACKGROUND_BUCKET = "member-backgrounds"
 CARD_WIDTH = 980
 CARD_HEIGHT = 520
 
 
+@dataclass
+class PluginSettings:
+    supabase_url: str
+    supabase_service_role: str
+    site_url: str
+    card_title: str
+
+    @classmethod
+    def from_config(cls, config: AstrBotConfig | None):
+        config = config or {}
+        supabase_url = str(
+            config.get("supabase_url")
+            or os.getenv("NEKOINN_SUPABASE_URL", "")
+        ).strip().rstrip("/")
+        supabase_service_role = str(
+            config.get("supabase_service_role")
+            or os.getenv("NEKOINN_SUPABASE_SERVICE_ROLE", "")
+        ).strip()
+        site_url = str(
+            config.get("site_url")
+            or os.getenv("NEKOINN_SITE_URL", "https://nekoinn.top")
+        ).strip().rstrip("/")
+        card_title = str(config.get("card_title") or "Nekoinn Player Card").strip()
+        return cls(
+            supabase_url=supabase_url,
+            supabase_service_role=supabase_service_role,
+            site_url=site_url or "https://nekoinn.top",
+            card_title=card_title or "Nekoinn Player Card",
+        )
+
+    @property
+    def is_ready(self):
+        return bool(self.supabase_url and self.supabase_service_role)
+
+
 class NekoinnCardPlugin(Star):
-    def __init__(self, context: Context):
+    def __init__(self, context: Context, config: AstrBotConfig | None = None):
         super().__init__(context)
+        self.settings = PluginSettings.from_config(config)
 
     @filter.command("玩家")
     async def player_card_cn(self, event: AstrMessageEvent, name: str = ""):
@@ -40,12 +75,16 @@ class NekoinnCardPlugin(Star):
             yield event.plain_result("用法：/玩家 Akari_desu")
             return
 
-        if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE:
-            yield event.plain_result("机器人还没有配置 Supabase 环境变量。")
+        if not self.settings.is_ready:
+            yield event.plain_result("插件还没有配置 Supabase，请在 AstrBot 插件管理里填写配置。")
             return
 
         try:
-            profile = await fetch_profile(name)
+            profile = await fetch_profile(self.settings, name)
+        except httpx.HTTPStatusError as exc:
+            detail = exc.response.text[:160] if exc.response is not None else str(exc)
+            yield event.plain_result(f"资料查询失败：{detail}")
+            return
         except Exception as exc:
             yield event.plain_result(f"资料查询失败：{exc}")
             return
@@ -55,7 +94,7 @@ class NekoinnCardPlugin(Star):
             return
 
         try:
-            image_path = await render_card(profile)
+            image_path = await render_card(profile, self.settings)
         except Exception as exc:
             yield event.plain_result(f"卡片渲染失败：{exc}")
             return
@@ -63,15 +102,15 @@ class NekoinnCardPlugin(Star):
         yield event.image_result(image_path)
 
 
-async def fetch_profile(name: str):
+async def fetch_profile(settings: PluginSettings, name: str):
     headers = {
-        "apikey": SUPABASE_SERVICE_ROLE,
-        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE}",
+        "apikey": settings.supabase_service_role,
+        "Authorization": f"Bearer {settings.supabase_service_role}",
         "Content-Type": "application/json",
     }
     async with httpx.AsyncClient(timeout=20) as client:
         response = await client.post(
-            f"{SUPABASE_URL}/rest/v1/rpc/get_bot_member_card",
+            f"{settings.supabase_url}/rest/v1/rpc/get_bot_member_card",
             headers=headers,
             json={"player_name": name},
         )
@@ -143,11 +182,11 @@ def draw_wrapped(draw, text, xy, draw_font, fill, max_chars, line_gap=8, max_lin
         y += line_height + line_gap
 
 
-def public_profile_url(minecraft_name: str):
-    return f"{SITE_URL}/profile.html?player={quote(minecraft_name or '')}"
+def public_profile_url(settings: PluginSettings, minecraft_name: str):
+    return f"{settings.site_url}/profile.html?player={quote(minecraft_name or '')}"
 
 
-async def render_card(profile: dict):
+async def render_card(profile: dict, settings: PluginSettings):
     display_name = profile.get("display_name") or profile.get("minecraft_name") or "成员"
     minecraft_name = profile.get("minecraft_name") or "未填写"
     role = profile.get("role") or "member"
@@ -159,7 +198,7 @@ async def render_card(profile: dict):
     background_path = profile.get("background_path")
     background_url = ""
     if background_path:
-        background_url = f"{SUPABASE_URL}/storage/v1/object/public/{BACKGROUND_BUCKET}/{quote(background_path, safe='/')}"
+        background_url = f"{settings.supabase_url}/storage/v1/object/public/{BACKGROUND_BUCKET}/{quote(background_path, safe='/')}"
 
     card = Image.new("RGBA", (CARD_WIDTH, CARD_HEIGHT), "#edf5fb")
     background = None
@@ -202,7 +241,9 @@ async def render_card(profile: dict):
     body_font = font(24)
     small_font = font(19)
     chip_font = font(18, bold=True)
+    caption_font = font(16, bold=True)
 
+    draw.text((82, 54), settings.card_title, font=caption_font, fill="#3a9b75")
     draw.text((246, 82), display_name, font=title_font, fill="#253241")
     draw.text((248, 146), f"MC ID: {minecraft_name}", font=mid_font, fill="#2f5fa8")
     draw.text((248, 188), f"身份: {role}", font=body_font, fill="#66758a")
@@ -220,7 +261,7 @@ async def render_card(profile: dict):
     facts = [
         ("累计签到", f"{total_count} 天"),
         ("最近签到", str(last_checkin)),
-        ("公开资料", public_profile_url(minecraft_name)),
+        ("公开资料", public_profile_url(settings, minecraft_name)),
     ]
     x = 82
     widths = [190, 220, 406]

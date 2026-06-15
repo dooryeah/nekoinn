@@ -405,6 +405,8 @@ begin
 end;
 $$;
 
+drop function if exists public.get_bot_member_card(text);
+
 create or replace function public.get_bot_member_card(player_name text)
 returns table (
     display_name text,

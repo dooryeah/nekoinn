@@ -41,12 +41,12 @@ Redirect URLs: https://nekoinn.top/login.html
 
 ## AstrBot 机器人
 
-仓库里的 `astrbot_plugin_nekoinn_card` 插件会调用 `get_bot_member_card` 渲染玩家卡片。重新执行 `supabase/schema.sql` 后，把 Supabase Project URL 和 `service_role` key 配到机器人服务器环境变量里：
+仓库里的 `astrbot_plugin_nekoinn_card` 插件会调用 `get_bot_member_card` 渲染玩家卡片。重新执行 `supabase/schema.sql` 后，把 Supabase Project URL 和 `service_role` key 填到 AstrBot WebUI 的插件配置里：
 
 ```text
-NEKOINN_SUPABASE_URL=https://dpunqvmelqtmwhmgmbzd.supabase.co
-NEKOINN_SUPABASE_SERVICE_ROLE=你的 service_role key
-NEKOINN_SITE_URL=https://nekoinn.top
+supabase_url: https://dpunqvmelqtmwhmgmbzd.supabase.co
+supabase_service_role: 你的 service_role key
+site_url: https://nekoinn.top
 ```
 
-`service_role` key 权限很高，只能放在机器人运行环境里，不要提交到仓库或写进网页。
+插件也支持环境变量兜底。`service_role` key 权限很高，只能放在机器人本地配置或运行环境里，不要提交到仓库或写进网页。
