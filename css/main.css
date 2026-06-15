@@ -670,6 +670,15 @@ h2 {
     font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
     line-height: 1.65;
     isolation: isolate;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    background: transparent;
+}
+
+.modal-wrapper::backdrop {
+    background: transparent;
 }
 
 .modal-backdrop {
@@ -682,8 +691,7 @@ h2 {
 .modal-content {
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+    display: block;
     width: min(1500px, calc(100vw - 28px));
     height: calc(100vh - 28px);
     height: calc(100dvh - 28px);
@@ -696,8 +704,11 @@ h2 {
 
 .modal-media {
     position: relative;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
     min-height: 0;
     overflow: hidden;
     background: #0f1724;
@@ -705,18 +716,32 @@ h2 {
 
 .modal-image {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: auto;
+    max-width: 100%;
     max-height: none;
+    max-height: 100%;
     object-fit: contain;
 }
 
 .modal-body {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    z-index: 4;
     display: flex;
     flex-direction: column;
+    width: min(340px, calc(100% - 36px));
+    max-height: min(46vh, 360px);
     min-width: 0;
     overflow-y: auto;
-    padding: 28px 30px 30px;
+    padding: 16px 18px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 14px 36px rgba(5, 10, 18, 0.28);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
 .modal-body h2 {
@@ -744,7 +769,7 @@ h2 {
     position: absolute;
     top: 14px;
     right: 14px;
-    z-index: 2;
+    z-index: 5;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -764,7 +789,7 @@ h2 {
 .modal-nav {
     position: absolute;
     top: 50%;
-    z-index: 3;
+    z-index: 5;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -800,7 +825,7 @@ h2 {
 }
 
 .modal-next {
-    right: 338px;
+    right: 18px;
 }
 
 .modal-count {
@@ -950,7 +975,7 @@ h2 {
 }
 
 .modal-media {
-    border-radius: var(--radius) 0 0 var(--radius);
+    border-radius: var(--radius);
 }
 
 .modal-close {
@@ -1909,20 +1934,19 @@ body.lightbox-open {
     }
 
     .modal-content {
-        grid-template-columns: 1fr;
         width: calc(100vw - 20px);
         height: calc(100vh - 20px);
         max-height: none;
-        overflow-y: auto;
+        overflow: hidden;
     }
 
     .modal-media {
-        min-height: 58vh;
-        border-radius: var(--radius) var(--radius) 0 0;
+        min-height: 0;
+        border-radius: var(--radius);
     }
 
     .modal-image {
-        max-height: 64vh;
+        max-height: 100%;
     }
 
     .modal-next {
@@ -1930,7 +1954,10 @@ body.lightbox-open {
     }
 
     .modal-body {
-        max-height: none;
+        right: 14px;
+        bottom: 14px;
+        width: min(340px, calc(100% - 28px));
+        max-height: 34vh;
     }
 
     .viewer-backdrop {
@@ -2040,11 +2067,12 @@ body.lightbox-open {
     }
 
     .modal-media {
-        min-height: 62vh;
+        min-height: 0;
     }
 
     .modal-body {
         padding: 18px;
+        max-height: 32vh;
     }
 
     .modal-nav {
