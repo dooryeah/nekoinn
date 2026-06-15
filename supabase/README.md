@@ -38,3 +38,15 @@ Redirect URLs: https://nekoinn.top/login.html
 签到按北京时间计算日期。每个白名单邮箱每天只能签到一次，排行榜按累计签到天数排序。
 
 背景图 bucket 是公开读取的，方便静态网页直接展示图片；上传、删除和资料保存都限制为已登录且在白名单内的成员。前端限制图片最大 4MB，支持 PNG、JPG、WebP 和 GIF。
+
+## AstrBot 机器人
+
+仓库里的 `astrbot_plugin_nekoinn_card` 插件会调用 `get_bot_member_card` 渲染玩家卡片。重新执行 `supabase/schema.sql` 后，把 Supabase Project URL 和 `service_role` key 配到机器人服务器环境变量里：
+
+```text
+NEKOINN_SUPABASE_URL=https://dpunqvmelqtmwhmgmbzd.supabase.co
+NEKOINN_SUPABASE_SERVICE_ROLE=你的 service_role key
+NEKOINN_SITE_URL=https://nekoinn.top
+```
+
+`service_role` key 权限很高，只能放在机器人运行环境里，不要提交到仓库或写进网页。
