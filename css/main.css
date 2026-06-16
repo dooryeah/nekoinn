@@ -456,6 +456,70 @@ h2 {
     text-align: center;
 }
 
+.compact-hero-card {
+    display: grid;
+    gap: 8px;
+    align-items: center;
+    min-height: 0;
+    padding-block: clamp(14px, 2vw, 20px);
+    margin-bottom: 16px;
+}
+
+.compact-hero-card h1 {
+    margin: 0;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.08;
+}
+
+.compact-hero-card .section-kicker {
+    margin-bottom: 4px;
+}
+
+.compact-hero-card .section-note {
+    max-width: 640px;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+.project-hero-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding-right: clamp(16px, 3vw, 26px);
+}
+
+.project-hero-card .section-kicker,
+.project-hero-card h1,
+.project-hero-card .section-note {
+    text-align: left;
+    margin-left: 0;
+}
+
+.project-hero-mascot {
+    display: inline-flex;
+    align-items: center;
+    justify-self: end;
+    min-width: 0;
+    gap: 10px;
+}
+
+.project-hero-gif {
+    width: clamp(92px, 12vw, 142px);
+    flex: 0 0 auto;
+    max-height: 112px;
+    object-fit: contain;
+    image-rendering: auto;
+    filter: drop-shadow(0 8px 16px rgba(38, 67, 98, 0.14));
+    pointer-events: none;
+}
+
+.project-hero-caption {
+    color: var(--muted);
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
+}
+
 .join-btn,
 .ghost-btn {
     position: relative;
@@ -524,8 +588,89 @@ h2 {
     padding: clamp(28px, 6vw, 70px);
     overflow: hidden;
     border-bottom: 1px solid var(--line);
-    background: url("../images/home_banner.jpg") center/cover no-repeat;
+    background: #111c29;
     isolation: isolate;
+}
+
+.hero-carousel {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: #111c29;
+}
+
+.hero-carousel-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: #111c29;
+    will-change: transform;
+}
+
+.hero-slide {
+    position: relative;
+    flex: 0 0 calc(100% + 2px);
+    min-width: calc(100% + 2px);
+    margin-right: -2px;
+    overflow: hidden;
+    transform: scale(1.015);
+    will-change: transform;
+}
+
+.hero-slide.is-active {
+    transform: scale(1.02);
+}
+
+.hero-slide img {
+    display: block;
+    width: 100%;
+    height: 108%;
+    object-fit: cover;
+    object-position: center 44%;
+    transform: scaleX(1.004) translateZ(0);
+    transform-origin: center center;
+}
+
+.hero-carousel-dots {
+    position: absolute;
+    right: clamp(18px, 4vw, 46px);
+    bottom: clamp(14px, 3vw, 28px);
+    z-index: 3;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.hero-carousel-dot {
+    width: 34px;
+    height: 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.38);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.18);
+    cursor: pointer;
+    transition:
+        width 0.26s var(--ease-out),
+        background 0.26s ease,
+        transform 0.26s var(--ease-out);
+}
+
+.hero-carousel-dot:hover,
+.hero-carousel-dot:focus-visible {
+    background: rgba(255, 255, 255, 0.74);
+    transform: translateY(-1px);
+}
+
+.hero-carousel-dot:focus-visible {
+    outline: 2px solid rgba(174, 225, 200, 0.8);
+    outline-offset: 4px;
+}
+
+.hero-carousel-dot.is-active {
+    width: 46px;
+    background: #aee1c8;
 }
 
 .home-hero::before {
@@ -535,28 +680,33 @@ h2 {
     background:
         linear-gradient(90deg, rgba(12, 25, 42, 0.7), rgba(12, 25, 42, 0.28) 48%, rgba(12, 25, 42, 0.1)),
         linear-gradient(0deg, rgba(10, 20, 32, 0.35), transparent 48%);
-    z-index: 0;
+    z-index: 1;
+    pointer-events: none;
 }
 
 .home-hero::after {
     content: "";
     position: absolute;
-    inset: 0;
-    z-index: 0;
+    top: 0;
+    right: -28%;
+    bottom: 0;
+    left: -28%;
+    z-index: 1;
     background:
-        linear-gradient(115deg, transparent 6%, rgba(255, 255, 255, 0.13) 18%, transparent 31%),
+        linear-gradient(115deg, transparent 18%, rgba(255, 255, 255, 0.13) 34%, transparent 50%),
         linear-gradient(180deg, transparent 68%, rgba(237, 245, 251, 0.12));
     mix-blend-mode: screen;
     opacity: 0.54;
-    transform: translateX(-18%);
+    transform: translateX(-8%);
     animation: heroLightSweep 9s ease-in-out infinite alternate;
     pointer-events: none;
 }
 
 .hero-copy {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     max-width: 680px;
+    padding-bottom: 24px;
     color: #fff;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
 }
@@ -2249,7 +2399,7 @@ html[data-theme="night"] .ranking-chip {
 }
 
 .hero-copy {
-    padding: 2px 0;
+    padding-top: 2px;
 }
 
 .hero-copy h1 {
@@ -2358,12 +2508,12 @@ html[data-theme="night"] .ptag {
 
 @keyframes heroLightSweep {
     from {
-        transform: translateX(-20%);
+        transform: translateX(-8%);
         opacity: 0.34;
     }
 
     to {
-        transform: translateX(16%);
+        transform: translateX(8%);
         opacity: 0.62;
     }
 }
@@ -2477,6 +2627,28 @@ html[data-theme="night"] .ptag {
         padding-top: 26px;
     }
 
+    .compact-hero-card {
+        padding-block: 14px;
+    }
+
+    .project-hero-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+    }
+
+    .project-hero-mascot {
+        gap: 8px;
+    }
+
+    .project-hero-gif {
+        width: 86px;
+        max-height: 86px;
+    }
+
+    .project-hero-caption {
+        font-size: 11px;
+    }
+
     body.home-page {
         background-size: auto 100vh;
         background-position: center top;
@@ -2489,7 +2661,10 @@ html[data-theme="night"] .ptag {
     .home-hero {
         min-height: 430px;
         padding: 34px 24px;
-        background-position: center top;
+    }
+
+    .hero-slide img {
+        object-position: center top;
     }
 
     .hero-copy h1 {
@@ -2666,6 +2841,37 @@ html[data-theme="night"] .ptag {
         font-size: 14px;
     }
 
+    .compact-hero-card h1 {
+        font-size: 28px;
+    }
+
+    .compact-hero-card .section-note {
+        font-size: 14px;
+        line-height: 1.45;
+    }
+
+    .project-hero-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding-right: 14px;
+    }
+
+    .project-hero-mascot {
+        gap: 6px;
+    }
+
+    .project-hero-gif {
+        width: 68px;
+        max-height: 68px;
+    }
+
+    .project-hero-caption {
+        max-width: 78px;
+        font-size: 10px;
+        line-height: 1.2;
+        white-space: normal;
+        text-align: right;
+    }
+
     .theme-toggle {
         top: 82px;
         right: 8px;
@@ -2682,10 +2888,26 @@ html[data-theme="night"] .ptag {
         min-height: clamp(400px, 108vw, 520px);
         align-items: flex-end;
         padding: 24px 18px;
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
         background-color: #111c29;
+    }
+
+    .hero-carousel-dots {
+        right: 18px;
+        bottom: 12px;
+        gap: 6px;
+    }
+
+    .hero-carousel-dot {
+        width: 22px;
+        height: 4px;
+    }
+
+    .hero-carousel-dot.is-active {
+        width: 32px;
+    }
+
+    .hero-slide img {
+        object-position: center center;
     }
 
     .home-hero::before {

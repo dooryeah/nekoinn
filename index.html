@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主页 - 欢迎来到喵宿~</title>
-    <script src="js/theme-init.js?v=local-gsap-polish"></script>
-    <link rel="stylesheet" href="css/animations.css?v=local-gsap-polish">
+    <script src="js/theme-init.js?v=carousel-inline"></script>
+    <link rel="stylesheet" href="css/animations.css?v=carousel-inline">
 
-    <link rel="stylesheet" href="css/main.css?v=local-gsap-polish">
+    <link rel="stylesheet" href="css/main.css?v=carousel-inline">
 </head>
 <body class="home-page">
 
@@ -24,7 +24,25 @@
     </div>
 
     <!-- 首页首屏 -->
-    <section class="home-hero">
+    <section class="home-hero" data-hero-carousel data-carousel-interval="5200">
+        <div class="hero-carousel" aria-hidden="true">
+            <div class="hero-carousel-track">
+                <!-- carousel:start -->
+                <div class="hero-slide is-active">
+                    <img src="./images/carousel/server_1.png" alt="" decoding="async">
+                </div>
+                <div class="hero-slide">
+                    <img src="./images/carousel/server_2.png" alt="" decoding="async" loading="lazy">
+                </div>
+                <!-- carousel:end -->
+            </div>
+        </div>
+        <div class="hero-carousel-dots" aria-label="横幅图片切换">
+            <!-- carousel-dots:start -->
+            <button class="hero-carousel-dot is-active" type="button" aria-label="Show carousel image 1" aria-current="true"></button>
+            <button class="hero-carousel-dot" type="button" aria-label="Show carousel image 2"></button>
+            <!-- carousel-dots:end -->
+        </div>
         <div class="hero-copy">
             <p class="hero-kicker">Vanilla-neko Minecraft Survival</p>
             <h1>ねこ宿</h1>
@@ -285,7 +303,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="js/animations.js?v=local-gsap-polish"></script>
+    <script src="js/animations.js?v=carousel-inline"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
