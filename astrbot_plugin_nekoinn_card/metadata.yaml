@@ -1,5 +1,5 @@
 name: astrbot_plugin_nekoinn_card
 desc: 查询 Supabase 成员资料，渲染玩家卡片，并处理签到/许愿经验
-version: 1.2.0
+version: 1.2.1
 author: dooryeah
 repo: https://github.com/dooryeah/nekoinn

@@ -164,6 +164,10 @@ class NekoinnCardPlugin(Star):
         display_name = result.get("display_name") or result.get("minecraft_name") or "成员"
         gained = int(result.get("gained_experience") or 0)
         level = level_info(result.get("experience_points")).level
+        if result.get("already_wished"):
+            yield event.plain_result(f"{display_name} 今天已经许过愿啦，当前 Lv{level}。")
+            return
+
         yield event.plain_result(f"{display_name} 许愿成功，获得 {gained} EXP，当前 Lv{level}。")
 
     async def _render_player(self, event: AstrMessageEvent, name: str):

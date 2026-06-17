@@ -79,12 +79,25 @@ create table if not exists public.member_checkins (
     unique (email_normalized, checkin_date)
 );
 
+create table if not exists public.member_wishes (
+    id uuid primary key default gen_random_uuid(),
+    email_normalized text not null,
+    wish_date date not null default ((timezone('Asia/Shanghai', now()))::date),
+    gained_experience integer not null,
+    created_at timestamptz not null default now(),
+    unique (email_normalized, wish_date),
+    check (gained_experience between 1 and 5)
+);
+
 create index if not exists member_whitelist_active_email_idx
     on public.member_whitelist (email_normalized)
     where is_active;
 
 create index if not exists member_checkins_rank_idx
     on public.member_checkins (email_normalized, checkin_date desc);
+
+create index if not exists member_wishes_daily_idx
+    on public.member_wishes (email_normalized, wish_date desc);
 
 update public.member_whitelist mw
 set experience_points = greatest(mw.experience_points, coalesce(totals.checkin_count, 0) * 5)
@@ -99,6 +112,7 @@ where mw.email_normalized = totals.email_normalized;
 
 alter table public.member_whitelist enable row level security;
 alter table public.member_checkins enable row level security;
+alter table public.member_wishes enable row level security;
 
 drop policy if exists "members can read own whitelist row" on public.member_whitelist;
 create policy "members can read own whitelist row"
@@ -117,6 +131,21 @@ for select
 to authenticated
 using (
     exists (
+        select 1
+        from public.member_whitelist mw
+        where mw.is_active
+        and mw.email_normalized = lower(auth.jwt() ->> 'email')
+    )
+);
+
+drop policy if exists "whitelisted members can read own wishes" on public.member_wishes;
+create policy "whitelisted members can read own wishes"
+on public.member_wishes
+for select
+to authenticated
+using (
+    email_normalized = lower(auth.jwt() ->> 'email')
+    and exists (
         select 1
         from public.member_whitelist mw
         where mw.is_active
@@ -191,6 +220,7 @@ using (
 grant usage on schema public to authenticated;
 grant select on public.member_whitelist to authenticated;
 revoke all on public.member_checkins from anon, authenticated;
+revoke all on public.member_wishes from anon, authenticated;
 
 drop function if exists public.get_my_checkin_status();
 
@@ -382,7 +412,9 @@ returns table (
     email text,
     minecraft_name text,
     gained_experience integer,
-    experience_points integer
+    experience_points integer,
+    already_wished boolean,
+    wished_date date
 )
 language plpgsql
 security definer
@@ -390,7 +422,9 @@ set search_path = public
 as $$
 declare
     current_email text := lower(btrim(coalesce(member_email, '')));
+    today date := ((timezone('Asia/Shanghai', now()))::date);
     gained integer := floor(random() * 5 + 1)::integer;
+    inserted_count integer := 0;
 begin
     if current_email = '' or current_email !~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$' then
         raise exception 'invalid_email';
@@ -405,17 +439,44 @@ begin
         raise exception 'not_whitelisted';
     end if;
 
+    insert into public.member_wishes (email_normalized, wish_date, gained_experience)
+    values (current_email, today, gained)
+    on conflict on constraint member_wishes_email_normalized_wish_date_key do nothing;
+
+    get diagnostics inserted_count = row_count;
+
+    if inserted_count > 0 then
+        return query
+        update public.member_whitelist mw
+        set experience_points = mw.experience_points + gained
+        where mw.is_active
+        and mw.email_normalized = current_email
+        returning
+            coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') as display_name,
+            mw.email,
+            mw.minecraft_name,
+            gained as gained_experience,
+            mw.experience_points,
+            false as already_wished,
+            today as wished_date;
+        return;
+    end if;
+
     return query
-    update public.member_whitelist mw
-    set experience_points = mw.experience_points + gained
-    where mw.is_active
-    and mw.email_normalized = current_email
-    returning
+    select
         coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') as display_name,
         mw.email,
         mw.minecraft_name,
-        gained as gained_experience,
-        mw.experience_points;
+        coalesce(w.gained_experience, 0) as gained_experience,
+        mw.experience_points,
+        true as already_wished,
+        today as wished_date
+    from public.member_whitelist mw
+    left join public.member_wishes w
+        on w.email_normalized = mw.email_normalized
+        and w.wish_date = today
+    where mw.is_active
+    and mw.email_normalized = current_email;
 end;
 $$;
 
