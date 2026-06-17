@@ -6,7 +6,7 @@
     <title>成员资料 - 喵宿咖啡厅</title>
     <script src="js/theme-init.js?v=local-gsap-polish"></script>
     <link rel="stylesheet" href="css/animations.css?v=local-gsap-polish">
-    <link rel="stylesheet" href="css/main.css?v=local-gsap-polish">
+    <link rel="stylesheet" href="css/main.css?v=20260617-levels">
 </head>
 <body class="members-page public-profile-page">
     <div class="navbar">
@@ -60,10 +60,19 @@
 
                 <div class="member-profile personal-profile public-member-profile">
                     <img id="publicProfileAvatar" class="member-avatar" src="./images/logo.png" alt="成员头像">
-                    <div>
+                    <div class="profile-identity">
                         <p class="section-kicker">Profile</p>
                         <h2 id="publicProfileName">成员</h2>
                         <p id="publicProfileMinecraftLine" class="member-muted"></p>
+                        <div id="publicProfileLevelBox" class="profile-level" aria-label="成员等级">
+                            <div class="profile-level-head">
+                                <span id="publicProfileLevelBadge" class="level-badge">Lv1</span>
+                                <span id="publicProfileLevelText" class="level-exp-text">0 / 50 EXP</span>
+                            </div>
+                            <div class="level-bar" aria-hidden="true">
+                                <span id="publicProfileLevelBar" class="level-bar-fill"></span>
+                            </div>
+                        </div>
                         <p id="publicProfileSignature" class="profile-signature">还没有签名。</p>
                     </div>
                 </div>
@@ -97,8 +106,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
-    <script src="js/auth.js?v=20260615-public-profile"></script>
-    <script src="js/profile.js?v=20260615-public-profile"></script>
+    <script src="js/auth.js?v=20260617-levels"></script>
+    <script src="js/profile.js?v=20260617-levels"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
     <script src="js/animations.js?v=local-gsap-polish"></script>

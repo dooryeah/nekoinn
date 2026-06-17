@@ -7,7 +7,7 @@
     <script src="js/theme-init.js?v=local-gsap-polish"></script>
     <link rel="stylesheet" href="css/animations.css?v=local-gsap-polish">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sakana-widget@2.7.1/lib/sakana.min.css">
-    <link rel="stylesheet" href="css/main.css?v=local-gsap-polish">
+    <link rel="stylesheet" href="css/main.css?v=20260617-levels">
 </head>
 <body class="members-page">
     <div class="sakana-container">
@@ -60,10 +60,19 @@
 
                     <div class="member-profile personal-profile">
                         <img id="profileAvatar" class="member-avatar" src="./images/logo.png" alt="成员头像">
-                        <div>
+                        <div class="profile-identity">
                             <p class="section-kicker">Profile</p>
                             <h2 id="profileName">成员</h2>
                             <p id="profileEmail" class="member-muted"></p>
+                            <div id="profileLevelBox" class="profile-level" aria-label="成员等级">
+                                <div class="profile-level-head">
+                                    <span id="profileLevelBadge" class="level-badge">Lv1</span>
+                                    <span id="profileLevelText" class="level-exp-text">0 / 50 EXP</span>
+                                </div>
+                                <div class="level-bar" aria-hidden="true">
+                                    <span id="profileLevelBar" class="level-bar-fill"></span>
+                                </div>
+                            </div>
                             <p id="profileSignatureText" class="profile-signature">还没有签名。</p>
                         </div>
                     </div>
@@ -119,8 +128,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
-    <script src="js/auth.js?v=20260615-profile-custom"></script>
-    <script src="js/members.js?v=20260615-profile-custom"></script>
+    <script src="js/auth.js?v=20260617-levels"></script>
+    <script src="js/members.js?v=20260617-levels"></script>
     <script>
         function initSakanaWidget() {
             if (!window.SakanaWidget) return;

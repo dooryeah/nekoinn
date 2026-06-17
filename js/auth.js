@@ -35,12 +35,24 @@
     async function getWhitelistProfile(user) {
         if (!client || !user || !user.email) return { profile: null, error: null };
 
+        const columns = "email,nickname,minecraft_name,role,avatar_url,signature,background_path";
         const { data, error } = await client
             .from("member_whitelist")
-            .select("email,nickname,minecraft_name,role,avatar_url,signature,background_path")
+            .select(columns + ",experience_points")
             .eq("email_normalized", user.email.toLowerCase())
             .eq("is_active", true)
             .maybeSingle();
+
+        if (error && String(error.message || "").includes("experience_points")) {
+            const fallback = await client
+                .from("member_whitelist")
+                .select(columns)
+                .eq("email_normalized", user.email.toLowerCase())
+                .eq("is_active", true)
+                .maybeSingle();
+            if (fallback.data) fallback.data.experience_points = 0;
+            return { profile: fallback.data || null, error: fallback.error };
+        }
 
         return { profile: data || null, error };
     }

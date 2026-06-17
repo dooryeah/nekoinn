@@ -12,6 +12,9 @@
     const profileMinecraft = document.getElementById("profileMinecraft");
     const profileRole = document.getElementById("profileRole");
     const profileAvatar = document.getElementById("profileAvatar");
+    const profileLevelBadge = document.getElementById("profileLevelBadge");
+    const profileLevelText = document.getElementById("profileLevelText");
+    const profileLevelBar = document.getElementById("profileLevelBar");
     const profileSignatureText = document.getElementById("profileSignatureText");
     const profileBackgroundPreview = document.getElementById("profileBackgroundPreview");
     const profileBackgroundEmpty = document.getElementById("profileBackgroundEmpty");
@@ -54,6 +57,65 @@
         if (profile.avatar_url) return profile.avatar_url;
         if (profile.minecraft_name) return "https://mc-heads.net/avatar/" + encodeURIComponent(profile.minecraft_name);
         return "./images/logo.png";
+    }
+
+    function levelInfo(experience) {
+        const totalExp = Math.max(0, Math.floor(Number(experience) || 0));
+        let level = 1;
+        let spent = 0;
+        let nextNeed = 50;
+
+        while (level < 16 && totalExp >= spent + nextNeed) {
+            spent += nextNeed;
+            level += 1;
+            nextNeed = Math.ceil(nextNeed * 1.2);
+        }
+
+        if (level >= 16) {
+            return {
+                level: 16,
+                totalExp,
+                currentExp: totalExp - spent,
+                nextNeed: 0,
+                progress: 100,
+                capped: true,
+            };
+        }
+
+        return {
+            level,
+            totalExp,
+            currentExp: totalExp - spent,
+            nextNeed,
+            progress: nextNeed > 0 ? Math.max(0, Math.min(100, ((totalExp - spent) / nextNeed) * 100)) : 100,
+            capped: false,
+        };
+    }
+
+    function levelColor(level) {
+        const start = { r: 143, g: 216, b: 255 };
+        const end = { r: 244, g: 163, b: 199 };
+        const ratio = Math.max(0, Math.min(1, (Number(level) - 1) / 15));
+        const channel = (key) => Math.round(start[key] + (end[key] - start[key]) * ratio);
+        return "rgb(" + channel("r") + ", " + channel("g") + ", " + channel("b") + ")";
+    }
+
+    function renderLevel(experience) {
+        const info = levelInfo(experience);
+        const color = levelColor(info.level);
+        if (profileLevelBadge) {
+            profileLevelBadge.textContent = "Lv" + info.level;
+            profileLevelBadge.style.setProperty("--level-color", color);
+        }
+        if (profileLevelText) {
+            profileLevelText.textContent = info.capped
+                ? info.totalExp + " EXP"
+                : info.currentExp + " / " + info.nextNeed + " EXP";
+        }
+        if (profileLevelBar) {
+            profileLevelBar.style.width = info.progress + "%";
+            profileLevelBar.style.setProperty("--level-color", color);
+        }
     }
 
     function getBackgroundUrl(backgroundPath) {
@@ -99,6 +161,7 @@
         if (profileEmailFact) profileEmailFact.textContent = user.email || "-";
         if (profileMinecraft) profileMinecraft.textContent = profile.minecraft_name || "未填写";
         if (profileRole) profileRole.textContent = profile.role || "member";
+        renderLevel(profile.experience_points);
 
         if (profileAvatar) {
             profileAvatar.src = getAvatar(profile);
@@ -123,6 +186,11 @@
     function renderCheckinStatus(status) {
         const total = Number(status && status.total_count ? status.total_count : 0);
         const checkedInToday = Boolean(status && status.checked_in_today);
+        if (status && Object.prototype.hasOwnProperty.call(status, "experience_points")) {
+            const nextExperience = Number(status.experience_points || 0);
+            if (currentProfile) currentProfile.experience_points = nextExperience;
+            renderLevel(nextExperience);
+        }
 
         if (checkinButton) {
             checkinButton.disabled = checkedInToday;

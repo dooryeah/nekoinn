@@ -2045,10 +2045,69 @@ html[data-theme="night"] .auth-status.warn {
     text-align: left;
 }
 
+.profile-identity {
+    min-width: 0;
+}
+
 .member-muted,
 .member-role {
     margin: 4px 0 0;
     color: var(--muted);
+}
+
+.profile-level {
+    width: min(240px, 100%);
+    margin-top: 8px;
+}
+
+.profile-level-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.level-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 46px;
+    min-height: 24px;
+    padding: 3px 9px;
+    border-radius: 8px;
+    color: #ffffff;
+    background: linear-gradient(90deg, #8fd8ff, var(--level-color, #f4a3c7));
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow: 0 6px 16px rgba(143, 216, 255, 0.24);
+}
+
+.level-exp-text {
+    min-width: 0;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.level-bar {
+    overflow: hidden;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 999px;
+    background: rgba(143, 216, 255, 0.22);
+    box-shadow: inset 0 0 0 1px rgba(47, 95, 168, 0.08);
+}
+
+.level-bar-fill {
+    display: block;
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #8fd8ff, var(--level-color, #f4a3c7));
+    transition: width 0.35s var(--ease-out);
 }
 
 .profile-signature {
@@ -2109,27 +2168,38 @@ html[data-theme="night"] .auth-status.warn {
 
 .checkin-box {
     display: grid;
-    gap: 8px;
+    gap: 5px;
     justify-items: center;
-    margin-top: 22px;
-    padding: 18px;
+    margin-top: 16px;
+    padding: 12px;
     border: 1px solid rgba(58, 155, 117, 0.18);
     border-radius: var(--radius);
     background: rgba(58, 155, 117, 0.1);
 }
 
+.checkin-box .join-btn {
+    min-height: 34px;
+    padding: 7px 14px;
+    font-size: 14px;
+}
+
+.checkin-box .member-muted {
+    margin-top: 0;
+    font-size: 13px;
+}
+
 .checkin-total {
     margin: 0;
     color: var(--brand);
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 900;
 }
 
 .profile-edit-form {
     display: grid;
-    gap: 10px;
-    margin-top: 18px;
-    padding-top: 18px;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
     border-top: 1px solid var(--line);
 }
 
@@ -2141,9 +2211,9 @@ html[data-theme="night"] .auth-status.warn {
 
 .profile-edit-form textarea {
     width: 100%;
-    min-height: 86px;
+    min-height: 58px;
     resize: vertical;
-    padding: 10px 12px;
+    padding: 8px 10px;
     border: 1px solid rgba(47, 95, 168, 0.22);
     border-radius: var(--radius);
     color: var(--text);
@@ -2160,7 +2230,7 @@ html[data-theme="night"] .auth-status.warn {
 .profile-upload-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
 }
 
@@ -2179,11 +2249,21 @@ html[data-theme="night"] .auth-status.warn {
 .profile-edit-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
+}
+
+.profile-edit-actions .join-btn,
+.profile-edit-actions .ghost-btn,
+.profile-file-button {
+    min-height: 34px;
+    padding: 7px 14px;
+    font-size: 14px;
 }
 
 .profile-edit-status {
-    min-height: 24px;
+    min-height: 20px;
+    margin-top: 0;
+    font-size: 13px;
 }
 
 .profile-edit-status.success {
@@ -2711,6 +2791,10 @@ html[data-theme="night"] .ptag {
 
     .member-profile h2 {
         text-align: center;
+    }
+
+    .profile-level {
+        margin-inline: auto;
     }
 
     .member-signout {

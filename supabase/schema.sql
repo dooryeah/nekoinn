@@ -9,13 +9,23 @@ create table if not exists public.member_whitelist (
     avatar_url text,
     signature text,
     background_path text,
+    experience_points integer not null default 0,
     is_active boolean not null default true,
     created_at timestamptz not null default now()
 );
 
 alter table public.member_whitelist
     add column if not exists signature text,
-    add column if not exists background_path text;
+    add column if not exists background_path text,
+    add column if not exists experience_points integer not null default 0;
+
+update public.member_whitelist
+set experience_points = 0
+where experience_points is null;
+
+alter table public.member_whitelist
+    alter column experience_points set default 0,
+    alter column experience_points set not null;
 
 do $$
 begin
@@ -28,6 +38,21 @@ begin
         alter table public.member_whitelist
             add constraint member_whitelist_signature_length
             check (signature is null or char_length(signature) <= 80);
+    end if;
+end
+$$;
+
+do $$
+begin
+    if not exists (
+        select 1
+        from pg_constraint
+        where conname = 'member_whitelist_experience_nonnegative'
+        and conrelid = 'public.member_whitelist'::regclass
+    ) then
+        alter table public.member_whitelist
+            add constraint member_whitelist_experience_nonnegative
+            check (experience_points >= 0);
     end if;
 end
 $$;
@@ -60,6 +85,17 @@ create index if not exists member_whitelist_active_email_idx
 
 create index if not exists member_checkins_rank_idx
     on public.member_checkins (email_normalized, checkin_date desc);
+
+update public.member_whitelist mw
+set experience_points = greatest(mw.experience_points, coalesce(totals.checkin_count, 0) * 5)
+from (
+    select
+        mc.email_normalized,
+        count(*)::integer as checkin_count
+    from public.member_checkins mc
+    group by mc.email_normalized
+) totals
+where mw.email_normalized = totals.email_normalized;
 
 alter table public.member_whitelist enable row level security;
 alter table public.member_checkins enable row level security;
@@ -156,11 +192,14 @@ grant usage on schema public to authenticated;
 grant select on public.member_whitelist to authenticated;
 revoke all on public.member_checkins from anon, authenticated;
 
+drop function if exists public.get_my_checkin_status();
+
 create or replace function public.get_my_checkin_status()
 returns table (
     checked_in_today boolean,
     total_count bigint,
-    checked_at timestamptz
+    checked_at timestamptz,
+    experience_points integer
 )
 language plpgsql
 security definer
@@ -188,17 +227,26 @@ begin
             and mc.checkin_date = today
         ) as checked_in_today,
         count(mc.id)::bigint as total_count,
-        max(mc.created_at) as checked_at
+        max(mc.created_at) as checked_at,
+        mw.experience_points
     from public.member_checkins mc
-    where mc.email_normalized = current_email;
+    right join public.member_whitelist mw
+        on mw.email_normalized = current_email
+        and mc.email_normalized = mw.email_normalized
+    where mw.is_active
+    and mw.email_normalized = current_email
+    group by mw.experience_points;
 end;
 $$;
+
+drop function if exists public.check_in_member();
 
 create or replace function public.check_in_member()
 returns table (
     checked_in_today boolean,
     total_count bigint,
-    checked_at timestamptz
+    checked_at timestamptz,
+    experience_points integer
 )
 language plpgsql
 security definer
@@ -207,6 +255,7 @@ as $$
 declare
     current_email text := lower(auth.jwt() ->> 'email');
     today date := ((timezone('Asia/Shanghai', now()))::date);
+    inserted_count integer := 0;
 begin
     if current_email is null or not exists (
         select 1
@@ -221,6 +270,15 @@ begin
     values (current_email, today)
     on conflict (email_normalized, checkin_date) do nothing;
 
+    get diagnostics inserted_count = row_count;
+
+    if inserted_count > 0 then
+        update public.member_whitelist mw
+        set experience_points = mw.experience_points + 5
+        where mw.is_active
+        and mw.email_normalized = current_email;
+    end if;
+
     return query
     select
         exists (
@@ -230,9 +288,15 @@ begin
             and mc.checkin_date = today
         ) as checked_in_today,
         count(mc.id)::bigint as total_count,
-        max(mc.created_at) as checked_at
+        max(mc.created_at) as checked_at,
+        mw.experience_points
     from public.member_checkins mc
-    where mc.email_normalized = current_email;
+    right join public.member_whitelist mw
+        on mw.email_normalized = current_email
+        and mc.email_normalized = mw.email_normalized
+    where mw.is_active
+    and mw.email_normalized = current_email
+    group by mw.experience_points;
 end;
 $$;
 
@@ -247,7 +311,8 @@ returns table (
     already_checked boolean,
     total_count bigint,
     checked_at timestamptz,
-    signed_date date
+    signed_date date,
+    experience_points integer
 )
 language plpgsql
 security definer
@@ -277,6 +342,13 @@ begin
 
     get diagnostics inserted_count = row_count;
 
+    if inserted_count > 0 then
+        update public.member_whitelist mw
+        set experience_points = mw.experience_points + 5
+        where mw.is_active
+        and mw.email_normalized = current_email;
+    end if;
+
     return query
     select
         coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') as display_name,
@@ -291,13 +363,59 @@ begin
         inserted_count = 0 as already_checked,
         count(mc.id)::bigint as total_count,
         max(mc.created_at) as checked_at,
-        today as signed_date
+        today as signed_date,
+        mw.experience_points
     from public.member_whitelist mw
     left join public.member_checkins mc
         on mc.email_normalized = mw.email_normalized
     where mw.is_active
     and mw.email_normalized = current_email
-    group by mw.email, mw.nickname, mw.minecraft_name;
+    group by mw.email, mw.nickname, mw.minecraft_name, mw.experience_points;
+end;
+$$;
+
+drop function if exists public.bot_wish_member(text);
+
+create or replace function public.bot_wish_member(member_email text)
+returns table (
+    display_name text,
+    email text,
+    minecraft_name text,
+    gained_experience integer,
+    experience_points integer
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    current_email text := lower(btrim(coalesce(member_email, '')));
+    gained integer := floor(random() * 5 + 1)::integer;
+begin
+    if current_email = '' or current_email !~ '^[^@[:space:]]+@[^@[:space:]]+\.[^@[:space:]]+$' then
+        raise exception 'invalid_email';
+    end if;
+
+    if not exists (
+        select 1
+        from public.member_whitelist mw
+        where mw.is_active
+        and mw.email_normalized = current_email
+    ) then
+        raise exception 'not_whitelisted';
+    end if;
+
+    return query
+    update public.member_whitelist mw
+    set experience_points = mw.experience_points + gained
+    where mw.is_active
+    and mw.email_normalized = current_email
+    returning
+        coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') as display_name,
+        mw.email,
+        mw.minecraft_name,
+        gained as gained_experience,
+        mw.experience_points;
 end;
 $$;
 
@@ -347,6 +465,8 @@ begin
 end;
 $$;
 
+drop function if exists public.get_checkin_leaderboard(integer);
+
 create or replace function public.get_checkin_leaderboard(limit_count integer default 30)
 returns table (
     rank_position bigint,
@@ -356,7 +476,8 @@ returns table (
     avatar_url text,
     total_count bigint,
     last_checkin_date date,
-    checked_in_today boolean
+    checked_in_today boolean,
+    experience_points integer
 )
 language plpgsql
 security definer
@@ -383,6 +504,7 @@ begin
             coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), mw.email) as display_name,
             mw.minecraft_name,
             mw.avatar_url,
+            mw.experience_points,
             count(mc.id)::bigint as total_count,
             max(mc.checkin_date) as last_checkin_date,
             bool_or(mc.checkin_date = today) as checked_in_today
@@ -390,7 +512,7 @@ begin
         join public.member_whitelist mw
             on mw.email_normalized = mc.email_normalized
         where mw.is_active
-        group by mw.email, mw.nickname, mw.minecraft_name, mw.avatar_url
+        group by mw.email, mw.nickname, mw.minecraft_name, mw.avatar_url, mw.experience_points
     )
     select
         row_number() over (
@@ -402,12 +524,15 @@ begin
         totals.avatar_url,
         totals.total_count,
         totals.last_checkin_date,
-        coalesce(totals.checked_in_today, false) as checked_in_today
+        coalesce(totals.checked_in_today, false) as checked_in_today,
+        totals.experience_points
     from totals
     order by totals.total_count desc, totals.last_checkin_date desc nulls last, totals.display_name asc
     limit result_limit;
 end;
 $$;
+
+drop function if exists public.get_member_public_profile(text);
 
 create or replace function public.get_member_public_profile(player_name text)
 returns table (
@@ -419,7 +544,8 @@ returns table (
     background_path text,
     total_count bigint,
     last_checkin_date date,
-    checked_in_today boolean
+    checked_in_today boolean,
+    experience_points integer
 )
 language plpgsql
 security definer
@@ -453,7 +579,8 @@ begin
         mw.background_path,
         count(mc.id)::bigint as total_count,
         max(mc.checkin_date) as last_checkin_date,
-        coalesce(bool_or(mc.checkin_date = today), false) as checked_in_today
+        coalesce(bool_or(mc.checkin_date = today), false) as checked_in_today,
+        mw.experience_points
     from public.member_whitelist mw
     left join public.member_checkins mc
         on mc.email_normalized = mw.email_normalized
@@ -462,7 +589,7 @@ begin
         lower(coalesce(mw.minecraft_name, '')) = target_player
         or lower(coalesce(mw.nickname, '')) = target_player
     )
-    group by mw.email_normalized, mw.nickname, mw.minecraft_name, mw.role, mw.avatar_url, mw.signature, mw.background_path
+    group by mw.email_normalized, mw.nickname, mw.minecraft_name, mw.role, mw.avatar_url, mw.signature, mw.background_path, mw.experience_points
     order by
         case when lower(coalesce(mw.minecraft_name, '')) = target_player then 0 else 1 end,
         coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') asc
@@ -482,7 +609,8 @@ returns table (
     background_path text,
     total_count bigint,
     last_checkin_date date,
-    checked_in_today boolean
+    checked_in_today boolean,
+    experience_points integer
 )
 language plpgsql
 security definer
@@ -506,7 +634,8 @@ begin
         mw.background_path,
         count(mc.id)::bigint as total_count,
         max(mc.checkin_date) as last_checkin_date,
-        coalesce(bool_or(mc.checkin_date = today), false) as checked_in_today
+        coalesce(bool_or(mc.checkin_date = today), false) as checked_in_today,
+        mw.experience_points
     from public.member_whitelist mw
     left join public.member_checkins mc
         on mc.email_normalized = mw.email_normalized
@@ -515,7 +644,7 @@ begin
         lower(coalesce(mw.minecraft_name, '')) = target_player
         or lower(coalesce(mw.nickname, '')) = target_player
     )
-    group by mw.email_normalized, mw.nickname, mw.minecraft_name, mw.role, mw.avatar_url, mw.signature, mw.background_path
+    group by mw.email_normalized, mw.nickname, mw.minecraft_name, mw.role, mw.avatar_url, mw.signature, mw.background_path, mw.experience_points
     order by
         case when lower(coalesce(mw.minecraft_name, '')) = target_player then 0 else 1 end,
         coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') asc
@@ -530,6 +659,7 @@ revoke all on function public.get_checkin_leaderboard(integer) from public;
 revoke all on function public.get_member_public_profile(text) from public;
 revoke all on function public.get_bot_member_card(text) from public;
 revoke all on function public.bot_check_in_member(text) from public;
+revoke all on function public.bot_wish_member(text) from public;
 
 grant execute on function public.get_my_checkin_status() to authenticated;
 grant execute on function public.check_in_member() to authenticated;
@@ -538,3 +668,4 @@ grant execute on function public.get_checkin_leaderboard(integer) to authenticat
 grant execute on function public.get_member_public_profile(text) to authenticated;
 grant execute on function public.get_bot_member_card(text) to service_role;
 grant execute on function public.bot_check_in_member(text) to service_role;
+grant execute on function public.bot_wish_member(text) to service_role;

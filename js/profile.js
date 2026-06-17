@@ -17,6 +17,9 @@
     const avatar = document.getElementById("publicProfileAvatar");
     const profileName = document.getElementById("publicProfileName");
     const minecraftLine = document.getElementById("publicProfileMinecraftLine");
+    const levelBadge = document.getElementById("publicProfileLevelBadge");
+    const levelText = document.getElementById("publicProfileLevelText");
+    const levelBar = document.getElementById("publicProfileLevelBar");
     const signature = document.getElementById("publicProfileSignature");
     const minecraft = document.getElementById("publicProfileMinecraft");
     const role = document.getElementById("publicProfileRole");
@@ -39,6 +42,65 @@
         if (profile.avatar_url) return profile.avatar_url;
         if (profile.minecraft_name) return "https://mc-heads.net/avatar/" + encodeURIComponent(profile.minecraft_name);
         return "./images/logo.png";
+    }
+
+    function levelInfo(experience) {
+        const totalExp = Math.max(0, Math.floor(Number(experience) || 0));
+        let level = 1;
+        let spent = 0;
+        let nextNeed = 50;
+
+        while (level < 16 && totalExp >= spent + nextNeed) {
+            spent += nextNeed;
+            level += 1;
+            nextNeed = Math.ceil(nextNeed * 1.2);
+        }
+
+        if (level >= 16) {
+            return {
+                level: 16,
+                totalExp,
+                currentExp: totalExp - spent,
+                nextNeed: 0,
+                progress: 100,
+                capped: true,
+            };
+        }
+
+        return {
+            level,
+            totalExp,
+            currentExp: totalExp - spent,
+            nextNeed,
+            progress: nextNeed > 0 ? Math.max(0, Math.min(100, ((totalExp - spent) / nextNeed) * 100)) : 100,
+            capped: false,
+        };
+    }
+
+    function levelColor(level) {
+        const start = { r: 143, g: 216, b: 255 };
+        const end = { r: 244, g: 163, b: 199 };
+        const ratio = Math.max(0, Math.min(1, (Number(level) - 1) / 15));
+        const channel = (key) => Math.round(start[key] + (end[key] - start[key]) * ratio);
+        return "rgb(" + channel("r") + ", " + channel("g") + ", " + channel("b") + ")";
+    }
+
+    function renderLevel(experience) {
+        const info = levelInfo(experience);
+        const color = levelColor(info.level);
+        if (levelBadge) {
+            levelBadge.textContent = "Lv" + info.level;
+            levelBadge.style.setProperty("--level-color", color);
+        }
+        if (levelText) {
+            levelText.textContent = info.capped
+                ? info.totalExp + " EXP"
+                : info.currentExp + " / " + info.nextNeed + " EXP";
+        }
+        if (levelBar) {
+            levelBar.style.width = info.progress + "%";
+            levelBar.style.setProperty("--level-color", color);
+        }
     }
 
     function getBackgroundUrl(backgroundPath) {
@@ -91,6 +153,7 @@
         if (role) role.textContent = profile.role || "member";
         if (checkins) checkins.textContent = totalCount + " 天";
         if (lastCheckin) lastCheckin.textContent = formatDate(profile.last_checkin_date);
+        renderLevel(profile.experience_points);
 
         if (avatar) {
             avatar.src = getAvatar(profile);
