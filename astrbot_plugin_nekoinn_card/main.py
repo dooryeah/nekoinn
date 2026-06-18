@@ -19,6 +19,7 @@ from astrbot.api.star import Context, Star
 BACKGROUND_BUCKET = "member-backgrounds"
 CARD_WIDTH = 980
 CARD_HEIGHT = 520
+MAX_QUOTE_LENGTH = 120
 
 
 @dataclass
@@ -170,6 +171,41 @@ class NekoinnCardPlugin(Star):
 
         yield event.plain_result(f"{display_name} 许愿成功，获得 {gained} EXP，当前 Lv{level}。")
 
+    @filter.command("留言")
+    async def leave_quote(self, event: AstrMessageEvent, text: str = ""):
+        if not self.settings.is_ready:
+            yield event.plain_result("插件还没有配置 Supabase，请在 AstrBot 插件管理里填写配置。")
+            return
+
+        quote_text = normalize_quote_text(text)
+        if not quote_text:
+            quote_text = extract_command_payload(event, "留言")
+        if not quote_text:
+            yield event.plain_result("用法：/留言 想被网站随机展示的话")
+            return
+
+        if len(quote_text) > MAX_QUOTE_LENGTH:
+            yield event.plain_result(f"留言太长啦，最多 {MAX_QUOTE_LENGTH} 个字。")
+            return
+
+        author_name = display_sender_name(event)
+        try:
+            await save_site_quote(
+                self.settings,
+                quote_text=quote_text,
+                author_name=author_name,
+                source_user_id=str(event.get_sender_id() or ""),
+                source_group_id=str(event.get_group_id() or ""),
+            )
+        except httpx.HTTPStatusError as exc:
+            yield event.plain_result(f"留言失败：{response_error_detail(exc.response)}")
+            return
+        except Exception as exc:
+            yield event.plain_result(f"留言失败：{exc}")
+            return
+
+        yield event.plain_result("已收录到网站随机语录里啦。")
+
     async def _render_player(self, event: AstrMessageEvent, name: str):
         name = str(name or "").strip()
         if not name:
@@ -226,6 +262,52 @@ def response_error_detail(response: httpx.Response | None):
 def extract_qq_number(sender_id):
     sender_id = str(sender_id or "").strip()
     return sender_id if re.fullmatch(r"\d{5,12}", sender_id) else ""
+
+
+def normalize_quote_text(text: str):
+    text = re.sub(r"[\r\n\t]+", " ", str(text or ""))
+    text = re.sub(r"\s{2,}", " ", text).strip()
+    return text
+
+
+def extract_command_payload(event: AstrMessageEvent, command_name: str):
+    candidates = []
+    for attr in ("message_str", "raw_message"):
+        value = getattr(event, attr, "")
+        if value:
+            candidates.append(str(value))
+
+    for attr in ("get_message_str", "get_raw_message"):
+        getter = getattr(event, attr, None)
+        if callable(getter):
+            try:
+                value = getter()
+                if value:
+                    candidates.append(str(value))
+            except Exception:
+                pass
+
+    pattern = re.compile(rf"^[/!！]?\s*{re.escape(command_name)}\s*", re.IGNORECASE)
+    for candidate in candidates:
+        text = normalize_quote_text(candidate)
+        payload = pattern.sub("", text, count=1).strip()
+        if payload and payload != text:
+            return payload
+    return ""
+
+
+def display_sender_name(event: AstrMessageEvent):
+    for attr in ("get_sender_name", "get_sender_nickname"):
+        getter = getattr(event, attr, None)
+        if callable(getter):
+            try:
+                value = str(getter() or "").strip()
+                if value:
+                    return value[:32]
+            except Exception:
+                pass
+    sender_id = str(event.get_sender_id() or "").strip()
+    return sender_id[:32] if sender_id else "匿名成员"
 
 
 def level_info(experience) -> LevelInfo:
@@ -297,6 +379,29 @@ async def bot_wish(settings: PluginSettings, email: str):
         data = response.json()
 
     return data[0] if data else None
+
+
+async def save_site_quote(
+    settings: PluginSettings,
+    quote_text: str,
+    author_name: str,
+    source_user_id: str,
+    source_group_id: str,
+):
+    payload = {
+        "quote_text": quote_text,
+        "author_name": author_name or None,
+        "source_user_id": source_user_id or None,
+        "source_group_id": source_group_id or None,
+        "is_active": True,
+    }
+    async with httpx.AsyncClient(timeout=20) as client:
+        response = await client.post(
+            f"{settings.supabase_url}/rest/v1/site_quotes",
+            headers={**supabase_headers(settings), "Prefer": "return=minimal"},
+            json=payload,
+        )
+        response.raise_for_status()
 
 
 async def load_remote_image(url: str):

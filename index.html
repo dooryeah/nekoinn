@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主页 - 欢迎来到喵宿~</title>
-    <script src="js/theme-init.js?v=carousel-inline"></script>
-    <link rel="stylesheet" href="css/animations.css?v=carousel-inline">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://mc-heads.net" crossorigin>
+    <link rel="preconnect" href="https://dpunqvmelqtmwhmgmbzd.supabase.co" crossorigin>
+    <link rel="preload" as="image" href="./images/carousel/server_1.png" fetchpriority="high">
+    <script src="js/theme-init.js?v=20260618-local-opt"></script>
+    <link rel="stylesheet" href="css/animations.css?v=20260618-local-opt">
 
-    <link rel="stylesheet" href="css/main.css?v=carousel-inline">
+    <link rel="stylesheet" href="css/main.css?v=20260618-local-opt">
 </head>
 <body class="home-page">
 
     <!-- 导航栏 -->
-    <div class="navbar">
-        <img src="./images/logo.png" alt="Logo">
+    <header class="navbar">
+        <img src="./images/logo.png" alt="喵宿 Logo" width="92" height="50">
         <div class="nav-links">
             <a href="index.html" aria-current="page">主页</a>
             <a href="server-exhibition.html">服务器展览</a>
@@ -21,7 +25,7 @@
             <a href="members.html">个人</a>
             <a href="about.html">关于</a>
         </div>
-    </div>
+    </header>
 
     <!-- 首页首屏 -->
     <section class="home-hero" data-hero-carousel data-carousel-interval="5200">
@@ -29,18 +33,20 @@
             <div class="hero-carousel-track">
                 <!-- carousel:start -->
                 <div class="hero-slide is-active">
-                    <img src="./images/carousel/server_1.png" alt="" decoding="async">
+                    <img src="./images/carousel/server_1.png" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
                 </div>
                 <div class="hero-slide">
-                    <img src="./images/carousel/server_2.png" alt="" decoding="async" loading="lazy">
+                    <img src="./images/carousel/server_2.png" alt="" width="1920" height="1080" decoding="async" loading="lazy">
                 </div>
                 <!-- carousel:end -->
             </div>
         </div>
+        <button class="hero-carousel-nav hero-carousel-prev" type="button" aria-label="上一张横幅" data-carousel-prev>‹</button>
+        <button class="hero-carousel-nav hero-carousel-next" type="button" aria-label="下一张横幅" data-carousel-next>›</button>
         <div class="hero-carousel-dots" aria-label="横幅图片切换">
             <!-- carousel-dots:start -->
-            <button class="hero-carousel-dot is-active" type="button" aria-label="Show carousel image 1" aria-current="true"></button>
-            <button class="hero-carousel-dot" type="button" aria-label="Show carousel image 2"></button>
+            <button class="hero-carousel-dot is-active" type="button" aria-label="显示第 1 张横幅" aria-current="true"></button>
+            <button class="hero-carousel-dot" type="button" aria-label="显示第 2 张横幅"></button>
             <!-- carousel-dots:end -->
         </div>
         <div class="hero-copy">
@@ -56,7 +62,7 @@
 
     <!-- 服务器运行时间计时器 -->
     <div class="uptime-bar fade-up">
-        <div class="uptime-title">🕒 服务器已运行</div>
+        <button class="uptime-title uptime-quote-trigger" id="uptimeQuoteTrigger" type="button" aria-controls="uptimeQuote" aria-expanded="false">服务器已运行</button>
         <div class="uptime-blocks">
             <div class="uptime-block">
                 <div class="uptime-num" id="uptimeDays">0</div>
@@ -75,6 +81,7 @@
                 <div class="uptime-label">秒</div>
             </div>
         </div>
+        <p class="uptime-quote" id="uptimeQuote" role="status" hidden></p>
     </div>
 
     <!-- 内容区 -->
@@ -86,143 +93,143 @@
             <div class="player-grid" id="playerGrid">
                 <!-- 玩家头像列表，保留原样 -->
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Akari_desu" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Akari_desu" alt="Akari_desu 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Akari_desu</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/mengnai123" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/mengnai123" alt="mengnai123 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>mengnai123</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Dooryeah730" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Dooryeah730" alt="Dooryeah730 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Dooryeah730</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/YuriRina" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/YuriRina" alt="YuriRina 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>YuriRina</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/huazai111" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/huazai111" alt="huazai111 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>huazai111</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/ninesuncwc" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/ninesuncwc" alt="ninesuncwc 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>ninesuncwc</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/everynum" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/everynum" alt="everynum 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>everynum</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/TheQuietStarry" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/TheQuietStarry" alt="TheQuietStarry 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>TheQuietStarry</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Serein2K" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Serein2K" alt="Serein2K 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Serein2K</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/CYHsama" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/CYHsama" alt="CYHsama 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>CYHsama</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/un_vagrant" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/un_vagrant" alt="un_vagrant 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>un_vagrant</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/JIANFFN" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/JIANFFN" alt="JIANFFN 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>JIANFFN</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Tling777" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Tling777" alt="Tling777 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Tling777</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Tek1t_" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Tek1t_" alt="Tek1t_ 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Tek1t_</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/YGDAY" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/YGDAY" alt="YGDAY 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>YGDAY</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/yangyang_xl" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/yangyang_xl" alt="yangyang_xl 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>yangyang_xl</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/xiaoluoawa" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/xiaoluoawa" alt="xiaoluoawa 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>xiaoluoawa</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Harutoki" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Harutoki" alt="Harutoki 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Harutoki</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/WYT_1314" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/WYT_1314" alt="WYT_1314 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>WYT_1314</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/bro_Yummy" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/bro_Yummy" alt="bro_Yummy 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>bro_Yummy</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/lindilinlin" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/lindilinlin" alt="lindilinlin 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>lindilinlin</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/mcxmy" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/mcxmy" alt="mcxmy 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>mcxmy</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Meukr" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Meukr" alt="Meukr 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Meukr</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/NFnifeng" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/NFnifeng" alt="NFnifeng 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>NFnifeng</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/erzhanggui520" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/erzhanggui520" alt="erzhanggui520 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>erzhanggui520</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/LKAS" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/LKAS" alt="LKAS 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>LKAS</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/workdaybasezz" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/workdaybasezz" alt="workdaybasezz 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>workdaybasezz</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/chuan_gu" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/chuan_gu" alt="chuan_gu 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>chuan_gu</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Jim_chim" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Jim_chim" alt="Jim_chim 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Jim_chim</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Rion" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Rion" alt="Rion 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Rion</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/SBrecord" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/SBrecord" alt="SBrecord 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>SBrecord</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Geopelia_39" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/Geopelia_39" alt="Geopelia_39 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Geopelia_39</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/BaiYi_" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/BaiYi_" alt="BaiYi_ 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>BaiYi_</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/msmht" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/msmht" alt="msmht 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>msmht</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/daddytony" loading="lazy">
+                    <img src="https://mc-heads.net/avatar/daddytony" alt="daddytony 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>daddytony</p>
                 </div>
 
@@ -243,18 +250,26 @@
     <div id="copyToast" class="copy-toast" role="status" aria-live="polite"></div>
 
     <!-- 脚本 -->
+    <script src="js/supabase-config.js?v=20260618-local-opt"></script>
     <script>
-        function copyQQ() {
+        let siteQuotesCache = null;
+        let lastQuoteText = "";
+
+        function copyQQ(event) {
             const qq = "1082948381";
-            const showCopied = () => showCopyToast("已复制 QQ 审核群号：" + qq);
+            const button = event && event.currentTarget ? event.currentTarget : null;
+            const showCopied = () => {
+                showCopyToast("已复制 QQ 审核群号：" + qq);
+                markCopyButton(button);
+            };
             if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(qq).then(showCopied).catch(() => fallbackCopy(qq));
+                navigator.clipboard.writeText(qq).then(showCopied).catch(() => fallbackCopy(qq, button));
             } else {
-                fallbackCopy(qq);
+                fallbackCopy(qq, button);
             }
         }
 
-        function fallbackCopy(text) {
+        function fallbackCopy(text, button) {
             const input = document.createElement("input");
             input.value = text;
             input.style.position = "fixed";
@@ -264,6 +279,21 @@
             document.execCommand("copy");
             input.remove();
             showCopyToast("已复制 QQ 审核群号：" + text);
+            markCopyButton(button);
+        }
+
+        function markCopyButton(button) {
+            if (!button) return;
+            if (!button.dataset.copyLabel) {
+                button.dataset.copyLabel = button.textContent.trim();
+            }
+            button.textContent = "已复制";
+            button.classList.add("is-copied");
+            clearTimeout(button.copyResetTimer);
+            button.copyResetTimer = setTimeout(() => {
+                button.textContent = button.dataset.copyLabel;
+                button.classList.remove("is-copied");
+            }, 1600);
         }
 
         function showCopyToast(message) {
@@ -278,6 +308,80 @@
         document.querySelectorAll("[data-copy-qq]").forEach(button => {
             button.addEventListener("click", copyQQ);
         });
+
+        function formatQuote(quote) {
+            const text = String(quote && (quote.quote_text || quote.text) || "").trim();
+            const author = String(quote && (quote.author_name || quote.author) || "").trim();
+            if (!text) return "";
+            return author ? "「" + text + "」—— " + author : "「" + text + "」";
+        }
+
+        async function loadSiteQuotes() {
+            if (siteQuotesCache) return siteQuotesCache;
+
+            const config = window.NEKOINN_SUPABASE || {};
+            const url = String(config.url || "").replace(/\/$/, "");
+            const anonKey = String(config.anonKey || "");
+            if (!url || !anonKey) {
+                siteQuotesCache = [];
+                return siteQuotesCache;
+            }
+
+            try {
+                const endpoint = url + "/rest/v1/site_quotes?select=quote_text,author_name&is_active=eq.true&order=created_at.desc&limit=80";
+                const response = await fetch(endpoint, {
+                    headers: {
+                        apikey: anonKey,
+                        Authorization: "Bearer " + anonKey,
+                    },
+                });
+                if (!response.ok) throw new Error("HTTP " + response.status);
+                const remoteQuotes = await response.json();
+                siteQuotesCache = Array.isArray(remoteQuotes) ? remoteQuotes : [];
+            } catch (error) {
+                siteQuotesCache = [];
+            }
+            return siteQuotesCache;
+        }
+
+        async function showRandomQuote() {
+            const quoteEl = document.getElementById("uptimeQuote");
+            const trigger = document.getElementById("uptimeQuoteTrigger");
+            if (!quoteEl || !trigger) return;
+
+            const quotes = (await loadSiteQuotes())
+                .map(quote => ({ raw: quote, text: formatQuote(quote) }))
+                .filter(item => item.text);
+            if (!quotes.length) {
+                quoteEl.textContent = "还没有留言被收录喵";
+                quoteEl.hidden = false;
+                trigger.setAttribute("aria-expanded", "true");
+                quoteEl.classList.remove("show");
+                requestAnimationFrame(() => quoteEl.classList.add("show"));
+                return;
+            }
+
+            let picked = quotes[Math.floor(Math.random() * quotes.length)];
+            if (quotes.length > 1) {
+                let guard = 0;
+                while (picked.text === lastQuoteText && guard < 6) {
+                    picked = quotes[Math.floor(Math.random() * quotes.length)];
+                    guard += 1;
+                }
+            }
+
+            lastQuoteText = picked.text;
+            quoteEl.textContent = picked.text;
+            quoteEl.hidden = false;
+            trigger.setAttribute("aria-expanded", "true");
+            quoteEl.classList.remove("show");
+            requestAnimationFrame(() => quoteEl.classList.add("show"));
+        }
+
+        const uptimeQuoteTrigger = document.getElementById("uptimeQuoteTrigger");
+        if (uptimeQuoteTrigger) {
+            uptimeQuoteTrigger.addEventListener("click", showRandomQuote);
+        }
 
         // 服务器运行时间计时器
         const SERVER_START = new Date("2026-02-14T00:00:00");
@@ -300,10 +404,11 @@
 
         updateUptime();
         setInterval(updateUptime, 1000);
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="js/animations.js?v=carousel-inline"></script>
+    <script src="js/animations.js?v=20260618-local-opt"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

@@ -89,6 +89,18 @@ create table if not exists public.member_wishes (
     check (gained_experience between 1 and 5)
 );
 
+create table if not exists public.site_quotes (
+    id uuid primary key default gen_random_uuid(),
+    quote_text text not null,
+    author_name text,
+    source_user_id text,
+    source_group_id text,
+    is_active boolean not null default true,
+    created_at timestamptz not null default now(),
+    check (char_length(btrim(quote_text)) between 1 and 120),
+    check (author_name is null or char_length(author_name) <= 32)
+);
+
 create index if not exists member_whitelist_active_email_idx
     on public.member_whitelist (email_normalized)
     where is_active;
@@ -98,6 +110,9 @@ create index if not exists member_checkins_rank_idx
 
 create index if not exists member_wishes_daily_idx
     on public.member_wishes (email_normalized, wish_date desc);
+
+create index if not exists site_quotes_active_created_idx
+    on public.site_quotes (is_active, created_at desc);
 
 update public.member_whitelist mw
 set experience_points = greatest(mw.experience_points, coalesce(totals.checkin_count, 0) * 5)
@@ -113,6 +128,7 @@ where mw.email_normalized = totals.email_normalized;
 alter table public.member_whitelist enable row level security;
 alter table public.member_checkins enable row level security;
 alter table public.member_wishes enable row level security;
+alter table public.site_quotes enable row level security;
 
 drop policy if exists "members can read own whitelist row" on public.member_whitelist;
 create policy "members can read own whitelist row"
@@ -152,6 +168,13 @@ using (
         and mw.email_normalized = lower(auth.jwt() ->> 'email')
     )
 );
+
+drop policy if exists "anyone can read active site quotes" on public.site_quotes;
+create policy "anyone can read active site quotes"
+on public.site_quotes
+for select
+to anon, authenticated
+using (is_active);
 
 drop policy if exists "members can insert own daily checkin" on public.member_checkins;
 create policy "members can insert own daily checkin"
@@ -221,6 +244,9 @@ grant usage on schema public to authenticated;
 grant select on public.member_whitelist to authenticated;
 revoke all on public.member_checkins from anon, authenticated;
 revoke all on public.member_wishes from anon, authenticated;
+revoke all on public.site_quotes from anon, authenticated;
+grant select on public.site_quotes to anon, authenticated;
+grant insert, select, update on public.site_quotes to service_role;
 
 drop function if exists public.get_my_checkin_status();
 

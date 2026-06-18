@@ -562,6 +562,16 @@ h2 {
     transform: translateY(-2px);
 }
 
+.join-btn.is-copied {
+    border-color: rgba(174, 225, 200, 0.72);
+    background: linear-gradient(135deg, var(--mint), #2f8f6d);
+    box-shadow: 0 0 0 4px rgba(58, 155, 117, 0.13), 0 12px 28px rgba(58, 155, 117, 0.24);
+}
+
+.join-btn.is-copied::after {
+    transform: translateX(120%);
+}
+
 .ghost-btn {
     color: var(--brand-dark);
     background: var(--surface);
@@ -614,12 +624,7 @@ h2 {
     min-width: calc(100% + 2px);
     margin-right: -2px;
     overflow: hidden;
-    transform: scale(1.015);
     will-change: transform;
-}
-
-.hero-slide.is-active {
-    transform: scale(1.02);
 }
 
 .hero-slide img {
@@ -630,6 +635,57 @@ h2 {
     object-position: center 44%;
     transform: scaleX(1.004) translateZ(0);
     transform-origin: center center;
+}
+
+.hero-carousel-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 56px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    border-radius: var(--radius);
+    color: #ffffff;
+    background: rgba(12, 25, 42, 0.34);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-50%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: opacity 0.22s ease, background 0.22s ease, transform 0.22s var(--ease-out), border-color 0.22s ease;
+}
+
+.hero-carousel-prev {
+    left: clamp(14px, 3vw, 34px);
+}
+
+.hero-carousel-next {
+    right: clamp(14px, 3vw, 34px);
+}
+
+.home-hero:hover .hero-carousel-nav,
+.home-hero:focus-within .hero-carousel-nav {
+    opacity: 0.86;
+}
+
+.hero-carousel-nav:hover,
+.hero-carousel-nav:focus-visible {
+    border-color: rgba(174, 225, 200, 0.76);
+    background: rgba(12, 25, 42, 0.56);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.03);
+}
+
+.hero-carousel-nav:focus-visible {
+    outline: 2px solid rgba(174, 225, 200, 0.8);
+    outline-offset: 3px;
 }
 
 .hero-carousel-dots {
@@ -749,6 +805,7 @@ h2 {
 
 .uptime-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 32px;
@@ -764,10 +821,35 @@ h2 {
 }
 
 .uptime-title {
+    appearance: none;
+    border: 0;
+    border-radius: var(--radius);
+    padding: 6px 10px;
     color: var(--brand-dark);
+    background: rgba(47, 95, 168, 0.08);
     font-size: 15px;
     font-weight: 800;
+    font: inherit;
     white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.22s ease, background 0.22s ease, transform 0.22s var(--ease-out), box-shadow 0.22s ease;
+}
+
+.uptime-title::before {
+    content: "⏱ ";
+}
+
+.uptime-title:hover,
+.uptime-title:focus-visible {
+    color: var(--brand);
+    background: rgba(58, 155, 117, 0.12);
+    box-shadow: 0 0 0 3px rgba(58, 155, 117, 0.12);
+    transform: translateY(-1px);
+}
+
+.uptime-title:focus-visible {
+    outline: 2px solid rgba(58, 155, 117, 0.42);
+    outline-offset: 3px;
 }
 
 .uptime-blocks {
@@ -803,6 +885,30 @@ h2 {
     margin-top: 4px;
     color: var(--muted);
     font-size: 12px;
+}
+
+.uptime-quote {
+    grid-column: 1 / -1;
+    flex-basis: 100%;
+    max-width: 780px;
+    margin: 0;
+    padding: 10px 14px;
+    border: 1px solid rgba(58, 155, 117, 0.18);
+    border-radius: var(--radius);
+    color: var(--brand-dark);
+    background: rgba(58, 155, 117, 0.09);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.55;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.24s ease, transform 0.24s var(--ease-out);
+}
+
+.uptime-quote.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .player-grid {
@@ -2751,6 +2857,10 @@ html[data-theme="night"] .ptag {
         font-size: clamp(46px, 16vw, 72px);
     }
 
+    .hero-carousel-nav {
+        opacity: 0.72;
+    }
+
     .uptime-bar {
         flex-direction: column;
         gap: 14px;
@@ -2990,6 +3100,31 @@ html[data-theme="night"] .ptag {
         width: 32px;
     }
 
+    .hero-carousel-nav {
+        display: none;
+        top: auto;
+        bottom: 12px;
+        width: 34px;
+        height: 34px;
+        font-size: 24px;
+        opacity: 0.72;
+        transform: none;
+    }
+
+    .hero-carousel-nav:hover,
+    .hero-carousel-nav:focus-visible {
+        transform: scale(1.03);
+    }
+
+    .hero-carousel-prev {
+        right: 94px;
+        left: auto;
+    }
+
+    .hero-carousel-next {
+        right: 56px;
+    }
+
     .hero-slide img {
         object-position: center center;
     }
@@ -3204,6 +3339,39 @@ html[data-theme="night"] .ptag {
 
     .project-list-card {
         padding-inline: 10px;
+    }
+}
+
+@media (hover: none), (max-width: 760px) {
+    .card,
+    .profile-card,
+    .player-avatar-card,
+    .thumb,
+    .project-card,
+    .gallery-item,
+    .projection-panel,
+    .music-panel,
+    .uptime-bar {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    .card::before,
+    .player-avatar-card::before,
+    .project-card::before,
+    .gallery-item::before,
+    .profile-card::before,
+    .ranking-item::before,
+    .profile-fact::before,
+    .uptime-block::before {
+        display: none;
+    }
+
+    .project-card:hover img,
+    .project-card:focus-visible img,
+    .thumb:hover img,
+    .thumb:focus-visible img {
+        filter: none;
     }
 }
 

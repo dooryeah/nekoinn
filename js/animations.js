@@ -3,7 +3,9 @@ const reduceMotion = reduceMotionQuery.matches;
 const THEME_KEY = 'nekoinn-theme';
 const hasGsap = Boolean(window.gsap);
 const hasScrollTrigger = Boolean(window.gsap && window.ScrollTrigger);
+const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
 const revealRecords = new WeakMap();
+let refreshFrame = 0;
 
 if (hasGsap) {
     if (hasScrollTrigger) {
@@ -150,6 +152,11 @@ function isRevealReady(el) {
     );
 }
 
+function isIgnoredRevealMutation(mutation) {
+    const target = mutation.target;
+    return Boolean(target instanceof Element && target.closest('[data-hero-carousel]'));
+}
+
 function cleanupRevealTargets(root) {
     if (!hasGsap) return;
 
@@ -168,7 +175,11 @@ function cleanupRevealTargets(root) {
 
 function refreshMotion() {
     if (hasScrollTrigger && !reduceMotion) {
-        ScrollTrigger.refresh();
+        if (refreshFrame) return;
+        refreshFrame = requestAnimationFrame(() => {
+            refreshFrame = 0;
+            ScrollTrigger.refresh();
+        });
     }
 }
 
@@ -210,7 +221,8 @@ function setupReveal() {
         reveal(getItems());
 
         const observer = new MutationObserver((mutations) => {
-            const shouldCheck = mutations.some(mutation => mutation.addedNodes.length > 0 || mutation.type === 'attributes');
+            const relevantMutations = mutations.filter(mutation => !isIgnoredRevealMutation(mutation));
+            const shouldCheck = relevantMutations.some(mutation => mutation.addedNodes.length > 0 || mutation.type === 'attributes');
             if (!shouldCheck) return;
             requestAnimationFrame(() => {
                 const items = getItems();
@@ -251,7 +263,8 @@ function setupReveal() {
 
     items.forEach(el => fadeObserver.observe(el));
 
-    const observer = new MutationObserver(() => {
+    const observer = new MutationObserver((mutations) => {
+        if (!mutations.some(mutation => !isIgnoredRevealMutation(mutation))) return;
         getRevealCandidates()
             .filter(el => !el.classList.contains('visible') && isRevealReady(el))
             .forEach(el => fadeObserver.observe(el));
@@ -433,10 +446,15 @@ function setupHeroCarousel() {
             return;
         }
 
+        const prevButton = hero.querySelector('[data-carousel-prev]');
+        const nextButton = hero.querySelector('[data-carousel-next]');
         const interval = Math.max(Number(hero.dataset.carouselInterval) || 5200, 2800);
         let current = 0;
         let timer = null;
         let isAnimating = false;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchTracking = false;
 
         hero.dataset.carouselReady = 'true';
         hero.classList.toggle('is-gsap-carousel', hasGsap && !reduceMotion);
@@ -494,6 +512,7 @@ function setupHeroCarousel() {
         };
 
         const showNext = () => showSlide(current + 1);
+        const showPrev = () => showSlide(current - 1);
         const stop = () => {
             if (!timer) return;
             window.clearInterval(timer);
@@ -511,6 +530,69 @@ function setupHeroCarousel() {
                 start();
             });
         });
+
+        if (prevButton) {
+            prevButton.addEventListener('click', () => {
+                stop();
+                showPrev();
+                start();
+            });
+        }
+
+        if (nextButton) {
+            nextButton.addEventListener('click', () => {
+                stop();
+                showNext();
+                start();
+            });
+        }
+
+        hero.addEventListener('keydown', (event) => {
+            if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+            event.preventDefault();
+            stop();
+            if (event.key === 'ArrowLeft') {
+                showPrev();
+            } else {
+                showNext();
+            }
+            start();
+        });
+
+        hero.addEventListener('touchstart', (event) => {
+            if (event.touches.length !== 1) return;
+            touchTracking = true;
+            touchStartX = event.touches[0].clientX;
+            touchStartY = event.touches[0].clientY;
+            stop();
+        }, { passive: true });
+
+        hero.addEventListener('touchend', (event) => {
+            if (!touchTracking) return;
+            touchTracking = false;
+
+            const touch = event.changedTouches[0];
+            if (!touch) {
+                start();
+                return;
+            }
+
+            const deltaX = touch.clientX - touchStartX;
+            const deltaY = touch.clientY - touchStartY;
+            if (Math.abs(deltaX) > 46 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35) {
+                if (deltaX > 0) {
+                    showPrev();
+                } else {
+                    showNext();
+                }
+            }
+            start();
+        }, { passive: true });
+
+        hero.addEventListener('touchcancel', () => {
+            touchTracking = false;
+            start();
+        }, { passive: true });
 
         hero.addEventListener('pointerenter', stop);
         hero.addEventListener('pointerleave', start);
@@ -530,7 +612,7 @@ function setupHeroCarousel() {
 }
 
 function setupPointerGlow() {
-    if (reduceMotion || !window.matchMedia('(hover: hover)').matches) return;
+    if (reduceMotion || !finePointerQuery.matches) return;
 
     const targets = document.querySelectorAll(
         '.card, .player-avatar-card, .project-card, .thumb, .profile-card, .ranking-item, .profile-fact, .uptime-block'
@@ -548,7 +630,7 @@ function setupPointerGlow() {
 }
 
 function setupPremiumTilts() {
-    if (reduceMotion || !hasGsap || !window.matchMedia('(hover: hover)').matches) return;
+    if (reduceMotion || !hasGsap || !finePointerQuery.matches) return;
 
     const attach = (target) => {
         if (target.dataset.tiltReady === 'true') return;

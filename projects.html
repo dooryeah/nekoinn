@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工程项目 - 喵宿咖啡厅</title>
-    <script src="js/theme-init.js?v=local-gsap-polish"></script>
-    <link rel="stylesheet" href="css/animations.css?v=local-gsap-polish">
-    <link rel="stylesheet" href="css/main.css?v=local-gsap-polish">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <script src="js/theme-init.js?v=20260618-local-opt"></script>
+    <link rel="stylesheet" href="css/animations.css?v=20260618-local-opt">
+    <link rel="stylesheet" href="css/main.css?v=20260618-local-opt">
 </head>
 <body class="projects-page">
 
-    <div class="navbar">
-        <img src="./images/logo.png" alt="Logo">
+    <header class="navbar">
+        <img src="./images/logo.png" alt="喵宿 Logo" width="92" height="50">
         <div class="nav-links">
             <a href="index.html">主页</a>
             <a href="server-exhibition.html">服务器展览</a>
@@ -19,7 +20,7 @@
             <a href="members.html">个人</a>
             <a href="about.html">关于</a>
         </div>
-    </div>
+    </header>
 
     <div class="content">
         <div class="card fade-up compact-hero-card project-hero-card">
@@ -29,7 +30,7 @@
                 <p class="section-note">服务器中各位玩家的工程与建筑作品展示，可以按维度、类型或关键词快速找到想看的项目。</p>
             </div>
             <div class="project-hero-mascot">
-                <img class="project-hero-gif" src="./images/luobozi.gif" alt="" loading="lazy">
+                <img class="project-hero-gif" src="./images/luobozi.gif" alt="" width="142" height="112" loading="lazy" decoding="async">
                 <span class="project-hero-caption">私は、高性能ですから!</span>
             </div>
         </div>
@@ -70,348 +71,12 @@
             <div id="projectionList" class="projection-list"></div>
         </div>
     </div>
-
+    <script src="data/projects.js?v=20260618-local-opt"></script>
     <script>
-        const PROJECTS = [
-        {
-        name: "16核心刷铁机",
-        image: "./images/projects/iron_farm.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "孟乃&九日&un_vagrant&everynum",
-        description: "挂个假人即可",
-        },
-        {
-        name: "大型村民交易所",
-        image: "./images/projects/大型村民交易所.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "孟乃&un_vagrant&伊凛&很多很多人",
-        description: "打折机有点慢，多等一会就好了<br>孩子们，绿宝石自由了喵",
-        },
-        {
-        name: "小型自动酿造机",
-        image: "./images/projects/小型自动酿造机.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "孟乃&伊凛",
-        description: "可以自动酿造虚弱药水，如果要改药水配方 请联系孟<br>村民拯救器",
-        },
-        {
-        name: "丐版全物品",
-        image: "./images/projects/丐版全物品.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "孟乃和一堆收集填充物的孩子们",
-        description: "盒装物品扔进箱子中，散装物品扔入潜影盒中，物品填充完毕单机音符盒<br>孩子们，再也不用手动分类了，还有，填充分类物品真的有福了",
-        },
-        {
-        name: "小型刷石机 7w",
-        image: "./images/projects/小型刷石机 7w.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "安星&伊凛&2K",
-        description: "暂无描述喵",
-        },
-        {
-        name: "仙人掌农场",
-        image: "./images/projects/仙人掌农场.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "安星&伊凛&2K",
-        description: "暂无描述喵",
-        },
-        {
-        name: "劫掠塔",
-        image: "./images/projects/劫掠塔.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "安星",
-        description: "暂无描述喵",
-        },
-        {
-        name: "720k祭坛刷沙机",
-        image: "./images/projects/720k祭坛刷沙机.png",
-        dimension: "末地",
-        type: "机器",
-        author: "九日",
-        description: "换色防熊，但最好别乱点，不要动机器内部任何的东西，本机器对时刻的要求卡的非常严，如果你不明白不要乱动就行，如果觉得不小心碰到了立刻群里叫九日，并且插告示牌告诉不要开机<br>并不是极限效率喵，如果真有需要还可以迭代哦",
-        },
-        {
-        name: "全树种树场",
-        image: "./images/projects/全树种树场.png",
-        dimension: "末地",
-        type: "机器",
-        author: "2K&伊凛&Akari",
-        description: "不许种植橡树，使用杜鹃代替。最好放假人来使用，骨粉消耗很快，建议携带盒装骨块来",
-        },
-        {
-        name: "全白名单320位熔炉组",
-        image: "./images/projects/全白名单320位熔炉组.png",
-        dimension: "末地",
-        type: "机器",
-        author: "孟乃",
-        description: "整盒输入一次性最多不能超过5盒<br>这不是老虎机，它真的是正常的，不会收税，如果收税，一定是你没有挂假人",
-        },
-        {
-        name: "下界疣农场",
-        image: "./images/projects/下界疣农场.png",
-        dimension: "末地",
-        type: "机器",
-        author: "2K",
-        description: "暂无描述喵",
-        },
-        {
-        name: "凋零玫瑰农场",
-        image: "./images/projects/凋零玫瑰农场.png",
-        dimension: "末地",
-        type: "机器",
-        author: "九日&伊凛",
-        description: "别去铁傀儡那边",
-        },
-        {
-        name: "贝场",
-        image: "./images/projects/贝场.png",
-        dimension: "末地",
-        type: "机器",
-        author: "Akari&孟乃&2K",
-        description: "<br>运贝有福了",
-        },
-        {
-        name: "小黑塔",
-        image: "./images/projects/小黑塔.png",
-        dimension: "末地",
-        type: "机器",
-        author: "九日&伊凛&逆风",
-        description: "<br>末影珍珠才是副产物！",
-        },
-        {
-        name: "沼泽刷怪塔",
-        image: "./images/projects/沼泽刷怪塔.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "孟乃&伊凛&2K&Akari",
-        description: "<br>牢",
-        },
-        {
-        name: "甘蔗机",
-        image: "./images/projects/甘蔗机.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "2K&Akari",
-        description: "<br>跟沼泽刷怪塔在一起",
-        },
-        {
-        name: "720k祭坛刷沙机配套固化",
-        image: "./images/projects/720k祭坛刷沙机配套固化.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "制造:九日&安星&TKT 技术指导:腐竹&孟乃",
-        description: "刷普通沙子的时候一定不要开固化模式",
-        },
-        {
-        name: "蛙明灯农场",
-        image: "./images/projects/蛙明灯农场.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "孟乃",
-        description: "双维度都要假人，通过地狱交通时请注意白色玻璃的箭头指向<br>15000每小时，副产物岩浆膏5000每小时",
-        },
-        {
-        name: "凋零骷髅农场",
-        image: "./images/projects/凋零骷髅农场.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "九日&伊凛&2K&Akari",
-        description: "不要进地狱门",
-        },
-        {
-        name: "黑曜石农场",
-        image: "./images/projects/黑曜石农场.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "九日",
-        description: "别去接近凋零，别去主世界端周围跑图<br>这个凋零我困了两次才困住，所以有两只凋零被我放飞了，不知道飞哪去了，总之别往周围飞",
-        },
-        {
-        name: "恶魂塔",
-        image: "./images/projects/恶魂塔.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "九日",
-        description: "开机一次再也用不上",
-        },
-        {
-        name: "68w猪人塔",
-        image: "./images/projects/68w猪人塔.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "孟乃&JIANFFN&everynum",
-        description: "只需要挂主世界假人，地狱端请点命令方块",
-        },
-        {
-        name: "猪灵交易所",
-        image: "./images/projects/猪灵交易所.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "孟乃&九日&安星&伊凛",
-        description: "和猪人塔在一起<br>有时候 你可能发现箱子里什么都没有，这是正常的，因为效率极低",
-        },
-        {
-        name: "72k刷冰机",
-        image: "./images/projects/72k刷冰机.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "九日&孟乃&伊凛&安星以及其他多多少少帮忙的人",
-        description: "开机需要预热，关机请等飞行器归位后再离开，配套经验农场需要在3034 154 2841处挂假人砍猪人并启动飞行器<br>报警的时候记得填充盒装原木和壳子",
-        },
-        {
-        name: "鱼塔",
-        image: "./images/projects/鱼塔.png",
-        dimension: "地狱",
-        type: "机器",
-        author: "JIANFFN",
-        description: "上面的门去挂机点，下面的门别走",
-        },
-        {
-        name: "粘液农场",
-        image: "./images/projects/粘液农场.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "安星&孟乃&2K&九日",
-        description: "暂无描述喵",
-        },
-        {
-        name: "苔藓骨粉机",
-        image: "./images/projects/苔藓骨粉机.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "un_vagrant",
-        description: "效率不高，一直开着就行，不抗卸载，有教皇加载<br>主要作用是美观",
-        },
-        {
-        name: "伪和平",
-        image: "./images/projects/伪和平.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "Akari",
-        description: "主世界xz5000坐标128格范围内禁止加载，禁止进门，禁止传送传送点，仅需在地狱端开关<br>挂1400多只坚守者有福了，服务器也有福了",
-        },
-        {
-        name: "原木去皮机",
-        image: "./images/projects/原木去皮机.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "JIANFFN",
-        description: "暂无描述喵",
-        },
-        {
-        name: "刷花机",
-        image: "./images/projects/刷花机.png",
-        dimension: "主世界",
-        type: "机器",
-        author: "JIANFFN",
-        description: "暂无描述喵",
-        },
-        {
-        name: "月宫",
-        image: "./images/projects/月宫.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "YuriRina",
-        description: "暂无描述喵",
-        },
-        {
-        name: "温泉小屋",
-        image: "./images/projects/温泉小屋.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "YuriRina",
-        description: "暂无描述喵",
-        },
-        {
-        name: "樱花树屋",
-        image: "./images/projects/樱花树屋.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "YuriRina",
-        description: "暂无描述喵",
-        },
-        {
-        name: "小爱心",
-        image: "./images/projects/小爱心.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "Tling777",
-        description: "暂无描述喵",
-        },
-        {
-        name: "中世纪地主の别墅",
-        image: "./images/projects/中世纪地主の别墅.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "CYHsama",
-        description: "暂无描述喵",
-        },
-        {
-        name: "地狱门（伏魔版）",
-        image: "./images/projects/地狱门（伏魔版）.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "华仔huazai",
-        description: "暂无描述喵",
-        },
-        {
-        name: "石英祭坛",
-        image: "./images/projects/石英祭坛.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "YuriRina",
-        description: "暂无描述喵",
-        },
-        {
-        name: "断桥聚落",
-        image: "./images/projects/断桥聚落.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "Dooryeah",
-        description: "暂无描述喵",
-        },
-        {
-        name: "风车麦田以及谷仓",
-        image: "./images/projects/风车麦田以及谷仓.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "CYHsama",
-        description: "暂无描述喵",
-        },
-        {
-        name: "徽派小院",
-        image: "./images/projects/徽派小院.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "Everynum",
-        description: "暂无描述喵",
-        },
-        {
-        name: "度假山庄",
-        image: "./images/projects/度假山庄.png",
-        dimension: "主世界",
-        type: "建筑",
-        author: "CYHsama",
-        description: "暂无描述喵",
-        }
-        ];
+        const PROJECTS = window.NEKOINN_PROJECTS || [];
+        const PROJECTION_FILES = window.NEKOINN_PROJECTION_FILES || [];
 
-        const PROJECTION_FILES = [
-        {
-        name: "16核心刷铁机.litematic",
-        url: "./projections/16核心刷铁机.litematic",
-        note: "对应项目：16核心刷铁机"
-        }
-        ];
-
-            const filters = { dimension: "all", type: "all", query: "" };
+        const filters = { dimension: "all", type: "all", query: "" };
             let filteredProjects = PROJECTS.slice();
             let projectModal = null;
             let currentProjectIndex = 0;
@@ -482,7 +147,7 @@
 
     card.innerHTML = `
     <span class="project-image-wrap">
-    <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.name)}" loading="lazy" onerror="this.src='./images/logo.png'">
+    <img src="${escapeHtml(project.image)}" alt="${escapeHtml(project.name)}" width="640" height="400" loading="lazy" decoding="async" onerror="this.src='./images/logo.png'">
     <span class="project-zoom-label">查看大图</span>
     </span>
     <div class="project-info">
@@ -720,6 +385,6 @@
 </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-    <script src="js/animations.js?v=local-gsap-polish"></script>
+    <script src="js/animations.js?v=20260618-local-opt"></script>
 </body>
 </html>
