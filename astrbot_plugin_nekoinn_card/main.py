@@ -20,6 +20,15 @@ BACKGROUND_BUCKET = "member-backgrounds"
 CARD_WIDTH = 980
 CARD_HEIGHT = 520
 MAX_QUOTE_LENGTH = 120
+LITTLESKIN_TEXTURE_BASE = "https://littleskin.cn/textures/"
+LITTLESKIN_TEXTURES = {
+    "givewhyyyy": "45221b7b50d21bfa30b8483b642f01641590fc3da3fb8e9a076b5ce770ecacea",
+    "everynum": "fc55ad940e9c4a2d413baa2458e7c8cff2f2d72591870bf91f618897b8a6fb2c",
+    "ygday": "a650bd4924b26fd1018f91ad029f8394e80511e24ac15c1342c3633078fa145b",
+    "bro_yummy": "1d646dde5b8052fe9ac6156743894af79f10fb7ff98e8d393db812527a5c9c60",
+    "geopelia_39": "5b009b4e38e2f9f8db7cbda31110c0b9c404a20443150764a61d323d38ad70c7",
+    "daddytony": "b52a22492d5674c3b4194a1dbc297378d3585c1b96eb6d4f81085055631fffe5",
+}
 
 
 @dataclass
@@ -413,6 +422,31 @@ async def load_remote_image(url: str):
     return Image.open(BytesIO(response.content)).convert("RGBA")
 
 
+def resolve_avatar_source(profile: dict, minecraft_name: str):
+    custom_url = str(profile.get("avatar_url") or "").strip()
+    texture = LITTLESKIN_TEXTURES.get(str(minecraft_name or "").casefold())
+    is_default_url = bool(re.match(r"^https?://(?:www\.)?mc-heads\.net/", custom_url, re.IGNORECASE))
+    if texture and (not custom_url or is_default_url):
+        return f"{LITTLESKIN_TEXTURE_BASE}{texture}", True
+
+    if custom_url:
+        return custom_url, False
+
+    return f"https://mc-heads.net/avatar/{quote(minecraft_name)}", False
+
+
+def extract_minecraft_head(skin: Image.Image):
+    width, height = skin.size
+    unit = width // 8
+    if unit < 1 or width % 8 or height < unit * 2:
+        return skin
+
+    head = skin.crop((unit, unit, unit * 2, unit * 2)).convert("RGBA")
+    overlay = skin.crop((unit * 5, unit, unit * 6, unit * 2)).convert("RGBA")
+    head.alpha_composite(overlay)
+    return head
+
+
 def font(size: int, bold: bool = False):
     candidates = [
         "C:/Windows/Fonts/msyhbd.ttc" if bold else "C:/Windows/Fonts/msyh.ttc",
@@ -505,7 +539,7 @@ async def render_card(profile: dict, settings: PluginSettings):
     last_checkin = profile.get("last_checkin_date") or "-"
     checked_today = bool(profile.get("checked_in_today"))
     level = level_info(profile.get("experience_points"))
-    avatar_url = profile.get("avatar_url") or f"https://mc-heads.net/avatar/{quote(minecraft_name)}"
+    avatar_url, avatar_is_skin = resolve_avatar_source(profile, minecraft_name)
     background_path = profile.get("background_path")
     background_url = ""
     if background_path:
@@ -558,6 +592,14 @@ async def render_card(profile: dict, settings: PluginSettings):
         avatar = await load_remote_image(avatar_url)
     except Exception:
         avatar = None
+        if avatar_is_skin:
+            try:
+                avatar = await load_remote_image(f"https://mc-heads.net/avatar/{quote(minecraft_name)}")
+                avatar_is_skin = False
+            except Exception:
+                avatar = None
+    if avatar is not None and avatar_is_skin:
+        avatar = extract_minecraft_head(avatar)
     avatar_size = 116
     avatar_pos = (90, 138)
     draw.rounded_rectangle(

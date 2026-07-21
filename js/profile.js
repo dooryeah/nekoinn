@@ -44,6 +44,15 @@
         return "./images/logo.png";
     }
 
+    function applyAvatar(image, profile) {
+        if (!image) return;
+        if (window.NekoinnAvatars) {
+            window.NekoinnAvatars.apply(image, profile.minecraft_name, profile.avatar_url);
+            return;
+        }
+        image.src = getAvatar(profile);
+    }
+
     function levelInfo(experience) {
         const totalExp = Math.max(0, Math.floor(Number(experience) || 0));
         let level = 1;
@@ -156,7 +165,7 @@
         renderLevel(profile.experience_points);
 
         if (avatar) {
-            avatar.src = getAvatar(profile);
+            applyAvatar(avatar, profile);
             avatar.alt = displayName;
         }
 

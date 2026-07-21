@@ -6,12 +6,13 @@
     <title>主页 - 欢迎来到喵宿~</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://mc-heads.net" crossorigin>
+    <link rel="preconnect" href="https://littleskin.cn" crossorigin>
     <link rel="preconnect" href="https://dpunqvmelqtmwhmgmbzd.supabase.co" crossorigin>
     <link rel="preload" as="image" href="./images/carousel/server_1.png" fetchpriority="high">
     <script src="js/theme-init.js?v=20260618-local-opt"></script>
     <link rel="stylesheet" href="css/animations.css?v=20260618-local-opt">
 
-    <link rel="stylesheet" href="css/main.css?v=20260618-local-opt">
+    <link rel="stylesheet" href="css/main.css?v=20260721-littleskin">
 </head>
 <body class="home-page">
 
@@ -117,7 +118,7 @@
                     <p>ninesuncwc</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/everynum" alt="everynum 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
+                    <img src="./images/logo.png" data-minecraft-avatar="everynum" alt="everynum 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>everynum</p>
                 </div>
                 <div class="player-avatar-card">
@@ -149,7 +150,7 @@
                     <p>Tek1t_</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/YGDAY" alt="YGDAY 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
+                    <img src="./images/logo.png" data-minecraft-avatar="YGDAY" alt="YGDAY 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>YGDAY</p>
                 </div>
                 <div class="player-avatar-card">
@@ -169,7 +170,7 @@
                     <p>WYT_1314</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/bro_Yummy" alt="bro_Yummy 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
+                    <img src="./images/logo.png" data-minecraft-avatar="bro_Yummy" alt="bro_Yummy 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>bro_Yummy</p>
                 </div>
                 <div class="player-avatar-card">
@@ -217,7 +218,7 @@
                     <p>SBrecord</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/Geopelia_39" alt="Geopelia_39 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
+                    <img src="./images/logo.png" data-minecraft-avatar="Geopelia_39" alt="Geopelia_39 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>Geopelia_39</p>
                 </div>
                 <div class="player-avatar-card">
@@ -229,11 +230,11 @@
                     <p>msmht</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/daddytony" alt="daddytony 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
+                    <img src="./images/logo.png" data-minecraft-avatar="daddytony" alt="daddytony 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>daddytony</p>
                 </div>
                 <div class="player-avatar-card">
-                    <img src="https://mc-heads.net/avatar/givewhyyyy" alt="givewhyyyy 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
+                    <img src="./images/logo.png" data-minecraft-avatar="givewhyyyy" alt="givewhyyyy 的 Minecraft 头像" width="96" height="96" loading="lazy" decoding="async">
                     <p>givewhyyyy</p>
                 </div>
 
@@ -254,6 +255,7 @@
     <div id="copyToast" class="copy-toast" role="status" aria-live="polite"></div>
 
     <!-- 脚本 -->
+    <script src="js/avatar-sources.js?v=20260721-littleskin"></script>
     <script src="js/supabase-config.js?v=20260618-local-opt"></script>
     <script>
         let siteQuotesCache = null;

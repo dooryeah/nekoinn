@@ -59,6 +59,15 @@
         return "./images/logo.png";
     }
 
+    function applyAvatar(image, profile) {
+        if (!image) return;
+        if (window.NekoinnAvatars) {
+            window.NekoinnAvatars.apply(image, profile.minecraft_name, profile.avatar_url);
+            return;
+        }
+        image.src = getAvatar(profile);
+    }
+
     function levelInfo(experience) {
         const totalExp = Math.max(0, Math.floor(Number(experience) || 0));
         let level = 1;
@@ -164,7 +173,7 @@
         renderLevel(profile.experience_points);
 
         if (profileAvatar) {
-            profileAvatar.src = getAvatar(profile);
+            applyAvatar(profileAvatar, profile);
             profileAvatar.alt = displayName;
         }
 
@@ -222,8 +231,7 @@
         rows.forEach((row) => {
             const item = document.createElement("div");
             item.className = "ranking-item";
-            const avatar = row.avatar_url ||
-                (row.minecraft_name ? "https://mc-heads.net/avatar/" + encodeURIComponent(row.minecraft_name) : "./images/logo.png");
+            const avatar = "./images/logo.png";
             const todayText = row.checked_in_today ? '<span class="ranking-chip">今日已签</span>' : "";
 
             item.innerHTML = `
@@ -235,6 +243,7 @@
                 </div>
                 ${todayText}
             `;
+            applyAvatar(item.querySelector(".ranking-avatar"), row);
             rankingList.appendChild(item);
         });
     }

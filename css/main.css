@@ -958,6 +958,17 @@ h2 {
     image-rendering: pixelated;
 }
 
+img.is-littleskin-avatar {
+    background-image:
+        var(--minecraft-avatar-texture),
+        var(--minecraft-avatar-texture);
+    background-position:
+        71.428571% 14.285714%,
+        14.285714% 14.285714%;
+    background-repeat: no-repeat;
+    background-size: 800% 800%;
+}
+
 .player-avatar-card p {
     margin: 0;
     overflow-wrap: anywhere;
