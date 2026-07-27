@@ -624,7 +624,12 @@ h2 {
     min-width: calc(100% + 2px);
     margin-right: -2px;
     overflow: hidden;
+    transform: scale(1.015);
     will-change: transform;
+}
+
+.hero-slide.is-active {
+    transform: scale(1.02);
 }
 
 .hero-slide img {

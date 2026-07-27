@@ -326,9 +326,9 @@ function setupGsapStage() {
 
         if (heroImages.length) {
             gsap.fromTo(heroImages, {
-                yPercent: -4
+                yPercent: 0
             }, {
-                yPercent: 4,
+                yPercent: -4,
                 ease: 'none',
                 scrollTrigger: {
                     trigger: hero,
