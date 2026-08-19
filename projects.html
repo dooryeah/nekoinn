@@ -71,10 +71,11 @@
             <div id="projectionList" class="projection-list"></div>
         </div>
     </div>
+    <script src="js/supabase-config.js?v=20260819-admin"></script>
     <script src="data/projects.js?v=20260618-local-opt"></script>
     <script>
-        const PROJECTS = window.NEKOINN_PROJECTS || [];
-        const PROJECTION_FILES = window.NEKOINN_PROJECTION_FILES || [];
+        let PROJECTS = window.NEKOINN_PROJECTS || [];
+        let PROJECTION_FILES = window.NEKOINN_PROJECTION_FILES || [];
 
         const filters = { dimension: "all", type: "all", query: "" };
             let filteredProjects = PROJECTS.slice();
@@ -382,6 +383,36 @@
 
     renderProjects();
     initProjectionPanel();
+
+    async function loadRemoteData() {
+        const config = window.NEKOINN_SUPABASE || {};
+        const url = String(config.url || "").replace(/\/$/, "");
+        const anonKey = String(config.anonKey || "");
+        if (!url || !anonKey) return;
+
+        const headers = { apikey: anonKey, Authorization: "Bearer " + anonKey };
+        try {
+            const [projRes, fileRes] = await Promise.all([
+                fetch(url + "/rest/v1/projects?select=name,image,dimension,type,author,description&is_active=eq.true&order=sort_order.asc,created_at.asc", { headers }),
+                fetch(url + "/rest/v1/projection_files?select=name,url,note&is_active=eq.true&order=sort_order.asc,created_at.asc", { headers }),
+            ]);
+            if (!projRes.ok || !fileRes.ok) return;
+            const remoteProjects = await projRes.json();
+            const remoteFiles = await fileRes.json();
+            if (Array.isArray(remoteProjects) && remoteProjects.length) {
+                PROJECTS = remoteProjects;
+            }
+            if (Array.isArray(remoteFiles)) {
+                PROJECTION_FILES = remoteFiles;
+            }
+            renderProjects();
+            renderProjectionFiles();
+        } catch (error) {
+            // 拉取失败时保留静态兜底数据
+        }
+    }
+
+    loadRemoteData();
 </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>

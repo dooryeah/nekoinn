@@ -52,3 +52,32 @@ site_url: https://nekoinn.top
 插件也支持环境变量兜底。`service_role` key 权限很高，只能放在机器人本地配置或运行环境里，不要提交到仓库或写进网页。
 
 `/签到` 和 `/许愿` 会把发送者 QQ 号映射成 `QQ号@qq.com`，所以白名单邮箱需要与 QQ 邮箱一致。`/许愿` 每天只能成功一次，每次随机获得 1 到 5 EXP。
+
+## 站点内容管理（admin 页）
+
+`admin.html` 是一个隐藏的管理页面（不在网站导航里出现），用于增删改「工程项目」「服务器展览」「投影文件」三块内容，并支持上传图片。数据存在 `public.projects`、`public.exhibition_items`、`public.projection_files` 三张表里，公开页在运行时读取（带静态兜底）。首次执行 `supabase/schema.sql` 时会把现有静态数据自动灌入这三张表。
+
+### 一次性设置
+
+1. 在 Supabase Dashboard 的 Authentication → Users → Add user 创建一个管理账号：
+   - Email：`admin@nekoinn.top`
+   - Password：你的管理员密码（不要在仓库里明文记录）
+   - 勾选 **Auto Confirm User**（或把「Email confirmation」关掉），这样无需真实收信即可登录。
+2. 记下这个用户的 UUID，把它写入 `site_admins` 表（只能用 `service_role` 执行，例如在 SQL Editor 里跑）：
+
+```sql
+insert into public.site_admins (user_id)
+values ('<上面的用户 UUID>')
+on conflict (user_id) do nothing;
+```
+
+3. 重新执行 `supabase/schema.sql` 后，`is_site_admin()` 函数 + 各表的 RLS 会保证：
+   - 匿名用户只能读 `is_active = true` 的内容；
+   - 只有 `site_admins` 里的账号能增删改内容，以及上传/删除 `site-media` bucket 里的文件；
+   - 其他已登录成员（白名单内）和匿名用户都不能写。
+
+### 安全提示
+
+- 管理员密码只存在于 Supabase Auth 里（bcrypt 哈希），不落仓库、不落明文；`admin.html` 里只写死登录邮箱 `admin@nekoinn.top`，密码由使用者输入。
+- 永远不要把 `service_role` key 写进 `admin.html` 或任何前端文件；浏览器端只用 anon/publishable key。
+- 上传的图片放在公开 bucket `site-media`（≤ 8MB，PNG/JPG/WebP/GIF；投影文件用 `application/octet-stream`）。

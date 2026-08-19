@@ -34,44 +34,54 @@
         </div>
     </div>
 
+    <script src="js/supabase-config.js?v=20260819-admin"></script>
     <script>
-        const EXHIBITION_IMAGES = [
-            "./images/server_1.png",
-            "./images/server_2.png",
-            "./images/server_3.png",
-            "./images/server_4.png",
-            "./images/server_5.png",
-            "./images/server_6.png",
-            "./images/server_7.png",
-            "./images/server_8.png",
-            "./images/server_9.png",
-            "./images/server_10.png",
-            "./images/server_11.png",
-            "./images/server_12.png",
-            "./images/server_13.png",
-            "./images/server_14.png",
-            "./images/server_15.png",
-            "./images/server_16.png",
-            "./images/server_17.png",
-            "./images/server_18.png",
-            "./images/server_19.png",
-            "./images/server_20.png",
+        const FALLBACK_EXHIBITION_ITEMS = [
+            { image: "./images/server_1.png", title: "", description: "" },
+            { image: "./images/server_2.png", title: "", description: "" },
+            { image: "./images/server_3.png", title: "", description: "" },
+            { image: "./images/server_4.png", title: "", description: "" },
+            { image: "./images/server_5.png", title: "", description: "" },
+            { image: "./images/server_6.png", title: "", description: "" },
+            { image: "./images/server_7.png", title: "", description: "" },
+            { image: "./images/server_8.png", title: "", description: "" },
+            { image: "./images/server_9.png", title: "", description: "" },
+            { image: "./images/server_10.png", title: "", description: "" },
+            { image: "./images/server_11.png", title: "", description: "" },
+            { image: "./images/server_12.png", title: "", description: "" },
+            { image: "./images/server_13.png", title: "", description: "" },
+            { image: "./images/server_14.png", title: "", description: "" },
+            { image: "./images/server_15.png", title: "", description: "" },
+            { image: "./images/server_16.png", title: "", description: "" },
+            { image: "./images/server_17.png", title: "", description: "" },
+            { image: "./images/server_18.png", title: "", description: "" },
+            { image: "./images/server_19.png", title: "", description: "" },
+            { image: "./images/server_20.png", title: "", description: "" },
         ];
 
+        let EXHIBITION_ITEMS = FALLBACK_EXHIBITION_ITEMS;
         let currentImageIndex = 0;
         let viewer = null;
 
         function getImageTitle(index) {
-            return `服务器展览 ${index + 1}`;
+            const item = EXHIBITION_ITEMS[index];
+            return item && item.title ? item.title : `服务器展览 ${index + 1}`;
+        }
+
+        function getImageDescription(index) {
+            const item = EXHIBITION_ITEMS[index];
+            return item && item.description ? item.description : "";
         }
 
         function preloadNeighborImages() {
             [
-                (currentImageIndex - 1 + EXHIBITION_IMAGES.length) % EXHIBITION_IMAGES.length,
-                (currentImageIndex + 1) % EXHIBITION_IMAGES.length,
+                (currentImageIndex - 1 + EXHIBITION_ITEMS.length) % EXHIBITION_ITEMS.length,
+                (currentImageIndex + 1) % EXHIBITION_ITEMS.length,
             ].forEach((index) => {
+                const item = EXHIBITION_ITEMS[index];
+                if (!item) return;
                 const preload = new Image();
-                preload.src = EXHIBITION_IMAGES[index];
+                preload.src = item.image;
             });
         }
 
@@ -130,10 +140,14 @@
             const title = document.createElement("div");
             title.className = "viewer-title";
 
+            const desc = document.createElement("div");
+            desc.className = "viewer-desc";
+
             const counter = document.createElement("div");
             counter.className = "viewer-counter";
 
             meta.appendChild(title);
+            meta.appendChild(desc);
             meta.appendChild(counter);
             backdrop.appendChild(closeBtn);
             backdrop.appendChild(prevBtn);
@@ -153,7 +167,7 @@
                 if (e.key === "ArrowRight") showNextImage();
             };
 
-            viewer = { backdrop, img, title, counter, onKey };
+            viewer = { backdrop, img, title, desc, counter, onKey };
             closeBtn.addEventListener("click", closeViewer);
             prevBtn.addEventListener("click", showPrevImage);
             nextBtn.addEventListener("click", showNextImage);
@@ -164,8 +178,10 @@
 
         function updateViewer() {
             if (!viewer) return;
-            const src = EXHIBITION_IMAGES[currentImageIndex];
+            const item = EXHIBITION_ITEMS[currentImageIndex];
+            const src = item ? item.image : "./images/logo.png";
             const title = getImageTitle(currentImageIndex);
+            const desc = getImageDescription(currentImageIndex);
             viewer.backdrop.classList.add("is-loading");
             viewer.img.onload = () => viewer.backdrop.classList.remove("is-loading");
             viewer.img.onerror = () => {
@@ -176,17 +192,19 @@
             viewer.img.src = src;
             viewer.img.alt = title;
             viewer.title.textContent = title;
-            viewer.counter.textContent = `${currentImageIndex + 1} / ${EXHIBITION_IMAGES.length}`;
+            viewer.desc.textContent = desc;
+            viewer.desc.hidden = !desc;
+            viewer.counter.textContent = `${currentImageIndex + 1} / ${EXHIBITION_ITEMS.length}`;
             preloadNeighborImages();
         }
 
         function showPrevImage() {
-            currentImageIndex = (currentImageIndex - 1 + EXHIBITION_IMAGES.length) % EXHIBITION_IMAGES.length;
+            currentImageIndex = (currentImageIndex - 1 + EXHIBITION_ITEMS.length) % EXHIBITION_ITEMS.length;
             updateViewer();
         }
 
         function showNextImage() {
-            currentImageIndex = (currentImageIndex + 1) % EXHIBITION_IMAGES.length;
+            currentImageIndex = (currentImageIndex + 1) % EXHIBITION_ITEMS.length;
             updateViewer();
         }
 
@@ -194,13 +212,13 @@
             const gallery = document.getElementById("gallery");
             if (!gallery) return;
             gallery.innerHTML = "";
-            arr.forEach((src, index) => {
+            arr.forEach((item, index) => {
                 const button = document.createElement("button");
                 button.className = "thumb";
                 button.type = "button";
                 button.setAttribute("aria-label", `放大${getImageTitle(index)}`);
                 const img = document.createElement("img");
-                img.src = src;
+                img.src = item.image;
                 img.alt = getImageTitle(index);
                 img.loading = "lazy";
                 button.addEventListener("click", () => showViewer(index));
@@ -209,7 +227,31 @@
             });
         }
 
-        render(EXHIBITION_IMAGES);
+        async function loadRemoteData() {
+            const config = window.NEKOINN_SUPABASE || {};
+            const url = String(config.url || "").replace(/\/$/, "");
+            const anonKey = String(config.anonKey || "");
+            if (!url || !anonKey) return;
+
+            const headers = { apikey: anonKey, Authorization: "Bearer " + anonKey };
+            try {
+                const response = await fetch(
+                    url + "/rest/v1/exhibition_items?select=image,title,description&is_active=eq.true&order=sort_order.asc,created_at.asc",
+                    { headers }
+                );
+                if (!response.ok) return;
+                const remote = await response.json();
+                if (Array.isArray(remote) && remote.length) {
+                    EXHIBITION_ITEMS = remote;
+                    render(EXHIBITION_ITEMS);
+                }
+            } catch (error) {
+                // 拉取失败时保留静态兜底数据
+            }
+        }
+
+        render(EXHIBITION_ITEMS);
+        loadRemoteData();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>

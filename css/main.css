@@ -615,6 +615,7 @@ h2 {
     width: 100%;
     height: 100%;
     background: #111c29;
+    transform: translateY(-40px); /* 负值向上，数值按需调整 */
     will-change: transform;
 }
 
@@ -1789,6 +1790,14 @@ html[data-theme="night"] .modal-count {
 .viewer-counter {
     color: rgba(255, 255, 255, 0.76);
     white-space: nowrap;
+}
+
+.viewer-desc {
+    color: rgba(255, 255, 255, 0.84);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 360px;
 }
 
 html.lightbox-open,

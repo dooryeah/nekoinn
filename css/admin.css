@@ -1,0 +1,331 @@
+/* ===== 管理页（admin.html）===== */
+
+.admin-page {
+    padding: 24px 0 64px;
+}
+
+/* 登录视图 */
+.admin-login {
+    width: min(440px, calc(100% - 40px));
+    margin: 8vh auto 0;
+}
+
+.admin-login .auth-card {
+    text-align: center;
+}
+
+.admin-login-hint {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 6px 0 0;
+}
+
+/* 管理面板 */
+.admin-panel {
+    width: min(980px, calc(100% - 40px));
+    margin: 0 auto;
+    display: grid;
+    gap: 18px;
+}
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.admin-header-title .section-kicker {
+    margin: 0 0 2px;
+}
+
+.admin-header-title h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.admin-tab {
+    padding: 8px 16px;
+    border: 0;
+    border-radius: 6px;
+    color: var(--muted);
+    background: transparent;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.admin-tab:hover {
+    color: var(--text);
+    background: var(--panel-bg-soft);
+}
+
+.admin-tab.is-active {
+    color: #ffffff;
+    background: var(--brand);
+}
+
+.admin-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.admin-count {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* 列表 */
+.admin-list {
+    display: grid;
+    gap: 10px;
+}
+
+.admin-empty {
+    padding: 40px 20px;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    color: var(--muted);
+    text-align: center;
+}
+
+.admin-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-glass);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.admin-item-thumb {
+    width: 72px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--media-bg);
+    flex: 0 0 auto;
+}
+
+.admin-item-main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.admin-item-title {
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-item-off {
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgba(176, 58, 72, 0.14);
+    color: #b03a48;
+    font-size: 12px;
+    font-weight: 700;
+    flex: 0 0 auto;
+}
+
+.admin-item-actions {
+    display: flex;
+    gap: 6px;
+    flex: 0 0 auto;
+}
+
+.admin-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--muted);
+    background: var(--field-bg);
+    font-size: 15px;
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.admin-icon-btn:hover:not(:disabled) {
+    color: var(--brand);
+    border-color: var(--brand);
+}
+
+.admin-icon-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.admin-icon-btn.admin-danger:hover:not(:disabled) {
+    color: #b03a48;
+    border-color: #b03a48;
+}
+
+/* 编辑弹窗 */
+.admin-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 30000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.admin-modal[hidden] {
+    display: none;
+}
+
+.admin-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 15, 24, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.admin-modal-box {
+    position: relative;
+    width: min(560px, 100%);
+    max-height: min(84vh, 720px);
+    overflow-y: auto;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-strong);
+    box-shadow: var(--shadow-lift);
+}
+
+.admin-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.admin-modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.admin-form {
+    display: grid;
+    gap: 14px;
+}
+
+.admin-field {
+    display: grid;
+    gap: 6px;
+}
+
+.admin-field label {
+    color: var(--brand-dark);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.admin-field input[type="text"],
+.admin-field input[type="password"],
+.admin-field input[type="file"],
+.admin-field select,
+.admin-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(47, 95, 168, 0.22);
+    border-radius: 8px;
+    color: var(--text);
+    background: var(--field-bg);
+    font: inherit;
+    outline: none;
+}
+
+.admin-field textarea {
+    resize: vertical;
+    min-height: 92px;
+}
+
+.admin-field input:focus,
+.admin-field select:focus,
+.admin-field textarea:focus {
+    border-color: var(--mint);
+    box-shadow: 0 0 0 3px rgba(58, 155, 117, 0.16);
+}
+
+.admin-field input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--mint);
+}
+
+.admin-field-hint {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.admin-upload-preview {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    color: var(--muted);
+    font-size: 13px;
+    word-break: break-all;
+}
+
+.admin-upload-preview img {
+    max-width: 160px;
+    max-height: 96px;
+    border-radius: 6px;
+    background: var(--media-bg);
+}
+
+.admin-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+@media (max-width: 640px) {
+    .admin-item {
+        flex-wrap: wrap;
+    }
+
+    .admin-item-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
