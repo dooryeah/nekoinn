@@ -938,8 +938,8 @@ values (
     'site-media',
     'site-media',
     true,
-    8388608,
-    array['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/octet-stream']
+    10485760,
+    array['image/png', 'image/jpeg', 'application/octet-stream']
 )
 on conflict (id) do update
 set

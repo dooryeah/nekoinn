@@ -82,4 +82,4 @@ on conflict (user_id) do nothing;
 
 - 管理员密码只存在于 Supabase Auth 里（bcrypt 哈希），不落仓库、不落明文；`admin.html` 里只写死登录邮箱 `admin@nekoinn.top`，密码由使用者输入。
 - 永远不要把 `service_role` key 写进 `admin.html` 或任何前端文件；浏览器端只用 anon/publishable key。
-- 上传的图片放在公开 bucket `site-media`（≤ 8MB，PNG/JPG/WebP/GIF；投影文件用 `application/octet-stream`）。
+- 上传的图片放在公开 bucket `site-media`（≤ 10MB，仅 PNG/JPG；投影文件用 `application/octet-stream`）。

@@ -2,9 +2,17 @@
     const SUPABASE = window.NEKOINN_SUPABASE || {};
     const ADMIN_EMAIL = "admin@nekoinn.top";
     const MEDIA_BUCKET = "site-media";
+    const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
+    const IMAGE_TYPES = ["image/png", "image/jpeg"];
 
     const hasLib = Boolean(window.supabase && window.supabase.createClient);
     const configured = hasLib && Boolean(SUPABASE.url) && Boolean(SUPABASE.anonKey);
+
+    const adminStorage = {
+        getItem: (key) => { try { return window.sessionStorage.getItem(key); } catch (e) { return null; } },
+        setItem: (key, value) => { try { window.sessionStorage.setItem(key, value); } catch (e) {} },
+        removeItem: (key) => { try { window.sessionStorage.removeItem(key); } catch (e) {} },
+    };
 
     const supabase = configured
         ? window.supabase.createClient(SUPABASE.url, SUPABASE.anonKey, {
@@ -12,6 +20,7 @@
                 autoRefreshToken: true,
                 persistSession: true,
                 detectSessionInUrl: false,
+                storage: adminStorage,
             },
         })
         : null;
@@ -446,10 +455,24 @@
                 const fileInput = document.createElement("input");
                 fileInput.type = "file";
                 fileInput.name = field.key + "_file";
-                fileInput.accept = field.type === "image" ? "image/png,image/jpeg,image/webp,image/gif" : "";
+                fileInput.accept = field.type === "image" ? "image/png,image/jpeg" : "";
                 fileInput.addEventListener("change", () => {
                     const file = fileInput.files && fileInput.files[0];
                     if (!file) return;
+
+                    if (field.type === "image") {
+                        if (!IMAGE_TYPES.includes(String(file.type || "").toLowerCase())) {
+                            showToast("仅支持 PNG / JPG 图片");
+                            fileInput.value = "";
+                            return;
+                        }
+                        if (file.size > MAX_IMAGE_SIZE) {
+                            showToast("图片不能超过 10MB");
+                            fileInput.value = "";
+                            return;
+                        }
+                    }
+
                     values["__file_" + field.key] = file;
                     if (field.type === "image" && preview) {
                         const img = preview.querySelector("img") || document.createElement("img");
@@ -464,7 +487,9 @@
 
                 const hint = document.createElement("span");
                 hint.className = "admin-field-hint";
-                hint.textContent = "可直接填 URL/路径，或选择文件上传（上传后自动填入）";
+                hint.textContent = field.type === "image"
+                    ? "PNG / JPG，单张 ≤10MB；或直接填 URL/路径"
+                    : "可直接填 URL/路径，或选择文件上传（上传后自动填入）";
 
                 wrap.appendChild(preview);
                 wrap.appendChild(urlInput);

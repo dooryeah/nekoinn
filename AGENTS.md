@@ -78,7 +78,7 @@ SESSION_MEMORY.md       本地会话记忆（不应提交）
 - 安全关键：**绝不**在文件或回复中提交/暴露 `service_role` key（仅机器人本地配置用）；浏览器只用 anon/publishable key（`js/supabase-config.js`）。
 - 内容管理（`admin.html`）：`projects` / `exhibition_items` / `projection_files` 三张表匿名只读活跃项，写权限通过 `site_admins` 表 + `is_site_admin()` 函数（security definer）限定给管理员账号。管理员是专用 Supabase Auth 账号（密码哈希由 Supabase 存储，不落明文、不落仓库），管理页只写死登录邮箱、密码由使用者输入。
 - 成员管理（`admin.html` 的「成员管理」标签）：`member_whitelist` 由管理员增改（软删除 = `is_active=false`，可恢复）；主页成员列表走匿名 RPC `get_public_members()`，只返回 `minecraft_name/nickname/role/avatar_url`，**绝不暴露 email**。
-- 管理页上传的文件存公开 bucket `site-media`（≤ 8MB，图片 PNG/JPG/WebP/GIF，投影文件 `application/octet-stream`）。
+- 管理页上传的文件存公开 bucket `site-media`（≤ 10MB，图片仅 PNG/JPG，投影文件 `application/octet-stream`）。
 - 经验/等级逻辑与 Python 端 `level_info()` 保持一致：Lv1 起，升 Lv2 需 50 EXP，之后每级 1.2 倍向上取整，封顶 Lv16。签到 +5 EXP/日，许愿随机 1–5 EXP/日，按北京时间（`Asia/Shanghai`）计日。
 - 字段限制：签名 ≤ 80 字、语录 ≤ 120 字；背景图 ≤ 4MB，仅 PNG/JPG/WebP/GIF，存于 `member-backgrounds` bucket，路径为 `<邮箱>/background-<时间戳>.<ext>`。
 
