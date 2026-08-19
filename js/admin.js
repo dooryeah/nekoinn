@@ -683,6 +683,11 @@
             setStatus("先填邮箱喵～", "error");
             return;
         }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setStatus("邮箱格式不正确", "error");
+            return;
+        }
         setBusy(true);
         setStatus("正在发送验证码...", "");
         const { error } = await supabase.auth.signInWithOtp({

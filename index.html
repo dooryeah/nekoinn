@@ -192,12 +192,14 @@
             }
 
             try {
-                const endpoint = url + "/rest/v1/site_quotes?select=quote_text,author_name&is_active=eq.true&order=created_at.desc&limit=80";
-                const response = await fetch(endpoint, {
+                const response = await fetch(url + "/rest/v1/rpc/get_public_quotes", {
+                    method: "POST",
                     headers: {
                         apikey: anonKey,
                         Authorization: "Bearer " + anonKey,
+                        "Content-Type": "application/json",
                     },
+                    body: JSON.stringify({ limit_count: 80 }),
                 });
                 if (!response.ok) throw new Error("HTTP " + response.status);
                 const remoteQuotes = await response.json();

@@ -104,6 +104,11 @@
             return false;
         }
 
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setStatus("邮箱格式不正确", "error");
+            return false;
+        }
+
         setEmailBusy(true);
         setCodeBusy(true);
         setStatus("正在发送验证码...", "");

@@ -245,7 +245,6 @@ grant select on public.member_whitelist to authenticated;
 revoke all on public.member_checkins from anon, authenticated;
 revoke all on public.member_wishes from anon, authenticated;
 revoke all on public.site_quotes from anon, authenticated;
-grant select on public.site_quotes to anon, authenticated;
 grant insert, select, update on public.site_quotes to service_role;
 
 drop function if exists public.get_my_checkin_status();
@@ -558,7 +557,6 @@ create or replace function public.get_checkin_leaderboard(limit_count integer de
 returns table (
     rank_position bigint,
     display_name text,
-    email text,
     minecraft_name text,
     avatar_url text,
     total_count bigint,
@@ -587,8 +585,7 @@ begin
     return query
     with totals as (
         select
-            mw.email,
-            coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), mw.email) as display_name,
+            coalesce(nullif(mw.nickname, ''), nullif(mw.minecraft_name, ''), '成员') as display_name,
             mw.minecraft_name,
             mw.avatar_url,
             mw.experience_points,
@@ -599,14 +596,13 @@ begin
         join public.member_whitelist mw
             on mw.email_normalized = mc.email_normalized
         where mw.is_active
-        group by mw.email, mw.nickname, mw.minecraft_name, mw.avatar_url, mw.experience_points
+        group by mw.nickname, mw.minecraft_name, mw.avatar_url, mw.experience_points
     )
     select
         row_number() over (
             order by totals.total_count desc, totals.last_checkin_date desc nulls last, totals.display_name asc
         ) as rank_position,
         totals.display_name,
-        totals.email,
         totals.minecraft_name,
         totals.avatar_url,
         totals.total_count,
@@ -1113,3 +1109,26 @@ $$;
 
 revoke all on function public.get_public_members() from public;
 grant execute on function public.get_public_members() to anon, authenticated;
+
+-- 公开语录：只返回 quote_text/author_name，不暴露 source_user_id/source_group_id（QQ 号）
+create or replace function public.get_public_quotes(limit_count integer default 80)
+returns table (
+    quote_text text,
+    author_name text
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+    select
+        sq.quote_text,
+        sq.author_name
+    from public.site_quotes sq
+    where sq.is_active
+    order by sq.created_at desc
+    limit greatest(1, least(coalesce(limit_count, 80), 200));
+$$;
+
+revoke all on function public.get_public_quotes(integer) from public;
+grant execute on function public.get_public_quotes(integer) to anon, authenticated;
