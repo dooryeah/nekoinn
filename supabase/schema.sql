@@ -801,7 +801,7 @@ begin
         select 1 from information_schema.columns
         where table_schema = 'public' and table_name = 'site_admins' and column_name = 'user_id'
     ) then
-        drop table public.site_admins;
+        drop table public.site_admins cascade;
     end if;
 end
 $$;
