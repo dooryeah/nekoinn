@@ -36,6 +36,12 @@
             titleKey: "name",
             titleFallback: "未命名项目",
             folder: "projects",
+            pkColumn: "id",
+            thumbKey: "image",
+            orderBy: [{ column: "sort_order" }, { column: "created_at" }],
+            metaKeys: ["dimension", "type", "author"],
+            reorderable: true,
+            hasSortOrder: true,
             fields: [
                 { key: "name", label: "项目名称", type: "text", required: true },
                 { key: "image", label: "图片", type: "image" },
@@ -52,6 +58,12 @@
             titleKey: "title",
             titleFallback: "服务器展览",
             folder: "exhibition",
+            pkColumn: "id",
+            thumbKey: "image",
+            orderBy: [{ column: "sort_order" }, { column: "created_at" }],
+            metaKeys: [],
+            reorderable: true,
+            hasSortOrder: true,
             fields: [
                 { key: "image", label: "图片", type: "image", required: true },
                 { key: "title", label: "标题", type: "text" },
@@ -65,6 +77,12 @@
             titleKey: "name",
             titleFallback: "未命名文件",
             folder: "projections",
+            pkColumn: "id",
+            thumbKey: "image",
+            orderBy: [{ column: "sort_order" }, { column: "created_at" }],
+            metaKeys: ["note"],
+            reorderable: true,
+            hasSortOrder: true,
             fields: [
                 { key: "name", label: "文件名", type: "text", required: true },
                 { key: "url", label: "文件", type: "file", required: true },
@@ -72,9 +90,31 @@
                 { key: "is_active", label: "在网站上显示", type: "checkbox", default: true },
             ],
         },
+        members: {
+            table: "member_whitelist",
+            label: "成员",
+            titleKey: "minecraft_name",
+            titleFallback: "未命名成员",
+            pkColumn: "email",
+            thumbKey: "avatar_url",
+            orderBy: [{ column: "minecraft_name" }],
+            metaKeys: ["nickname", "email", "role"],
+            reorderable: false,
+            hasSortOrder: false,
+            softDelete: true,
+            offLabel: "已停用",
+            fields: [
+                { key: "email", label: "邮箱", type: "text", required: true, immutable: true },
+                { key: "minecraft_name", label: "Minecraft 名", type: "text", required: true },
+                { key: "nickname", label: "昵称", type: "text" },
+                { key: "role", label: "身份", type: "text", default: "member" },
+                { key: "avatar_url", label: "头像 URL（可选）", type: "text" },
+                { key: "is_active", label: "启用（登录 + 主页显示）", type: "checkbox", default: true },
+            ],
+        },
     };
 
-    const cache = { projects: [], exhibition: [], projection: [] };
+    const cache = { projects: [], exhibition: [], projection: [], members: [] };
     let currentEntity = "projects";
     let currentItems = [];
 
@@ -140,11 +180,12 @@
 
     async function loadCurrent() {
         const conf = entity();
-        const { data, error } = await supabase
-            .from(conf.table)
-            .select("*")
-            .order("sort_order", { ascending: true })
-            .order("created_at", { ascending: true });
+        let query = supabase.from(conf.table).select("*");
+        (conf.orderBy || [{ column: "sort_order" }]).forEach((order) => {
+            query = query.order(order.column, { ascending: order.ascending !== false });
+        });
+
+        const { data, error } = await query;
 
         if (error) {
             renderList([]);
@@ -158,6 +199,7 @@
     }
 
     function renderList(items) {
+        const conf = entity();
         listEl.innerHTML = "";
         if (countEl) countEl.textContent = "共 " + items.length + " 条";
 
@@ -173,14 +215,15 @@
             const row = document.createElement("div");
             row.className = "admin-item";
 
+            const thumbKey = conf.thumbKey || "image";
             let thumb = null;
-            if (item.image) {
+            if (item[thumbKey]) {
                 thumb = document.createElement("img");
                 thumb.className = "admin-item-thumb";
                 thumb.alt = "";
                 thumb.loading = "lazy";
                 thumb.decoding = "async";
-                thumb.src = item.image;
+                thumb.src = item[thumbKey];
             }
 
             const main = document.createElement("div");
@@ -193,15 +236,14 @@
             const meta = document.createElement("div");
             meta.className = "admin-item-meta";
             const metaParts = [];
-            if (item.dimension) metaParts.push(item.dimension);
-            if (item.type) metaParts.push(item.type);
-            if (item.author) metaParts.push(item.author);
-            if (item.note) metaParts.push(item.note);
+            (conf.metaKeys || []).forEach((key) => {
+                if (item[key]) metaParts.push(item[key]);
+            });
             meta.textContent = metaParts.join(" · ") || "—";
             if (item.is_active === false) {
                 const off = document.createElement("span");
                 off.className = "admin-item-off";
-                off.textContent = "已隐藏";
+                off.textContent = conf.offLabel || "已隐藏";
                 meta.appendChild(off);
             }
 
@@ -211,21 +253,26 @@
             const actions = document.createElement("div");
             actions.className = "admin-item-actions";
 
-            const up = document.createElement("button");
-            up.className = "admin-icon-btn";
-            up.type = "button";
-            up.textContent = "↑";
-            up.title = "上移";
-            up.disabled = index === 0;
-            up.addEventListener("click", () => moveItem(index, -1));
+            if (conf.reorderable !== false) {
+                const up = document.createElement("button");
+                up.className = "admin-icon-btn";
+                up.type = "button";
+                up.textContent = "↑";
+                up.title = "上移";
+                up.disabled = index === 0;
+                up.addEventListener("click", () => moveItem(index, -1));
 
-            const down = document.createElement("button");
-            down.className = "admin-icon-btn";
-            down.type = "button";
-            down.textContent = "↓";
-            down.title = "下移";
-            down.disabled = index === items.length - 1;
-            down.addEventListener("click", () => moveItem(index, 1));
+                const down = document.createElement("button");
+                down.className = "admin-icon-btn";
+                down.type = "button";
+                down.textContent = "↓";
+                down.title = "下移";
+                down.disabled = index === items.length - 1;
+                down.addEventListener("click", () => moveItem(index, 1));
+
+                actions.appendChild(up);
+                actions.appendChild(down);
+            }
 
             const edit = document.createElement("button");
             edit.className = "admin-icon-btn";
@@ -233,18 +280,26 @@
             edit.textContent = "✎";
             edit.title = "编辑";
             edit.addEventListener("click", () => openForm(item));
-
-            const del = document.createElement("button");
-            del.className = "admin-icon-btn admin-danger";
-            del.type = "button";
-            del.textContent = "✕";
-            del.title = "删除";
-            del.addEventListener("click", () => deleteItem(item));
-
-            actions.appendChild(up);
-            actions.appendChild(down);
             actions.appendChild(edit);
-            actions.appendChild(del);
+
+            if (conf.softDelete) {
+                const isActive = item.is_active !== false;
+                const toggle = document.createElement("button");
+                toggle.className = "admin-toggle-btn" + (isActive ? " admin-danger" : "");
+                toggle.type = "button";
+                toggle.textContent = isActive ? "停用" : "启用";
+                toggle.title = isActive ? "停用" : "重新启用";
+                toggle.addEventListener("click", () => toggleActive(item));
+                actions.appendChild(toggle);
+            } else {
+                const del = document.createElement("button");
+                del.className = "admin-icon-btn admin-danger";
+                del.type = "button";
+                del.textContent = "✕";
+                del.title = "删除";
+                del.addEventListener("click", () => deleteItem(item));
+                actions.appendChild(del);
+            }
 
             if (thumb) row.appendChild(thumb);
             row.appendChild(main);
@@ -254,6 +309,7 @@
     }
 
     async function moveItem(index, dir) {
+        const conf = entity();
         const targetIndex = index + dir;
         if (targetIndex < 0 || targetIndex >= currentItems.length) return;
 
@@ -261,10 +317,9 @@
         const b = currentItems[targetIndex];
         const ao = Number(a.sort_order) || 0;
         const bo = Number(b.sort_order) || 0;
-        const table = entity().table;
 
-        const { error: e1 } = await supabase.from(table).update({ sort_order: bo }).eq("id", a.id);
-        const { error: e2 } = await supabase.from(table).update({ sort_order: ao }).eq("id", b.id);
+        const { error: e1 } = await supabase.from(conf.table).update({ sort_order: bo }).eq(conf.pkColumn, a[conf.pkColumn]);
+        const { error: e2 } = await supabase.from(conf.table).update({ sort_order: ao }).eq(conf.pkColumn, b[conf.pkColumn]);
         if (e1 || e2) {
             showToast("排序失败：" + ((e1 || e2).message || "未知错误"));
             return;
@@ -273,8 +328,9 @@
     }
 
     async function deleteItem(item) {
+        const conf = entity();
         if (!confirm("确定删除「" + itemTitle(item) + "」吗？")) return;
-        const { error } = await supabase.from(entity().table).delete().eq("id", item.id);
+        const { error } = await supabase.from(conf.table).delete().eq(conf.pkColumn, item[conf.pkColumn]);
         if (error) {
             showToast("删除失败：" + error.message);
             return;
@@ -283,9 +339,23 @@
         await loadCurrent();
     }
 
+    async function toggleActive(item) {
+        const conf = entity();
+        const next = item.is_active === false;
+        const label = next ? "启用" : "停用";
+        if (!confirm("确定" + label + "「" + itemTitle(item) + "」吗？")) return;
+        const { error } = await supabase.from(conf.table).update({ is_active: next }).eq(conf.pkColumn, item[conf.pkColumn]);
+        if (error) {
+            showToast(label + "失败：" + error.message);
+            return;
+        }
+        showToast("已" + label);
+        await loadCurrent();
+    }
+
     function openForm(item) {
         const conf = entity();
-        const isEdit = Boolean(item && item.id);
+        const isEdit = Boolean(item && item[conf.pkColumn]);
 
         modalEl.innerHTML = "";
         const backdrop = document.createElement("div");
@@ -404,7 +474,10 @@
                 const input = document.createElement("input");
                 input.type = "text";
                 input.name = field.key;
-                input.value = item ? (item[field.key] || "") : "";
+                input.value = item ? (item[field.key] || "") : (field.default || "");
+                if (field.immutable && isEdit) {
+                    input.disabled = true;
+                }
                 input.addEventListener("input", () => { values[field.key] = input.value; });
                 values[field.key] = input.value;
                 wrap.appendChild(input);
@@ -468,8 +541,13 @@
     async function saveForm(conf, item, values) {
         const payload = {};
         const table = conf.table;
+        const isEdit = Boolean(item && item[conf.pkColumn]);
 
         for (const field of conf.fields) {
+            if (isEdit && field.immutable) {
+                continue;
+            }
+
             if (field.type === "checkbox") {
                 payload[field.key] = Boolean(values[field.key]);
                 continue;
@@ -485,17 +563,23 @@
 
             if (file) {
                 payload[field.key] = await uploadFile(file, conf.folder);
+            } else if (text) {
+                payload[field.key] = text;
+            } else if (field.default && !isEdit) {
+                payload[field.key] = field.default;
             } else {
-                payload[field.key] = text || null;
+                payload[field.key] = null;
             }
         }
 
-        if (item && item.id) {
-            const { error } = await supabase.from(table).update(payload).eq("id", item.id);
+        if (isEdit) {
+            const { error } = await supabase.from(table).update(payload).eq(conf.pkColumn, item[conf.pkColumn]);
             if (error) throw error;
         } else {
-            const maxOrder = currentItems.reduce((m, it) => Math.max(m, Number(it.sort_order) || 0), 0);
-            payload.sort_order = maxOrder + 1;
+            if (conf.hasSortOrder !== false) {
+                const maxOrder = currentItems.reduce((m, it) => Math.max(m, Number(it.sort_order) || 0), 0);
+                payload.sort_order = maxOrder + 1;
+            }
             const { error } = await supabase.from(table).insert(payload);
             if (error) throw error;
         }

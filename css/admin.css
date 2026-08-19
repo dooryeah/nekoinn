@@ -195,6 +195,36 @@
     border-color: #b03a48;
 }
 
+.admin-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--muted);
+    background: var(--field-bg);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.admin-toggle-btn:hover {
+    color: var(--brand);
+    border-color: var(--brand);
+}
+
+.admin-toggle-btn.admin-danger {
+    color: #b03a48;
+}
+
+.admin-toggle-btn.admin-danger:hover {
+    border-color: #b03a48;
+}
+
 /* 编辑弹窗 */
 .admin-modal {
     position: fixed;

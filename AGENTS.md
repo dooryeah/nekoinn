@@ -23,7 +23,7 @@ projects.html           工程项目（运行时读 Supabase，静态 data/proje
 members.html            个人中心（登录后，签到/排行榜/资料编辑）
 login.html              验证码登录
 profile.html            公开成员资料页（?player=<名>）
-admin.html              隐藏管理页（密码登录后增删改工程项目/展览/投影，无导航入口）
+admin.html              隐藏管理页（密码登录后增删改工程项目/展览/投影/成员，无导航入口）
 css/
   main.css              主题变量、布局、组件（约 3000 行）
   animations.css        页面过渡、滚动淡入等动画
@@ -77,6 +77,7 @@ SESSION_MEMORY.md       本地会话记忆（不应提交）
 - 所有表、RLS 策略、RPC 函数改动必须同步更新 `supabase/schema.sql`，并在部署前于 Supabase SQL Editor 重新执行。
 - 安全关键：**绝不**在文件或回复中提交/暴露 `service_role` key（仅机器人本地配置用）；浏览器只用 anon/publishable key（`js/supabase-config.js`）。
 - 内容管理（`admin.html`）：`projects` / `exhibition_items` / `projection_files` 三张表匿名只读活跃项，写权限通过 `site_admins` 表 + `is_site_admin()` 函数（security definer）限定给管理员账号。管理员是专用 Supabase Auth 账号（密码哈希由 Supabase 存储，不落明文、不落仓库），管理页只写死登录邮箱、密码由使用者输入。
+- 成员管理（`admin.html` 的「成员管理」标签）：`member_whitelist` 由管理员增改（软删除 = `is_active=false`，可恢复）；主页成员列表走匿名 RPC `get_public_members()`，只返回 `minecraft_name/nickname/role/avatar_url`，**绝不暴露 email**。
 - 管理页上传的文件存公开 bucket `site-media`（≤ 8MB，图片 PNG/JPG/WebP/GIF，投影文件 `application/octet-stream`）。
 - 经验/等级逻辑与 Python 端 `level_info()` 保持一致：Lv1 起，升 Lv2 需 50 EXP，之后每级 1.2 倍向上取整，封顶 Lv16。签到 +5 EXP/日，许愿随机 1–5 EXP/日，按北京时间（`Asia/Shanghai`）计日。
 - 字段限制：签名 ≤ 80 字、语录 ≤ 120 字；背景图 ≤ 4MB，仅 PNG/JPG/WebP/GIF，存于 `member-backgrounds` bucket，路径为 `<邮箱>/background-<时间戳>.<ext>`。

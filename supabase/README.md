@@ -57,6 +57,8 @@ site_url: https://nekoinn.top
 
 `admin.html` 是一个隐藏的管理页面（不在网站导航里出现），用于增删改「工程项目」「服务器展览」「投影文件」三块内容，并支持上传图片。数据存在 `public.projects`、`public.exhibition_items`、`public.projection_files` 三张表里，公开页在运行时读取（带静态兜底）。首次执行 `supabase/schema.sql` 时会把现有静态数据自动灌入这三张表。
 
+`admin.html` 里还有一个「成员管理」标签，用于增改 `member_whitelist` 白名单成员：新增需要填邮箱（成员的登录邮箱，QQ 邮箱则对应机器人 `/签到`、`/许愿`）与 `minecraft_name`；删除是软删除（`is_active=false`，可重新启用）。主页成员列表通过匿名 RPC `get_public_members()` 读取，只返回 `minecraft_name/nickname/role/avatar_url`，不暴露邮箱。成员的头像默认按 `minecraft_name` 从 mc-heads.net 解析（少数特殊成员走 LittleSkin 皮肤覆盖），也可以给成员填 `avatar_url` 自定义头像。
+
 ### 一次性设置
 
 1. 在 Supabase Dashboard 的 Authentication → Users → Add user 创建一个管理账号：

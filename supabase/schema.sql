@@ -1052,3 +1052,52 @@ begin
     end if;
 end
 $$;
+
+-- ============================================================
+-- 成员管理（admin 页）：白名单增改/停用 + 主页公开成员列表
+-- ============================================================
+
+grant insert, update on public.member_whitelist to authenticated;
+
+drop policy if exists "admin can read all members" on public.member_whitelist;
+create policy "admin can read all members"
+on public.member_whitelist for select
+to authenticated
+using (public.is_site_admin());
+
+drop policy if exists "admin can insert members" on public.member_whitelist;
+create policy "admin can insert members"
+on public.member_whitelist for insert
+to authenticated
+with check (public.is_site_admin());
+
+drop policy if exists "admin can update members" on public.member_whitelist;
+create policy "admin can update members"
+on public.member_whitelist for update
+to authenticated
+using (public.is_site_admin());
+
+create or replace function public.get_public_members()
+returns table (
+    minecraft_name text,
+    nickname text,
+    role text,
+    avatar_url text
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+    select
+        mw.minecraft_name,
+        mw.nickname,
+        mw.role,
+        mw.avatar_url
+    from public.member_whitelist mw
+    where mw.is_active
+    order by lower(coalesce(nullif(mw.minecraft_name, ''), mw.nickname, mw.email)) asc;
+$$;
+
+revoke all on function public.get_public_members() from public;
+grant execute on function public.get_public_members() to anon, authenticated;
