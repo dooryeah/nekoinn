@@ -48,7 +48,6 @@ astrbot_plugin_nekoinn_card/   AstrBot 插件（main.py / metadata.yaml / _conf_
 tools/
   update-carousel-manifest.ps1  根据 images/carousel/ 重新生成轮播标记与 manifest.json
 CNAME                   nekoinn.top（GitHub Pages 时期遗留，现由服务器 nginx 托管）
-8ec729c5d305c719aef3b5f474583d84.txt  Let's Encrypt webroot 验证文件（勿删）
 SESSION_MEMORY.md       本地会话记忆（不应提交）
 ```
 
@@ -94,9 +93,9 @@ SESSION_MEMORY.md       本地会话记忆（不应提交）
 - 站点根目录：`/var/www/nekoinn`，为仓库的 git clone（`main` 分支），属主 `admin:www`。
 - SSH（Windows 本地密钥）：`ssh -i C:\Users\18779\nekinn.pem root@47.98.250.11`。
 - 更新流程：本地推送到 GitHub 后，SSH 到服务器在 `/var/www/nekoinn` 执行 `git pull`（root 下需先 `git config --global --add safe.directory /var/www/nekoinn`，或切到 `admin` 用户），nginx 直接托管静态文件。
+- 大陆服务器直连 GitHub 常被 GFW 超时；可在本地开代理后用 SSH 反向隧道拉取：`ssh -i <key> -R 10091:127.0.0.1:10090 root@<ip> "cd /var/www/nekoinn && git -c http.proxy=http://127.0.0.1:10091 pull origin main"`（`10090` 为本地代理端口，按需调整）。
 - HTTPS：Let's Encrypt（certbot），证书 `/etc/letsencrypt/live/nekoinn.top-0001/`；HTTP 80 自动 301 到 HTTPS。
 - Nginx 站点配置：`/etc/nginx/sites-enabled/nekoinn.top`；`/term/` 路径反代到 `127.0.0.1:7681`（终端）。
-- 根目录 `8ec729c5d305c719aef3b5f474583d84.txt` 为 Let's Encrypt webroot 验证文件，勿删。
 
 ## 测试要求
 
