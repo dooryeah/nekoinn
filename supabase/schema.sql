@@ -794,8 +794,20 @@ create table if not exists public.projection_files (
     created_at timestamptz not null default now()
 );
 
+-- 一次性迁移：旧的 site_admins 以 user_id 记录管理员，现改为邮箱白名单
+do $$
+begin
+    if exists (
+        select 1 from information_schema.columns
+        where table_schema = 'public' and table_name = 'site_admins' and column_name = 'user_id'
+    ) then
+        drop table public.site_admins;
+    end if;
+end
+$$;
+
 create table if not exists public.site_admins (
-    user_id uuid primary key,
+    email text primary key,
     created_at timestamptz not null default now()
 );
 
@@ -822,7 +834,7 @@ set search_path = public
 as $$
     select exists (
         select 1 from public.site_admins
-        where user_id = auth.uid()
+        where email = lower(auth.jwt() ->> 'email')
     );
 $$;
 

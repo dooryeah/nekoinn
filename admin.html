@@ -17,12 +17,21 @@
         <div class="card auth-card">
             <p class="section-kicker">Admin</p>
             <h1>内容管理</h1>
-            <p class="admin-login-hint">需要管理员密码喵～</p>
-            <form id="adminLoginForm" class="auth-form" autocomplete="off">
-                <label for="adminPassword">密码</label>
-                <input id="adminPassword" type="password" autocomplete="current-password" required>
+            <p class="admin-login-hint">邮箱验证码登录喵～</p>
+            <form id="adminEmailForm" class="auth-form" autocomplete="off">
+                <label for="adminEmail">管理员邮箱</label>
+                <input id="adminEmail" type="email" autocomplete="email" required>
                 <div class="auth-actions">
-                    <button class="join-btn" type="submit" id="adminLoginButton">登录</button>
+                    <button class="join-btn" type="submit" id="adminSendCode">发送验证码</button>
+                </div>
+            </form>
+            <form id="adminCodeForm" class="auth-form auth-code-form" hidden>
+                <p id="adminCodeTarget" class="auth-code-target"></p>
+                <label for="adminCode">验证码</label>
+                <input id="adminCode" type="text" class="auth-code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="8" required>
+                <div class="auth-actions">
+                    <button class="join-btn" type="submit" id="adminVerify">验证并登录</button>
+                    <button class="ghost-btn" type="button" id="adminResend">重新发送</button>
                 </div>
             </form>
             <p id="adminLoginStatus" class="auth-status" role="status" aria-live="polite"></p>

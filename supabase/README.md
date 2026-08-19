@@ -61,25 +61,21 @@ site_url: https://nekoinn.top
 
 ### 一次性设置
 
-1. 在 Supabase Dashboard 的 Authentication → Users → Add user 创建一个管理账号：
-   - Email：`admin@nekoinn.top`
-   - Password：你的管理员密码（不要在仓库里明文记录）
-   - 勾选 **Auto Confirm User**（或把「Email confirmation」关掉），这样无需真实收信即可登录。
-2. 记下这个用户的 UUID，把它写入 `site_admins` 表（只能用 `service_role` 执行，例如在 SQL Editor 里跑）：
+1. 重新执行 `supabase/schema.sql`：会把 `site_admins` 迁移为「管理员邮箱白名单」（`email` 主键，旧版的 `user_id` 记录会被清掉）。
+2. 把你要用的管理员邮箱写进白名单（在 SQL Editor 里跑，SQL Editor 以 postgres 权限运行、可绕过 RLS）：
 
 ```sql
-insert into public.site_admins (user_id)
-values ('<上面的用户 UUID>')
-on conflict (user_id) do nothing;
+insert into public.site_admins (email)
+values ('你的管理员邮箱@example.com')
+on conflict (email) do nothing;
 ```
 
-3. 重新执行 `supabase/schema.sql` 后，`is_site_admin()` 函数 + 各表的 RLS 会保证：
-   - 匿名用户只能读 `is_active = true` 的内容；
-   - 只有 `site_admins` 里的账号能增删改内容，以及上传/删除 `site-media` bucket 里的文件；
-   - 其他已登录成员（白名单内）和匿名用户都不能写。
+3. 管理员登录：打开 `admin.html`，**手动输入邮箱** → 点「发送验证码」→ 查收验证码邮件 → 输入 8 位验证码 → 登录。只有 `site_admins` 白名单里的邮箱才会被认定为管理员；验证码登录无需预建账号（`allowNewAuthUsers` 会按需自动建号）。
 
 ### 安全提示
 
-- 管理员密码只存在于 Supabase Auth 里（bcrypt 哈希），不落仓库、不落明文；`admin.html` 里只写死登录邮箱 `admin@nekoinn.top`，密码由使用者输入。
+- 管理员登录走邮箱验证码（OTP），**不再用密码**：Supabase 对验证码发送（60s/用户 + 项目级可配置）与验证（`/verify` 360/小时/IP）有内置限流，能挡住密码暴力破解和邮件轰炸。
+- 管理员邮箱不硬编码在前端，登录时手动输入；`is_site_admin()` 按邮箱白名单判定。
+- 旧的 `admin@nekoinn.top` 账号密码若仍存在，建议在 Dashboard 里改成一个超长随机值，彻底废掉密码通道。
 - 永远不要把 `service_role` key 写进 `admin.html` 或任何前端文件；浏览器端只用 anon/publishable key。
 - 上传的图片放在公开 bucket `site-media`（≤ 10MB，仅 PNG/JPG；投影文件用 `application/octet-stream`）。

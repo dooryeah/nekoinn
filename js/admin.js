@@ -1,6 +1,5 @@
 (function () {
     const SUPABASE = window.NEKOINN_SUPABASE || {};
-    const ADMIN_EMAIL = "admin@nekoinn.top";
     const MEDIA_BUCKET = "site-media";
     const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
     const IMAGE_TYPES = ["image/png", "image/jpeg"];
@@ -27,9 +26,14 @@
 
     const loginView = document.getElementById("adminLogin");
     const panelView = document.getElementById("adminPanel");
-    const loginForm = document.getElementById("adminLoginForm");
-    const loginPassword = document.getElementById("adminPassword");
-    const loginButton = document.getElementById("adminLoginButton");
+    const emailForm = document.getElementById("adminEmailForm");
+    const codeForm = document.getElementById("adminCodeForm");
+    const emailInput = document.getElementById("adminEmail");
+    const codeInput = document.getElementById("adminCode");
+    const sendCodeButton = document.getElementById("adminSendCode");
+    const verifyButton = document.getElementById("adminVerify");
+    const resendButton = document.getElementById("adminResend");
+    const codeTarget = document.getElementById("adminCodeTarget");
     const loginStatus = document.getElementById("adminLoginStatus");
     const logoutButton = document.getElementById("adminLogout");
     const addButton = document.getElementById("adminAdd");
@@ -152,8 +156,8 @@
     function showLogin(message) {
         loginView.hidden = false;
         panelView.hidden = true;
+        showEmailStep();
         if (message) setStatus(message, "error");
-        if (loginPassword) loginPassword.value = "";
     }
 
     function showPanel() {
@@ -622,33 +626,113 @@
         loadCurrent();
     }
 
-    async function login(password) {
-        if (!password) return;
-        loginButton.disabled = true;
-        setStatus("正在登录...", "");
-        try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email: ADMIN_EMAIL,
-                password: password,
-            });
-            if (error) {
-                setStatus("登录失败：" + (error.message || "密码错误"), "error");
-                return;
-            }
-            const { data: isAdmin } = await supabase.rpc("is_site_admin");
-            if (!isAdmin) {
-                await supabase.auth.signOut();
-                setStatus("当前账号不是管理员喵", "error");
-                return;
-            }
-            setStatus("", "");
-            showPanel();
-            await loadCurrent();
-        } catch (err) {
-            setStatus("登录失败：" + err.message, "error");
-        } finally {
-            loginButton.disabled = false;
+    let pendingEmail = "";
+    let cooldownTimer = null;
+    let cooldownSeconds = 0;
+
+    function showEmailStep() {
+        if (emailForm) emailForm.hidden = false;
+        if (codeForm) codeForm.hidden = true;
+        if (codeInput) codeInput.value = "";
+    }
+
+    function showCodeStep(email) {
+        pendingEmail = email;
+        if (emailForm) emailForm.hidden = true;
+        if (codeForm) codeForm.hidden = false;
+        if (codeTarget) codeTarget.textContent = "验证码已发送至 " + email;
+        if (codeInput) {
+            codeInput.value = "";
+            codeInput.focus();
         }
+    }
+
+    function setBusy(isBusy) {
+        if (sendCodeButton) sendCodeButton.disabled = isBusy || cooldownSeconds > 0;
+        if (verifyButton) verifyButton.disabled = isBusy;
+        if (resendButton) resendButton.disabled = isBusy || cooldownSeconds > 0;
+        if (emailInput) emailInput.disabled = isBusy;
+        if (codeInput) codeInput.disabled = isBusy;
+    }
+
+    function updateCooldownButtons() {
+        const resendText = cooldownSeconds > 0 ? "重新发送 (" + cooldownSeconds + "s)" : "重新发送";
+        const sendText = cooldownSeconds > 0 ? "发送验证码 (" + cooldownSeconds + "s)" : "发送验证码";
+        if (resendButton) resendButton.textContent = resendText;
+        if (sendCodeButton) sendCodeButton.textContent = sendText;
+        if (resendButton) resendButton.disabled = cooldownSeconds > 0;
+        if (sendCodeButton) sendCodeButton.disabled = cooldownSeconds > 0;
+    }
+
+    function startCooldown(seconds) {
+        cooldownSeconds = seconds;
+        updateCooldownButtons();
+        clearInterval(cooldownTimer);
+        cooldownTimer = setInterval(() => {
+            cooldownSeconds -= 1;
+            if (cooldownSeconds <= 0) {
+                cooldownSeconds = 0;
+                clearInterval(cooldownTimer);
+            }
+            updateCooldownButtons();
+        }, 1000);
+    }
+
+    async function sendCode(email) {
+        if (!email) {
+            setStatus("先填邮箱喵～", "error");
+            return;
+        }
+        setBusy(true);
+        setStatus("正在发送验证码...", "");
+        const { error } = await supabase.auth.signInWithOtp({
+            email,
+            options: { shouldCreateUser: SUPABASE.allowNewAuthUsers !== false },
+        });
+        setBusy(false);
+        if (error) {
+            setStatus(error.message || "验证码发送失败。", "error");
+            return;
+        }
+        showCodeStep(email);
+        startCooldown(60);
+        setStatus("验证码已经发出，请查看邮箱。", "success");
+    }
+
+    async function verifyCode(email, token) {
+        if (!email) {
+            setStatus("请先发送验证码。", "error");
+            showEmailStep();
+            return;
+        }
+        const normalizedToken = String(token || "").replace(/\D/g, "");
+        if (!/^\d{8}$/.test(normalizedToken)) {
+            setStatus("请输入 8 位数字验证码。", "error");
+            return;
+        }
+        setBusy(true);
+        setStatus("正在验证...", "");
+        const { error } = await supabase.auth.verifyOtp({
+            email,
+            token: normalizedToken,
+            type: "email",
+        });
+        setBusy(false);
+        if (error) {
+            setStatus(error.message || "验证码不正确或已过期。", "error");
+            return;
+        }
+
+        const { data: isAdmin } = await supabase.rpc("is_site_admin");
+        if (!isAdmin) {
+            await supabase.auth.signOut();
+            setStatus("当前邮箱不是管理员喵", "error");
+            return;
+        }
+
+        setStatus("", "");
+        showPanel();
+        await loadCurrent();
     }
 
     async function logout() {
@@ -659,7 +743,7 @@
     async function init() {
         if (!configured) {
             showLogin("Supabase 还没配置，请先填写 js/supabase-config.js");
-            if (loginButton) loginButton.disabled = true;
+            if (sendCodeButton) sendCodeButton.disabled = true;
             return;
         }
 
@@ -672,7 +756,7 @@
         const { data: isAdmin } = await supabase.rpc("is_site_admin");
         if (!isAdmin) {
             await supabase.auth.signOut();
-            showLogin("当前账号不是管理员喵");
+            showLogin("当前邮箱不是管理员喵");
             return;
         }
 
@@ -680,10 +764,30 @@
         await loadCurrent();
     }
 
-    if (loginForm) {
-        loginForm.addEventListener("submit", (e) => {
+    if (emailForm) {
+        emailForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            login(loginPassword.value);
+            sendCode(emailInput.value.trim());
+        });
+    }
+
+    if (codeForm) {
+        codeForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            verifyCode(pendingEmail, codeInput.value.trim());
+        });
+    }
+
+    if (codeInput) {
+        codeInput.addEventListener("input", () => {
+            codeInput.value = codeInput.value.replace(/\D/g, "").slice(0, 8);
+        });
+    }
+
+    if (resendButton) {
+        resendButton.addEventListener("click", () => {
+            if (cooldownSeconds > 0) return;
+            sendCode(pendingEmail);
         });
     }
 
